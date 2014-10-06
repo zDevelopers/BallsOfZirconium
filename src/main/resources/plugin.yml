@@ -1,0 +1,29 @@
+name: BallsOfSteel
+description: Balls of Steel plugin
+main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
+version: 0.1 §cdev§r
+author: "Amaury Carrade"
+
+awareness:
+  - !@UTF8
+
+
+commands:
+   bos:
+      description: Balls of Steel base command
+      usage: /<command> <subcommand> - see /<command> for available subcommands.
+
+   t:
+      description: Allows an user to send a message to his team.
+      usage: /t <message>
+   
+   g:
+      description: Allows an user to send a message to everyone.
+      usage: /g <message>
+   
+   togglechat:
+       description: Allows an user to toggle the chat between the global chat and a team chat.
+       usage: /togglechat
+
+permissions:
+    
