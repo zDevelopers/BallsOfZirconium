@@ -63,6 +63,10 @@ public final class BallsOfSteel extends JavaPlugin {
 		getCommand("bos").setTabCompleter(tabCompleter);
 		getCommand("togglechat").setTabCompleter(tabCompleter);
 		
+		
+		getServer().getPluginManager().registerEvents(new BoSListener(this), this);
+		
+		
 		// Imports teams from the config.
 		this.teamManager.importTeamsFromConfig();
 		
