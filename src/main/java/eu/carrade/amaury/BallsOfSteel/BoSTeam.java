@@ -119,12 +119,14 @@ public class BoSTeam {
 			chestLocation1 = null;
 			chestLocation2 = null;
 			
+			plugin.getGameManager().updateTrackedChests();
+			
 			return;
 		}
 		
 		Block block = chestLocation.getWorld().getBlockAt(chestLocation);
 		
-		if(isSharedChest(block)) {
+		if(BoSUtils.isSharedChest(block)) {
 			chest = ((Chest) block.getState()).getInventory().getHolder();
 			
 			chestLocation1 = chestLocation.clone();
@@ -142,12 +144,17 @@ public class BoSTeam {
 				Material originalType = block.getType();
 				
 				for(Block possibility : possibilities) {
-					if(isSharedChest(possibility) && possibility.getType() == originalType) {
+					if(BoSUtils.isSharedChest(possibility) && possibility.getType() == originalType) {
 						chestLocation2 = possibility.getLocation();
 						break;
 					}
 				}
 			}
+			else {
+				chestLocation2 = null;
+			}
+			
+			plugin.getGameManager().updateTrackedChests();
 		}
 		else {
 			throw new IllegalArgumentException("The block at " + chestLocation + "is not a chest.");
@@ -361,17 +368,6 @@ public class BoSTeam {
 	 */
 	public ChatColor getColor() {
 		return color;
-	}
-	
-	/**
-	 * Returns {@code true} if the given block is a shared chest (i.e. a chest or a trapped chest, not
-	 * an ender chest).
-	 * 
-	 * @param block The block.
-	 * @return {@code True} if this block is a shared chest.
-	 */
-	private boolean isSharedChest(Block block) {
-		return block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST;
 	}
 	
 	

@@ -208,15 +208,21 @@ public class BoSUtils {
 				// The block below is solid, or liquid (but not lava)
 				return true;
 			}
-			else {
-				return false;
-			}
-		}
-		else {
 			return false;
 		}
+		return false;
 	}
 	
+	/**
+	 * Returns {@code true} if the given block is a shared chest (i.e. a chest or a trapped chest, not
+	 * an ender chest).
+	 * 
+	 * @param block The block.
+	 * @return {@code True} if this block is a shared chest.
+	 */
+	public static boolean isSharedChest(Block block) {
+		return block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST;
+	}
 	
 	/**
 	 * Spawns a random firework at the given location.

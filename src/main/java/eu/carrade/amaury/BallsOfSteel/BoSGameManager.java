@@ -19,11 +19,18 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
+
 public class BoSGameManager {
 	
 	private BallsOfSteel p = null;
 	
 	private boolean running = false;
+	
+	private ArrayList<Location> trackedChests = new ArrayList<Location>();
 	
 	public BoSGameManager(BallsOfSteel plugin) {
 		this.p = plugin;
@@ -36,5 +43,31 @@ public class BoSGameManager {
 	 */
 	public boolean isGameRunning() {
 		return running;
+	}
+	
+	/**
+	 * Updates the internal list of the tracked chests.
+	 */
+	public void updateTrackedChests() {
+		trackedChests.clear();
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getChestLocation1() != null) {
+				trackedChests.add(team.getChestLocation1());
+			}
+			if(team.getChestLocation2() != null) {
+				trackedChests.add(team.getChestLocation2());
+			}
+		}
+	}
+	
+	/**
+	 * Return the chests belonging to a team.
+	 * <p>
+	 * Cached. Automatically updated using {@link #updateTrackedChests()}.
+	 * 
+	 * @return The location of the chests.
+	 */
+	public List<Location> getTrackedChests() {
+		return trackedChests;
 	}
 }
