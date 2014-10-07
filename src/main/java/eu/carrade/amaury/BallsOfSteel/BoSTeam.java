@@ -38,6 +38,7 @@ public class BoSTeam {
 	private String internalName = null;
 	private String displayName = null;
 	private ChatColor color = null;
+	private Location spawn = null;
 	
 	private ArrayList<UUID> players = new ArrayList<UUID>();
 	
@@ -74,6 +75,24 @@ public class BoSTeam {
 		
 		t.setCanSeeFriendlyInvisibles(plugin.getConfig().getBoolean("teams-options.canSeeFriendlyInvisibles", true));
 		t.setAllowFriendlyFire(plugin.getConfig().getBoolean("teams-options.allowFriendlyFire", true));
+	}
+	
+	/**
+	 * Sets the spawn point of this team.
+	 * 
+	 * @param spawnPoint The spawn point.
+	 */
+	public void setSpawnPoint(Location spawnPoint) {
+		this.spawn = spawnPoint;
+	}
+	
+	/**
+	 * Returns the spawn point of this team.
+	 * 
+	 * @return The spawn point.
+	 */
+	public Location getSpawnPoint() {
+		return spawn;
 	}
 	
 	/**

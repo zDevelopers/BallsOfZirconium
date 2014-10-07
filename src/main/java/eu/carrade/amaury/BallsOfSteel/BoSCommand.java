@@ -22,28 +22,20 @@ package eu.carrade.amaury.BallsOfSteel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+
+import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
 public class BoSCommand implements CommandExecutor {
 	
@@ -66,6 +58,7 @@ public class BoSCommand implements CommandExecutor {
 		
 		teamCommands.add("add");
 		teamCommands.add("remove");
+		teamCommands.add("spawn");
 		teamCommands.add("join");
 		teamCommands.add("leave");
 		teamCommands.add("list");
@@ -222,7 +215,7 @@ public class BoSCommand implements CommandExecutor {
 	/**
 	 * This command prints some informations about the plugin and the translation.
 	 * 
-	 * Usage: /uh about
+	 * Usage: /bos about
 	 * 
 	 * @param sender
 	 * @param command
@@ -277,7 +270,7 @@ public class BoSCommand implements CommandExecutor {
 	 * This command is used to manage the teams.
 	 * 
 	 * Usage: /bos team (for the doc).
-	 * Usage: /bos team <add|remove|join|leave|list|reset> (see doc for details).
+	 * Usage: /bos team <add|remove|spawn|join|leave|list|reset> (see doc for details).
 	 * 	
 	 * @param sender
 	 * @param command
@@ -295,6 +288,7 @@ public class BoSCommand implements CommandExecutor {
 			sender.sendMessage(i.t("cmd.teamHelpAdd"));
 			sender.sendMessage(i.t("cmd.teamHelpAddName"));
 			sender.sendMessage(i.t("cmd.teamHelpRemove"));
+			sender.sendMessage(i.t("cmd.teamHelpSpawn"));
 			sender.sendMessage(i.t("cmd.teamHelpJoin"));
 			sender.sendMessage(i.t("cmd.teamHelpLeave"));
 			sender.sendMessage(i.t("cmd.teamHelpList"));
@@ -305,7 +299,7 @@ public class BoSCommand implements CommandExecutor {
 			String subcommand = args[1];
 			
 			if(subcommand.equalsIgnoreCase("add")) {
-				if(args.length == 3) { // /uh team add <color>
+				if(args.length == 3) { // /bos team add <color>
 					
 					ChatColor color = p.getTeamManager().getChatColorByName(args[2]);
 					
@@ -323,7 +317,7 @@ public class BoSCommand implements CommandExecutor {
 					}
 				
 				}
-				else if(args.length >= 4) { // /uh team add <color> <name ...>
+				else if(args.length >= 4) { // /bos team add <color> <name ...>
 					
 					ChatColor color = p.getTeamManager().getChatColorByName(args[2]);
 					
@@ -351,7 +345,7 @@ public class BoSCommand implements CommandExecutor {
 			
 			
 			else if(subcommand.equalsIgnoreCase("remove")) {
-				if(args.length >= 3) { // /uh team remove <teamName>
+				if(args.length >= 3) { // /bos team remove <teamName>
 					String name = BoSUtils.getStringFromCommandArguments(args, 2);
 					if(!tm.removeTeam(name)) {
 						sender.sendMessage(i.t("team.remove.doesNotExists"));
@@ -366,8 +360,86 @@ public class BoSCommand implements CommandExecutor {
 			}
 			
 			
+			else if(subcommand.equalsIgnoreCase("spawn")) {
+				Location spawnPoint = null;
+				
+				World world;
+				if(sender instanceof Player) {
+					world = ((Player) sender).getWorld();
+				}
+				else if(sender instanceof BlockCommandSender) {
+					world = ((BlockCommandSender) sender).getBlock().getWorld();
+				}
+				else {
+					world = p.getServer().getWorlds().get(0);
+				}
+				
+				String nameTeamWithoutCoords = null, nameTeamWithCoords = null, teamName = null;
+				if(args.length >= 3) {
+					nameTeamWithCoords = BoSUtils.getStringFromCommandArguments(args, 3);
+				}
+				if(args.length >= 2) {
+					nameTeamWithoutCoords = BoSUtils.getStringFromCommandArguments(args, 2);
+				}
+				
+				if(p.getTeamManager().getTeam(nameTeamWithoutCoords) != null) { // /bos spawn <team ...>
+					if(!(sender instanceof Player)) {
+						sender.sendMessage(i.t("team.spawn.noConsole"));
+						return;
+					}
+					
+					spawnPoint = ((Player) sender).getLocation();
+					teamName   = nameTeamWithoutCoords;
+				}
+				else if(p.getTeamManager().getTeam(nameTeamWithCoords) != null) { // /bos spawn <x,y,z> <team ...>
+					teamName = nameTeamWithCoords;
+					
+					String[] coords = args[2].split(",");
+					
+					if(coords.length == 2) {
+						try {
+							double x = Double.valueOf(coords[0]);
+							double z = Double.valueOf(coords[1]);
+							
+							spawnPoint = new Location(world, x, world.getHighestBlockYAt(Location.locToBlock(x), Location.locToBlock(z)), z);
+						} catch(NumberFormatException e) {
+							sender.sendMessage(i.t("team.spawn.NaN"));
+							return;
+						}
+					}
+					else if(coords.length >= 3) {
+						try {
+							double x = Double.valueOf(coords[0]);
+							double y = Double.valueOf(coords[1]);
+							double z = Double.valueOf(coords[2]);
+							
+							spawnPoint = new Location(world, x, y, z);
+						} catch(NumberFormatException e) {
+							sender.sendMessage(i.t("team.spawn.NaN"));
+							return;
+						}
+					}
+					else {
+						sender.sendMessage(i.t("team.syntaxError"));
+						return;
+					}
+				}
+				
+				if(teamName == null) { // Unknown team
+					sender.sendMessage(i.t("team.spawn.unknown"));
+					return;
+				}
+				
+				BoSTeam team = p.getTeamManager().getTeam(teamName); // This cannot be null, here.
+				
+				team.setSpawnPoint(spawnPoint);
+				
+				sender.sendMessage(i.t("team.spawn.set", team.getDisplayName(), String.valueOf(spawnPoint.getBlockX()), String.valueOf(spawnPoint.getBlockY()), String.valueOf(spawnPoint.getBlockZ())));
+			}
+			
+			
 			else if(subcommand.equalsIgnoreCase("join")) {
-				if(args.length >= 4) { // /uh team join <player> <teamName>
+				if(args.length >= 4) { // /bos team join <player> <teamName>
 					
 					Player player = p.getServer().getPlayer(args[2]);
 					String teamName = BoSUtils.getStringFromCommandArguments(args, 3);
@@ -397,7 +469,7 @@ public class BoSCommand implements CommandExecutor {
 			
 			
 			else if(subcommand.equalsIgnoreCase("leave")) {
-				if(args.length == 3) { // /uh team leave <player>
+				if(args.length == 3) { // /bos team leave <player>
 					
 					Player player = p.getServer().getPlayer(args[2]);
 					
@@ -452,7 +524,7 @@ public class BoSCommand implements CommandExecutor {
 	 * This commands broadcast the winner(s) of the game and sends some fireworks at these players.
 	 * It fails if there is more than one team alive.
 	 * 
-	 * Usage: /uh finish
+	 * Usage: /bos finish
 	 * 
 	 * @param sender
 	 * @param command
