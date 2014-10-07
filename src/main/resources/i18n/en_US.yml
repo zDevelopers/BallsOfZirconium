@@ -8,11 +8,11 @@ keys:
         
     cmd:
         errorLoad: "{ce}An error occurred, see console for details. This is probably a bug."
-        errorUnknown: "{ce}This subcommand does not exists. See /uh for the available commands."
+        errorUnknown: "{ce}This subcommand does not exists. See /bos for the available commands."
         errorUnauthorized: "{ce}Hahahahahaha no."
         
         titleHelp: "{yellow}{0} - version {1}"
-        legendHelp: "{ci}Legend: {cc}/uh command <required> [optional=default] <spaces allowed ...>{ci}."
+        legendHelp: "{ci}Legend: {cc}/bos command <required> [optional=default] <spaces allowed ...>{ci}."
         
         helpStart: "{cc}/bos start {ci}: launches the game."
         helpTeam: "{cc}/bos team {ci}: manages the teams. See /bos teams for details."

@@ -8,11 +8,11 @@ keys:
         
     cmd:
         errorLoad: "{ce}Une erreur est survenue, consultez la console pour plus de détails. Il s'agit probablement d'un bug."
-        errorUnknown: "{ce}Cette commande n'existe pas. Tapez /uh pour la liste des commandes."
+        errorUnknown: "{ce}Cette commande n'existe pas. Tapez /bos pour la liste des commandes."
         errorUnauthorized: "{ce}Hahahahahaha non."
         
         titleHelp: "{yellow}{0} - version {1}"
-        legendHelp: "{ci}Légende: {cc}/uh command <requis> [optionnel=valeur par défaut] <espaces autorisées ...>{ci}."
+        legendHelp: "{ci}Légende: {cc}/bos command <requis> [optionnel=valeur par défaut] <espaces autorisées ...>{ci}."
         
         helpStart: "{cc}/bos start {ci}: lance le jeu."
         helpTeam: "{cc}/bos team {ci}: gère les équipes. Exécutez /bos team pour plus de détails."
