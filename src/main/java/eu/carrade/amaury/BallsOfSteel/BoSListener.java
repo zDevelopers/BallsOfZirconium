@@ -1,10 +1,13 @@
 package eu.carrade.amaury.BallsOfSteel;
 
+import java.util.List;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.block.Action;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
@@ -65,5 +68,23 @@ public class BoSListener implements Listener {
 			ev.setCancelled(true);
 			
 		}
+	}
+	
+	/**
+	 * Used to:
+	 *  - change the gamemode of the player, if the game is not running;
+	 *  - teleport the player to the spawn, if the game is not running;
+	 *  - update the scoreboard;
+	 *  - resurrect a player (if the player was offline).
+	 * 
+	 * @param ev
+	 */
+	@EventHandler
+	public void onPlayerJoin(final PlayerJoinEvent ev) {
+		// Mainly useful on the first join.
+		p.getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
+		
+		// The display name is reset when the player logs off.
+		p.getTeamManager().colorizePlayer(ev.getPlayer());
 	}
 }
