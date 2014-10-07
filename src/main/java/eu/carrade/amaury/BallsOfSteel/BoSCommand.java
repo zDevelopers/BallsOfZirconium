@@ -27,8 +27,10 @@ import java.util.List;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -59,6 +61,7 @@ public class BoSCommand implements CommandExecutor {
 		teamCommands.add("add");
 		teamCommands.add("remove");
 		teamCommands.add("spawn");
+		teamCommands.add("chest");
 		teamCommands.add("join");
 		teamCommands.add("leave");
 		teamCommands.add("list");
@@ -158,6 +161,7 @@ public class BoSCommand implements CommandExecutor {
 	 * Prints the help.
 	 * 
 	 * @param sender
+	 * @param args The arguments of the command.
 	 * @param error True if the help is printed because the user typed an unknown command.
 	 */
 	private void help(CommandSender sender, String[] args, boolean error) {
@@ -289,6 +293,7 @@ public class BoSCommand implements CommandExecutor {
 			sender.sendMessage(i.t("cmd.teamHelpAddName"));
 			sender.sendMessage(i.t("cmd.teamHelpRemove"));
 			sender.sendMessage(i.t("cmd.teamHelpSpawn"));
+			sender.sendMessage(i.t("cmd.teamHelpChest"));
 			sender.sendMessage(i.t("cmd.teamHelpJoin"));
 			sender.sendMessage(i.t("cmd.teamHelpLeave"));
 			sender.sendMessage(i.t("cmd.teamHelpList"));
@@ -435,6 +440,92 @@ public class BoSCommand implements CommandExecutor {
 				team.setSpawnPoint(spawnPoint);
 				
 				sender.sendMessage(i.t("team.spawn.set", team.getDisplayName(), String.valueOf(spawnPoint.getBlockX()), String.valueOf(spawnPoint.getBlockY()), String.valueOf(spawnPoint.getBlockZ())));
+			}
+			
+			
+			else if(subcommand.equalsIgnoreCase("chest")) {
+				Location chestLocation = null;
+				
+				World world;
+				if(sender instanceof Player) {
+					world = ((Player) sender).getWorld();
+				}
+				else if(sender instanceof BlockCommandSender) {
+					world = ((BlockCommandSender) sender).getBlock().getWorld();
+				}
+				else {
+					world = p.getServer().getWorlds().get(0);
+				}
+				
+				String nameTeamWithoutCoords = null, nameTeamWithCoords = null, teamName = null;
+				if(args.length >= 3) {
+					nameTeamWithCoords = BoSUtils.getStringFromCommandArguments(args, 3);
+				}
+				if(args.length >= 2) {
+					nameTeamWithoutCoords = BoSUtils.getStringFromCommandArguments(args, 2);
+				}
+				
+				if(p.getTeamManager().getTeam(nameTeamWithoutCoords) != null) { // /bos chest <team ...>
+					if(!(sender instanceof Player)) {
+						sender.sendMessage(i.t("team.chest.noConsole"));
+						return;
+					}
+					
+					teamName = nameTeamWithoutCoords;
+					
+					Block chest = ((Player) sender).getTargetBlock(null, 10);
+					if(chest != null) {
+						if(chest.getType() == Material.CHEST || chest.getType() == Material.TRAPPED_CHEST) {
+							chestLocation = chest.getLocation();
+						}
+						else {
+							sender.sendMessage(i.t("team.chest.notLookingAtAChest"));
+							return;
+						}
+					}
+					else {
+						sender.sendMessage(i.t("team.chest.notLookingAtSomething"));
+						return;
+					}
+				}
+				else if(p.getTeamManager().getTeam(nameTeamWithCoords) != null) { // /bos spawn <x,y,z> <team ...>
+					teamName = nameTeamWithCoords;
+					
+					String[] coords = args[2].split(",");
+					
+					if(coords.length >= 3) {
+						try {
+							double x = Double.valueOf(coords[0]);
+							double y = Double.valueOf(coords[1]);
+							double z = Double.valueOf(coords[2]);
+							
+							chestLocation = new Location(world, x, y, z);
+						} catch(NumberFormatException e) {
+							sender.sendMessage(i.t("team.chest.NaN"));
+							return;
+						}
+					}
+					else {
+						sender.sendMessage(i.t("team.syntaxError"));
+						return;
+					}
+				}
+				
+				if(teamName == null) { // Unknown team
+					sender.sendMessage(i.t("team.chest.unknown"));
+					return;
+				}
+				
+				BoSTeam team = p.getTeamManager().getTeam(teamName); // This cannot be null, here.
+				
+				try {
+					team.setChest(chestLocation);
+				} catch(IllegalArgumentException e) {
+					sender.sendMessage(i.t("team.chest.notAChest"));
+					return;
+				}
+				
+				sender.sendMessage(i.t("team.chest.set", team.getDisplayName(), String.valueOf(chestLocation.getBlockX()), String.valueOf(chestLocation.getBlockY()), String.valueOf(chestLocation.getBlockZ())));
 			}
 			
 			

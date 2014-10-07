@@ -24,6 +24,7 @@ keys:
         teamHelpAddName: "{cc}/bos team add <color> <name ...> {ci}: adds a named team with the provided name and color."
         teamHelpRemove: "{cc}/bos team remove <name ...> {ci}: removes a team"
         helpTeamSpawn: "{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of the team (location of the sender or coordinates)."
+        teamHelpChest: "{cc}/bos team chest [x,y,z] <name ...> {ci}: sets the chest of this team (where the diamonds will be stored), using the given coordinates or the block the sender is looking at."
         teamHelpJoin: "{cc}/bos team join <player> <teamName ...>{ci}: adds a player inside the given team. The name of the team is it color, or the explicit name given."
         teamHelpLeave: "{cc}/bos team leave <player> {ci}: removes a player from his team."
         teamHelpList: "{cc}/bos team list {ci}: lists the teams and their players."
@@ -73,6 +74,15 @@ keys:
             NaN: "{ce}The coordinates need to be numbers."
             unknown: "{ce}This team does not exists."
             set: "{cs}The spawn point of the team {0}{cs} is now {1};{2};{3}."
+        
+        chest:
+            noConsole: "{ce}You must specify the coordinates from the console."
+            NaN: "{ce}The coordinates need to be numbers."
+            unknown: "{ce}This team does not exists."
+            notLookingAtAChest: "{ce}You are not looking at a chest usable by more than one player!"
+            notLookingAtSomething: "{ce}You are not looking at anything..."
+            notAChest: "{ce}There isn't any chest usable by more than one player here."
+            set: "{cs}This chest (at {1};{2};{3}) is now the private chest of the team {0}{cs}."
         
         addplayer:
             disconnected: "{ce}Unable to add the player {0} to the team {1}. The player must be connected."

@@ -24,6 +24,7 @@ keys:
         teamHelpAddName: "{cc}/bos team add <couleur> <nom ...> {ci}: ajoute une équipe avec le nom et la couleur donnés."
         teamHelpRemove: "{cc}/bos team remove <nom ...> {ci}: supprime une équipe."
         helpTeamSpawn: "{cc}/bos team spawn [x,y,z | x,z] <nom ...> {ci}: enregistre le point de démarrage de l'équipe (localisation de l'envoyeur, ou coordonnées)."
+        teamHelpChest: "{cc}/bos team chest [x,y,z] <name ...> {ci}: enregistre le coffre de l'équipe (où seront stockés les diamants), en utilisant les coordonnées données ou le bloc regardé par l'envoyeur."
         teamHelpJoin: "{cc}/bos team join <joueur> <nomÉquipe ...> {ci}: ajoute un joueur dans l'équipe donnée. Le nom de l'équipe est sa couleur, ou le nom explicite donné."
         teamHelpLeave: "{cc}/bos team leave <joueur> {ci}: retire un joueur de son équipe."
         teamHelpList: "{cc}/bos team list {ci}: liste toutes les équipes et leurs membres."
@@ -73,6 +74,15 @@ keys:
             NaN: "{ce}Les coordonnées doivent être des nombres."
             unknown: "{ce}Cette équipe n'existe pas."
             set: "{cs}Le point de démarrage de l'équipe {0}{cs} est désormals {1};{2};{3}."
+        
+        chest:
+            noConsole: "{ce}Vous devez spécifier les coordonnées depuis la console."
+            NaN: "{ce}Les coordonnées doivent être des nombres."
+            unknown: "{ce}Cette équipe n'existe pas."
+            notLookingAtAChest: "{ce}Vous ne regardez pas un coffre utilisable par plusieurs joueurs !"
+            notLookingAtSomething: "{ce}Vous ne regardez rien..."
+            notAChest: "{ce}Il n'y a pas de coffre utilisable par plusieurs joueurs ici."
+            set: "{cs}Ce coffre (aux coordonnées {1};{2};{3}) est désormals le coffre privé de l'équipe {0}{cs}."
         
         addplayer:
             disconnected: "{ce}Impossible d'ajouter le joueur {0} dans l'équipe {1}. Le joueur doit être connecté."

@@ -26,8 +26,14 @@ import java.util.UUID;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -38,7 +44,11 @@ public class BoSTeam {
 	private String internalName = null;
 	private String displayName = null;
 	private ChatColor color = null;
+	
 	private Location spawn = null;
+	private InventoryHolder chest = null;
+	private Location chestLocation1 = null;
+	private Location chestLocation2 = null; // If the chest is a double chest
 	
 	private ArrayList<UUID> players = new ArrayList<UUID>();
 	
@@ -95,6 +105,86 @@ public class BoSTeam {
 		return spawn;
 	}
 	
+	/**
+	 * Sets the chest of this team, where diamonds are stored.
+	 * 
+	 * @param chestLocation The chest. {@code Null} to unset the chest.
+	 * 
+	 * @throws IllegalArgumentException If the block at the given location is not a chest.
+	 */
+	public void setChest(Location chestLocation) {
+		
+		if(chestLocation == null) {
+			chest = null;
+			chestLocation1 = null;
+			chestLocation2 = null;
+			
+			return;
+		}
+		
+		Block block = chestLocation.getWorld().getBlockAt(chestLocation);
+		
+		if(isSharedChest(block)) {
+			chest = ((Chest) block.getState()).getInventory().getHolder();
+			
+			chestLocation1 = chestLocation.clone();
+			
+			if(chest instanceof DoubleChest) {
+				// Looking for the second part of the chest
+				World w = chestLocation.getWorld();
+				
+				Block[] possibilities = new Block[4];
+				possibilities[0] = w.getBlockAt(chestLocation.clone().add( 1, 0,  0));
+				possibilities[1] = w.getBlockAt(chestLocation.clone().add(-1, 0,  0));
+				possibilities[2] = w.getBlockAt(chestLocation.clone().add( 0, 0,  1));
+				possibilities[3] = w.getBlockAt(chestLocation.clone().add( 0, 0, -1));
+				
+				Material originalType = block.getType();
+				
+				for(Block possibility : possibilities) {
+					if(isSharedChest(possibility) && possibility.getType() == originalType) {
+						chestLocation2 = possibility.getLocation();
+						break;
+					}
+				}
+			}
+		}
+		else {
+			throw new IllegalArgumentException("The block at " + chestLocation + "is not a chest.");
+		}
+	}
+	
+	/**
+	 * Returns the inventory holder of the chest of this team.
+	 * 
+	 * @return The inventory holder.
+	 */
+	public InventoryHolder getChest() {
+		return chest;
+	}
+	
+	/**
+	 * Returns the location of the first part of the private chest of this team.
+	 * <p>
+	 * This is only {@code null} if there isn't any chest set.
+	 * 
+	 * @return The location of the first part of the private chest.
+	 */
+	public Location getChestLocation1() {
+		return chestLocation1;
+	}
+
+	/**
+	 * Returns the location of the second part of the private chest of this team.
+	 * <p>
+	 * This is only not {@code null} if there is a chest set, and if this chest is a double chest.
+	 * 
+	 * @return The location of the second part of the private chest.
+	 */
+	public Location getChestLocation2() {
+		return chestLocation2;
+	}
+
 	/**
 	 * Returns the name of the team. 
 	 * 
@@ -271,6 +361,17 @@ public class BoSTeam {
 	 */
 	public ChatColor getColor() {
 		return color;
+	}
+	
+	/**
+	 * Returns {@code true} if the given block is a shared chest (i.e. a chest or a trapped chest, not
+	 * an ender chest).
+	 * 
+	 * @param block The block.
+	 * @return {@code True} if this block is a shared chest.
+	 */
+	private boolean isSharedChest(Block block) {
+		return block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST;
 	}
 	
 	
