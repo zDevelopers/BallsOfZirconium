@@ -56,6 +56,9 @@ keys:
         
         broadcast: "{darkgreen}{obfuscated}--{green} Congratulations to {0} (team {1}{green}) for their victory! {darkgreen}{obfuscated}--"
     
+    chests:
+        otherTeamChest: "{ce}You cannot open the chests of another team."
+    
     team:
         syntaxError: "{ce}Syntax error, see /uh team."
         unknownCommand: "{ce}Unknown command. See /uh team for available commands."
