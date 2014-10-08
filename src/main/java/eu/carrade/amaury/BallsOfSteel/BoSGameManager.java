@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class BoSGameManager {
 	
@@ -69,5 +74,95 @@ public class BoSGameManager {
 	 */
 	public List<Location> getTrackedChests() {
 		return trackedChests;
+	}
+	
+	/**
+	 * Equips the given player with iron tools.
+	 * 
+	 * Following the configuration:
+	 *  - equipment.food: some food (1 stack of steak);
+	 *  - equipment.blocks: 2 stack of dirt blocks;
+	 *  - equipment.tools: pickaxe, axe, shovel;
+	 *  - equipment.weapons: sword, infinity bow, one arrow;
+	 *  - equipment.armor:
+	 *     - "none": nothing;
+	 *     - "weak": leather armor;
+	 *     - "normal": chainmail armor;
+	 *     - "strong": iron armor;
+	 *     - "strong+": diamond armor.
+	 * 
+	 * @param player The player to equip.
+	 */
+	public void equipPlayer(Player player) {
+		PlayerInventory inv = player.getInventory();
+		inv.clear();
+		
+		// Weapons
+		if(p.getConfig().getBoolean("equipment.weapons")) {
+			inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
+			
+			ItemStack bow = new ItemStack(Material.BOW, 1);
+			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+			inv.addItem(bow);
+			
+			inv.setItem(9, new ItemStack(Material.ARROW, 1));
+		}
+		
+		// Tools
+		if(p.getConfig().getBoolean("equipment.tools")) {
+			inv.addItem(new ItemStack(Material.IRON_PICKAXE, 1));
+			inv.addItem(new ItemStack(Material.IRON_AXE, 1));
+			inv.addItem(new ItemStack(Material.IRON_SPADE, 1));
+		}
+		
+		// Food & blocks
+		boolean food = p.getConfig().getBoolean("equipment.food");
+		boolean blocks = p.getConfig().getBoolean("equipment.blocks");
+		if(food || blocks) {
+			ItemStack foodStack = new ItemStack(Material.COOKED_BEEF, 64);
+			ItemStack dirtStack = new ItemStack(Material.DIRT, 64);
+			
+			if(food)   inv.setItem(8, foodStack);
+			
+			if(blocks) {
+				inv.setItem(7, dirtStack);
+				
+				if(!food) inv.setItem(8, dirtStack);
+				else      inv.setItem(6, dirtStack);
+			}
+		}
+		
+		// Armor
+		if(!p.getConfig().getString("equipment.armor", "none").equals("none")) {
+			switch(p.getConfig().getString("equipment.armor")) {
+				case "weak":
+					inv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
+					inv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+					inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+					inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
+					break;
+				case "strong":
+					inv.setHelmet(new ItemStack(Material.IRON_HELMET));
+					inv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+					inv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+					inv.setBoots(new ItemStack(Material.IRON_BOOTS));
+					break;
+				case "strong+":
+					inv.setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+					inv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+					inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+					inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+					break;
+				default: // "normal"
+					inv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+					inv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+					inv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+					inv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+					break;
+			}
+		}
+		
+		inv.setHeldItemSlot(0);
+		player.updateInventory(); // Deprecated but needed
 	}
 }

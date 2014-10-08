@@ -10,7 +10,7 @@
 # 
 
 
-# Available languages: en_US, fr_FR, pt_PT.
+# Available languages: en_US, fr_FR.
 lang: en_US
 
 
@@ -20,6 +20,16 @@ start:
         name: NONE
         volume: 1
         pitch: 1
+
+
+
+# This is given to the player when the game start and when they respawn.
+equipment:
+    food: true      # 1 stack of steaks
+    blocks: true    # 2 stacks of dirt blocks
+    tools: true     # pickaxe, axe, shovel
+    weapons: true   # sword, infinity bow, one arrow
+    armor: "none"   # "none", "weak" (leather), "normal" (chainmail), "strong" (iron) or "strong+" (diamond).
 
 
 
