@@ -266,7 +266,11 @@ public class BoSCommand implements CommandExecutor {
 	 */
 	@SuppressWarnings("unused")
 	private void doStart(CommandSender sender, Command command, String label, String[] args) {
-		// TODO
+		try {
+			p.getGameManager().start(sender);
+		} catch(IllegalStateException e) {
+			sender.sendMessage(i.t("start.already"));
+		}
 	}
 	
 

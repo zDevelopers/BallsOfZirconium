@@ -44,7 +44,9 @@ keys:
     
     start:
         already: "{ce}The game is already started! Reload or restart the server to restart the game."
-        noSpawnForSomeTeams: "{ce}Unable to start the game: some teams don't have a spawn point."
+        noTeams: "{ce}You cannot start the game without any non-empty team."
+        noSpawnForSomeTeams: "{ce}Some non-empty teams don't have a spawn point."
+        noChestForSomeTeams: "{ce}Some non-empty teams don't have a chest."
         
         go: "{green}--- GO ---"
     

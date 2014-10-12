@@ -22,23 +22,137 @@ package eu.carrade.amaury.BallsOfSteel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+
 public class BoSGameManager {
 	
 	private BallsOfSteel p = null;
+	private I18n i = null;
 	
 	private boolean running = false;
-	
 	private ArrayList<Location> trackedChests = new ArrayList<Location>();
 	
 	public BoSGameManager(BallsOfSteel plugin) {
 		this.p = plugin;
+		this.i = p.getI18n();
+	}
+	
+	/**
+	 * Starts the game.
+	 * 
+	 * @param sender The sender of the start (will receive the error messages).
+	 * 
+	 * @throws IllegalStateException if the game is already started.
+	 */
+	public void start(CommandSender sender) {
+		
+		if(running) {
+			throw new IllegalStateException("The game is already started!");
+		}
+		
+		
+		// Check: non-empty teams registered
+		boolean onlyEmpty = true;
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getPlayers().size() != 0) {
+				onlyEmpty = false;
+				break;
+			}
+		}
+		if(onlyEmpty) {
+			sender.sendMessage(i.t("start.noTeams"));
+			return;
+		}
+		
+		
+		// Check: all the teams with players inside needs to have a chest and a spawn point.
+		boolean chestsOK = true;
+		boolean spawnsOK = true;
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getPlayers().size() == 0) continue; // empty team
+			
+			if(team.getSpawnPoint() == null) {
+				spawnsOK = false;
+			}
+			
+			if(team.getChest() == null) {
+				chestsOK = false;
+			}
+			
+			if(!spawnsOK && !chestsOK) {
+				break;
+			}
+		}
+		
+		if(!spawnsOK) {
+			sender.sendMessage(i.t("start.noSpawnForSomeTeams"));
+		}
+		if(!chestsOK) {
+			sender.sendMessage(i.t("start.noChestForSomeTeams"));
+		}
+		if(!(chestsOK && spawnsOK)) {
+			return;
+		}
+		
+		World w = null;
+		
+		// Teleportation, equipment
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getPlayers().size() == 0) continue;
+			
+			team.teleportTo(team.getSpawnPoint());
+			for(OfflinePlayer oPlayer : team.getPlayers()) {
+				if(oPlayer.isOnline()) {
+					Player player = (Player) oPlayer;
+					
+					player.setHealth(20d);
+					player.setFoodLevel(20);
+					player.setSaturation(20f);
+					player.setGameMode(GameMode.SURVIVAL);
+					
+					player.setBedSpawnLocation(team.getSpawnPoint(), true);
+					
+					equipPlayer(player);
+				}
+			}
+			
+			// We can assume that all teams are teleported in the same world.
+			// We take the world of the spawn point of a team (the first non-empty).
+			if(w == null) {
+				w = team.getSpawnPoint().getWorld();
+			}
+		}
+		
+		// Environment
+		w.setGameRuleValue("doDaylightCycle", "false");
+		w.setTime(6000);
+		
+		w.setThundering(false);
+		w.setStorm(false);
+		w.setWeatherDuration(10000); // TODO replace this using the duration of a game.
+		
+		w.setPVP(true);
+		
+		w.setSpawnFlags(false, false); // Disables all mobs spawn.
+		
+		// Sound
+		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast();
+		
+		// Message
+		p.getServer().broadcastMessage(i.t("start.go"));
+		
+		running = true;
 	}
 	
 	/**
@@ -78,8 +192,9 @@ public class BoSGameManager {
 	
 	/**
 	 * Equips the given player with iron tools.
-	 * 
+	 * <p>
 	 * Following the configuration:
+	 * <pre>
 	 *  - equipment.food: some food (1 stack of steak);
 	 *  - equipment.blocks: 2 stack of dirt blocks;
 	 *  - equipment.tools: pickaxe, axe, shovel;
@@ -90,7 +205,7 @@ public class BoSGameManager {
 	 *     - "normal": chainmail armor;
 	 *     - "strong": iron armor;
 	 *     - "strong+": diamond armor.
-	 * 
+	 * </pre>
 	 * @param player The player to equip.
 	 */
 	public void equipPlayer(Player player) {

@@ -44,7 +44,9 @@ keys:
     
     start:
         already: "{ce}Le jeu est déjà démarré ! Rechargez ou redémarrez le serveur pour redémarrer."
-        noSpawnForSomeTeams: "{ce}Impossible de démarrer : certaines équipes n'ont pas de point de démarrage."
+        noTeams: "{ce}Vous ne pouvez démarrer le jeu sans équipe non vide."
+        noSpawnForSomeTeams: "{ce}Certaines équipes non vides n'ont pas de point de démarrage."
+        noChestForSomeTeams: "{ce}SCertaines équipes non vides n'ont pas de coffre."
         
         go: "{green}--- GO ---"
     
