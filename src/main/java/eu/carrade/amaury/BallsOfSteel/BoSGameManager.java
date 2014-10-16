@@ -19,8 +19,9 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public class BoSGameManager {
 	private I18n i = null;
 	
 	private boolean running = false;
-	private ArrayList<Location> trackedChests = new ArrayList<Location>();
+	private Map<Location,BoSTeam> trackedChests = new HashMap<Location,BoSTeam>();
 	
 	public BoSGameManager(BallsOfSteel plugin) {
 		this.p = plugin;
@@ -171,10 +172,10 @@ public class BoSGameManager {
 		trackedChests.clear();
 		for(BoSTeam team : p.getTeamManager().getTeams()) {
 			if(team.getChestLocation1() != null) {
-				trackedChests.add(team.getChestLocation1());
+				trackedChests.put(team.getChestLocation1(), team);
 			}
 			if(team.getChestLocation2() != null) {
-				trackedChests.add(team.getChestLocation2());
+				trackedChests.put(team.getChestLocation2(), team);
 			}
 		}
 	}
@@ -186,7 +187,7 @@ public class BoSGameManager {
 	 * 
 	 * @return The location of the chests.
 	 */
-	public List<Location> getTrackedChests() {
+	public Map<Location,BoSTeam> getTrackedChests() {
 		return trackedChests;
 	}
 	

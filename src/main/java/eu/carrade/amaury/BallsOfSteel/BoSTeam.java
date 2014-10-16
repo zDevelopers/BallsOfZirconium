@@ -50,6 +50,8 @@ public class BoSTeam {
 	private Location chestLocation1 = null;
 	private Location chestLocation2 = null; // If the chest is a double chest
 	
+	private int diamonds = 0;
+	
 	private ArrayList<UUID> players = new ArrayList<UUID>();
 	
 	
@@ -191,7 +193,26 @@ public class BoSTeam {
 	public Location getChestLocation2() {
 		return chestLocation2;
 	}
-
+	
+	/**
+	 * Sets the number of diamonds owned by this team.
+	 * 
+	 * @param diamonds The count.
+	 */
+	public void setDiamondsCount(int diamonds) {
+		this.diamonds = diamonds;
+	}
+	
+	/**
+	 * Returns the number of diamonds owned by this team.
+	 * 
+	 * @return
+	 */
+	public int getDiamondsCount() {
+		return diamonds;
+	}
+	
+	
 	/**
 	 * Returns the name of the team. 
 	 * 

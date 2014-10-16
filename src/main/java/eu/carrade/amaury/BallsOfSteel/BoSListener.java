@@ -1,6 +1,7 @@
 package eu.carrade.amaury.BallsOfSteel;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
@@ -8,10 +9,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
@@ -32,7 +36,7 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent ev) {
-		if(p.getGameManager().getTrackedChests().contains(ev.getBlock().getLocation())) {
+		if(p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation())) {
 			ev.setCancelled(true);
 		}
 	}
@@ -44,7 +48,7 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onBlockBurn(BlockBurnEvent ev) {
-		if(p.getGameManager().getTrackedChests().contains(ev.getBlock().getLocation())) {
+		if(p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation())) {
 			ev.setCancelled(true);
 		}
 	}
@@ -62,7 +66,7 @@ public class BoSListener implements Listener {
 		
 		BoSTeam playerTeam = p.getTeamManager().getTeamForPlayer(ev.getPlayer());
 		
-		if(p.getGameManager().getTrackedChests().contains(ev.getClickedBlock().getLocation())
+		if(p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
 				&& (playerTeam == null
 					|| (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1())
 					    && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2())))) {
@@ -110,11 +114,47 @@ public class BoSListener implements Listener {
 			to.setZ(to.getBlockZ());
 		}
 		
-		if(p.getGameManager().getTrackedChests().contains(from)
-				|| p.getGameManager().getTrackedChests().contains(to)) {
+		if(p.getGameManager().getTrackedChests().containsKey(from)
+				|| p.getGameManager().getTrackedChests().containsKey(to)) {
 			ev.setCancelled(true);
 		}
 	}
+	
+	/**
+	 * Used to update the diamonds count of the teams.
+	 * 
+	 * @param ev
+	 */
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent ev) {
+		InventoryHolder holder = ev.getInventory().getHolder();		
+		Location chestLocation = null;
+		
+		if(holder instanceof Chest) {
+			chestLocation = ((Chest) holder).getLocation();
+		}
+		else if(holder instanceof DoubleChest) {
+			chestLocation = ((DoubleChest) holder).getLocation();
+		}
+		
+		// Same problem as above; see onInventoryMoveItem(InventoryMoveItemEvent).
+		if(chestLocation != null) {
+			chestLocation.setX(chestLocation.getBlockX());
+			chestLocation.setZ(chestLocation.getBlockZ());
+		}
+		
+		BoSTeam team = p.getGameManager().getTrackedChests().get(chestLocation);
+		if(team != null) {
+			int diamonds = 0;
+			for(ItemStack item : ev.getInventory()) {
+				if(item != null && item.getType() == Material.DIAMOND) {
+					diamonds += item.getAmount();
+				}
+			}
+			team.setDiamondsCount(diamonds);
+		}
+	}
+	
 	
 	/**
 	 * Used to:
