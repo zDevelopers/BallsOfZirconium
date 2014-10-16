@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
@@ -131,5 +132,20 @@ public class BoSListener implements Listener {
 		
 		// The display name is reset when the player logs off.
 		p.getTeamManager().colorizePlayer(ev.getPlayer());
+	}
+	
+	/**
+	 * Used to equip the players when they respawn.
+	 * 
+	 * @param ev
+	 */
+	@EventHandler
+	public void onPlayerRespawn(final PlayerRespawnEvent ev) {
+		if(p.getGameManager().isGameRunning()) {
+			if(p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null) {
+				// The player is in a team, aka a "playing player".
+				p.getGameManager().equipPlayer(ev.getPlayer());
+			}
+		}
 	}
 }
