@@ -52,11 +52,13 @@ keys:
     
     finish:
         notStarted: "{ce}The game is not started!"
-        notFinished: "{ce}There's not one team alive!"
+        notFinished: "{ce}The game is not finished!"
         
         and: "and"
         
         broadcast: "{darkgreen}{obfuscated}--{green} Congratulations to {0} (team {1}{green}) for their victory! {darkgreen}{obfuscated}--"
+        
+        stop: "{red}--- The End ---"
     
     chests:
         otherTeamChest: "{ce}You cannot open the chests of another team."

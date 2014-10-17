@@ -21,11 +21,11 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import java.util.ArrayList;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
-
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
 public class BoSTeamManager {
 	

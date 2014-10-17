@@ -2,7 +2,6 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
@@ -18,6 +17,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
 public class BoSListener implements Listener {
@@ -210,6 +210,19 @@ public class BoSListener implements Listener {
 				// The player is in a team, aka a "playing player".
 				p.getGameManager().equipPlayer(ev.getPlayer());
 			}
+		}
+	}
+	
+	/**
+	 * Used to stop the game when the timer ends.
+	 * 
+	 * @param ev
+	 */
+	@EventHandler
+	public void onTimerEnds(TimerEndsEvent ev) {
+		if(ev.getTimer().getName().equals(BoSGameManager.TIMER_NAME)) {
+			p.getServer().broadcastMessage(i.t("finish.stop"));
+			p.getGameManager().setGameRunning(false);
 		}
 	}
 }

@@ -2,12 +2,12 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import java.util.UUID;
 
-import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
-import eu.carrade.amaury.BallsOfSteel.events.TimerStartsEvent;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
+import eu.carrade.amaury.BallsOfSteel.events.TimerStartsEvent;
 
 
 /**

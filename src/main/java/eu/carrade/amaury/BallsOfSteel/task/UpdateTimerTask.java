@@ -19,9 +19,9 @@
 
 package eu.carrade.amaury.BallsOfSteel.task;
 
-import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-
 import org.bukkit.scheduler.BukkitRunnable;
+
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 
 public class UpdateTimerTask extends BukkitRunnable {
 

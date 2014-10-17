@@ -1,9 +1,9 @@
 package eu.carrade.amaury.BallsOfSteel.events;
 
-import eu.carrade.amaury.BallsOfSteel.BoSTimer;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import eu.carrade.amaury.BallsOfSteel.BoSTimer;
 
 /**
  * This event is fired when a timer ends.

@@ -125,6 +125,8 @@ public class BoSGameManager {
 			if(team.getPlayers().size() == 0) continue;
 			
 			team.teleportTo(team.getSpawnPoint());
+			team.setDiamondsCount(0);
+			
 			for(OfflinePlayer oPlayer : team.getPlayers()) {
 				if(oPlayer.isOnline()) {
 					Player player = (Player) oPlayer;
@@ -183,6 +185,15 @@ public class BoSGameManager {
 	 */
 	public boolean isGameRunning() {
 		return running;
+	}
+	
+	/**
+	 * Sets the running state of the game.
+	 * 
+	 * @param running The running state.
+	 */
+	protected void setGameRunning(boolean running) {
+		this.running = running;
 	}
 	
 	/**
