@@ -25,9 +25,15 @@ public class BoSListener implements Listener {
 	private BallsOfSteel p = null;
 	private I18n i = null;
 	
+	BoSSound soundCountIncrease = null;
+	BoSSound soundCountDecrease = null;
+	
 	public BoSListener(BallsOfSteel plugin) {
 		this.p = plugin;
 		this.i = p.getI18n();
+		
+		soundCountIncrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countIncrease"));
+		soundCountDecrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countDecrease"));
 	}
 	
 	/**
@@ -128,40 +134,43 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent ev) {
-		InventoryHolder holder = ev.getInventory().getHolder();		
-		Location chestLocation = null;
-		
-		if(holder instanceof Chest) {
-			chestLocation = ((Chest) holder).getLocation();
-		}
-		else if(holder instanceof DoubleChest) {
-			chestLocation = ((DoubleChest) holder).getLocation();
-		}
-		
-		// Same problem as above; see onInventoryMoveItem(InventoryMoveItemEvent).
-		if(chestLocation != null) {
-			chestLocation.setX(chestLocation.getBlockX());
-			chestLocation.setZ(chestLocation.getBlockZ());
-		}
-		
-		BoSTeam team = p.getGameManager().getTrackedChests().get(chestLocation);
-		if(team != null) {
-			int diamonds = 0;
-			int oldDiamondsCount = team.getDiamondsCount();
+		if(p.getGameManager().isGameRunning()) {
+			InventoryHolder holder = ev.getInventory().getHolder();		
+			Location chestLocation = null;
 			
-			for(ItemStack item : ev.getInventory()) {
-				if(item != null && item.getType() == Material.DIAMOND) {
-					diamonds += item.getAmount();
+			if(holder instanceof Chest) {
+				chestLocation = ((Chest) holder).getLocation();
+			}
+			else if(holder instanceof DoubleChest) {
+				chestLocation = ((DoubleChest) holder).getLocation();
+			}
+			
+			// Same problem as above; see onInventoryMoveItem(InventoryMoveItemEvent).
+			if(chestLocation != null) {
+				chestLocation.setX(chestLocation.getBlockX());
+				chestLocation.setZ(chestLocation.getBlockZ());
+			}
+			
+			BoSTeam team = p.getGameManager().getTrackedChests().get(chestLocation);
+			if(team != null) {
+				int diamonds = 0;
+				int oldDiamondsCount = team.getDiamondsCount();
+				
+				for(ItemStack item : ev.getInventory()) {
+					if(item != null && item.getType() == Material.DIAMOND) {
+						diamonds += item.getAmount();
+					}
 				}
-			}
-			
-			team.setDiamondsCount(diamonds);
-			
-			if(diamonds > oldDiamondsCount) {
-				new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countIncrease")).broadcast();
-			}
-			else if(diamonds < oldDiamondsCount) {
-				new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countDecrease")).broadcast();
+				
+				team.setDiamondsCount(diamonds);
+				p.getScoreboardManager().updateDiamondsScore(team);
+				
+				if(diamonds > oldDiamondsCount) {
+					soundCountIncrease.broadcast();
+				}
+				else if(diamonds < oldDiamondsCount) {
+					soundCountDecrease.broadcast();
+				}
 			}
 		}
 	}
@@ -178,11 +187,15 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent ev) {
-		// Mainly useful on the first join.
-		p.getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
-		
-		// The display name is reset when the player logs off.
-		p.getTeamManager().colorizePlayer(ev.getPlayer());
+		if(ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld())
+				|| p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null) {
+			
+			// Mainly useful on the first join.
+			p.getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
+			
+			// The display name is reset when the player logs off.
+			p.getTeamManager().colorizePlayer(ev.getPlayer());
+		}
 	}
 	
 	/**
@@ -192,7 +205,7 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerRespawn(final PlayerRespawnEvent ev) {
-		if(p.getGameManager().isGameRunning()) {
+		if(p.getGameManager().isGameRunning() && ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld())) {
 			if(p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null) {
 				// The player is in a team, aka a "playing player".
 				p.getGameManager().equipPlayer(ev.getPlayer());

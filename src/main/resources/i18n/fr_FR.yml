@@ -60,7 +60,10 @@ keys:
 
     chests:
         otherTeamChest: "{ce}Vous n'avez pas le droit d'ouvrir les coffres des autres équipes."
-
+    
+    scoreboard:
+        title: "Diamants"
+    
     team:
         syntaxError: "{ce}Erreur de syntaxe, consultez /uh team."
         unknownCommand: "{ce}Commande inconnue. Consultez /uh team pour obtenir la liste des commandes disponibles."

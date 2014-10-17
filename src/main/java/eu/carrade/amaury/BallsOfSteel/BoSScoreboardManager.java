@@ -21,6 +21,8 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
@@ -30,12 +32,44 @@ public class BoSScoreboardManager {
 	private BallsOfSteel p = null;
 	private I18n i = null;
 	private Scoreboard sb = null;
+	private Objective sidebar = null;
 	
 	public BoSScoreboardManager(BallsOfSteel p) {
 		this.p = p;
 		this.i = p.getI18n();
 		
 		this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
+	}
+	
+	/**
+	 * Initializes the scoreboard.
+	 * <p>
+	 * To be called when the game starts.
+	 */
+	public void initScoreboard() {
+		sidebar = sb.registerNewObjective("Diamonds", "dummy");
+		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+		sidebar.setDisplayName(i.t("scoreboard.title"));
+		
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getPlayers().size() == 0) continue;
+			
+			sidebar.getScore(getValidScoreboardName(team.getDisplayName())).setScore(1);
+			sidebar.getScore(getValidScoreboardName(team.getDisplayName())).setScore(0);
+		}
+		
+		for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+			setScoreboardForPlayer(player);
+		}
+	}
+	
+	/**
+	 * Updates the diamonds score of the given team.
+	 * 
+	 * @param team The team.
+	 */
+	public void updateDiamondsScore(BoSTeam team) {
+		sidebar.getScore(getValidScoreboardName(team.getDisplayName())).setScore(team.getDiamondsCount());
 	}
 	
 	/**
@@ -54,5 +88,9 @@ public class BoSScoreboardManager {
 	 */
 	public Scoreboard getScoreboard() {
 		return sb;
+	}
+	
+	public String getValidScoreboardName(String scoreName) {
+		return scoreName.substring(0, Math.min(scoreName.length(), 16));
 	}
 }

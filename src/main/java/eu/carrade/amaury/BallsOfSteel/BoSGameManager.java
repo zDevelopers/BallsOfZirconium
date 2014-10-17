@@ -42,6 +42,8 @@ public class BoSGameManager {
 	private I18n i = null;
 	
 	private boolean running = false;
+	
+	private World gameWorld = null;
 	private Map<Location,BoSTeam> trackedChests = new HashMap<Location,BoSTeam>();
 	
 	public BoSGameManager(BallsOfSteel plugin) {
@@ -106,8 +108,6 @@ public class BoSGameManager {
 			return;
 		}
 		
-		World w = null;
-		
 		// Teleportation, equipment
 		for(BoSTeam team : p.getTeamManager().getTeams()) {
 			if(team.getPlayers().size() == 0) continue;
@@ -130,22 +130,25 @@ public class BoSGameManager {
 			
 			// We can assume that all teams are teleported in the same world.
 			// We take the world of the spawn point of a team (the first non-empty).
-			if(w == null) {
-				w = team.getSpawnPoint().getWorld();
+			if(gameWorld == null) {
+				gameWorld = team.getSpawnPoint().getWorld();
 			}
 		}
 		
 		// Environment
-		w.setGameRuleValue("doDaylightCycle", "false");
-		w.setTime(6000);
+		gameWorld.setGameRuleValue("doDaylightCycle", "false");
+		gameWorld.setTime(6000);
 		
-		w.setThundering(false);
-		w.setStorm(false);
-		w.setWeatherDuration(10000); // TODO replace this using the duration of a game.
+		gameWorld.setThundering(false);
+		gameWorld.setStorm(false);
+		gameWorld.setWeatherDuration(10000); // TODO replace this using the duration of a game.
 		
-		w.setPVP(true);
+		gameWorld.setPVP(true);
 		
-		w.setSpawnFlags(false, false); // Disables all mobs spawn.
+		gameWorld.setSpawnFlags(false, false); // Disables all mobs spawn.
+		
+		// Scoreboard
+		p.getScoreboardManager().initScoreboard();
 		
 		// Sound
 		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast();
@@ -163,6 +166,15 @@ public class BoSGameManager {
 	 */
 	public boolean isGameRunning() {
 		return running;
+	}
+	
+	/**
+	 * Returns the world where the game take place.
+	 * 
+	 * @return The world where the game take place. {@code Null} if the game is not started.
+	 */
+	public World getGameWorld() {
+		return gameWorld;
 	}
 	
 	/**

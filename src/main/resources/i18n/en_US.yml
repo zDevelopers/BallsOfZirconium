@@ -61,6 +61,9 @@ keys:
     chests:
         otherTeamChest: "{ce}You cannot open the chests of another team."
     
+    scoreboard:
+        title: "Diamonds"
+    
     team:
         syntaxError: "{ce}Syntax error, see /uh team."
         unknownCommand: "{ce}Unknown command. See /uh team for available commands."
