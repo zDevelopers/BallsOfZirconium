@@ -19,6 +19,8 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -34,11 +36,16 @@ public class BoSScoreboardManager {
 	private Scoreboard sb = null;
 	private Objective sidebar = null;
 	
+	private String sidebarTitle = null;
+	private DecimalFormat format = new DecimalFormat("00");
+	
 	public BoSScoreboardManager(BallsOfSteel p) {
 		this.p = p;
 		this.i = p.getI18n();
 		
 		this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
+		
+		this.sidebarTitle = i.t("scoreboard.title");
 	}
 	
 	/**
@@ -49,7 +56,7 @@ public class BoSScoreboardManager {
 	public void initScoreboard() {
 		sidebar = sb.registerNewObjective("Diamonds", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-		sidebar.setDisplayName(i.t("scoreboard.title"));
+		updateTimer(p.getGameManager().getTimer());
 		
 		for(BoSTeam team : p.getTeamManager().getTeams()) {
 			if(team.getPlayers().size() == 0) continue;
@@ -61,6 +68,26 @@ public class BoSScoreboardManager {
 		for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
 			setScoreboardForPlayer(player);
 		}
+	}
+	
+	/**
+	 * Updates the timer displayed in the scoreboard title.
+	 * 
+	 * @param timer The timer.
+	 */
+	public void updateTimer(BoSTimer timer) {
+		String timerText = "";
+		
+		if(timer != null) {
+			if(timer.getDisplayHoursInTimer()) {
+				timerText = i.t("scoreboard.timerHours", format.format(timer.getHoursLeft()), format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+			}
+			else {
+				timerText = i.t("scoreboard.timer", format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+			}
+		}
+		
+		sidebar.setDisplayName(getValidObjectiveDisplayName(sidebarTitle + timerText));
 	}
 	
 	/**
@@ -90,7 +117,23 @@ public class BoSScoreboardManager {
 		return sb;
 	}
 	
+	/**
+	 * Returns the given string, truncated at 16 characters.
+	 * 
+	 * @param scoreName The original string.
+	 * @return The truncated string.
+	 */
 	public String getValidScoreboardName(String scoreName) {
 		return scoreName.substring(0, Math.min(scoreName.length(), 16));
+	}
+	
+	/**
+	 * Returns the given string, truncated at 32 characters.
+	 * 
+	 * @param scoreName The original string.
+	 * @return The truncated string.
+	 */
+	public String getValidObjectiveDisplayName(String scoreName) {
+		return scoreName.substring(0, Math.min(scoreName.length(), 32));
 	}
 }

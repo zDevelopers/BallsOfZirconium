@@ -63,6 +63,8 @@ keys:
     
     scoreboard:
         title: "Diamonds"
+        timer: "   {gold}{0}:{1}"
+        timerHours: "   {gold}{0}:{1}:{2}"
     
     team:
         syntaxError: "{ce}Syntax error, see /uh team."

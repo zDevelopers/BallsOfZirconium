@@ -33,6 +33,9 @@ public class UpdateTimerTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		// TODO
+		if(p.getGameManager().isGameRunning()) {
+			p.getGameManager().getTimer().update();
+			p.getScoreboardManager().updateTimer(p.getGameManager().getTimer());
+		}
 	}
 }

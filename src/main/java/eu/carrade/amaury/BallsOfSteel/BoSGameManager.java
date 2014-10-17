@@ -20,7 +20,6 @@
 package eu.carrade.amaury.BallsOfSteel;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.GameMode;
@@ -35,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
 
 public class BoSGameManager {
 	
@@ -45,10 +45,22 @@ public class BoSGameManager {
 	
 	private World gameWorld = null;
 	private Map<Location,BoSTeam> trackedChests = new HashMap<Location,BoSTeam>();
+	private BoSTimer timer = null;
+	private UpdateTimerTask updateTimerTask = null;
+	
+	public final static String TIMER_NAME = "eu.carrade.amaury.ballsofsteel";
 	
 	public BoSGameManager(BallsOfSteel plugin) {
 		this.p = plugin;
 		this.i = p.getI18n();
+		
+		timer = new BoSTimer(TIMER_NAME);
+		
+		try {
+			timer.setDuration(BoSUtils.string2Time(p.getConfig().getString("duration", "60")));
+		} catch(IllegalArgumentException e) {
+			timer.setDuration(3600); // One hour by default.
+		}
 	}
 	
 	/**
@@ -141,11 +153,16 @@ public class BoSGameManager {
 		
 		gameWorld.setThundering(false);
 		gameWorld.setStorm(false);
-		gameWorld.setWeatherDuration(10000); // TODO replace this using the duration of a game.
+		gameWorld.setWeatherDuration(timer.getDuration() * 2 * 20);
 		
 		gameWorld.setPVP(true);
 		
 		gameWorld.setSpawnFlags(false, false); // Disables all mobs spawn.
+
+		// Timer
+		timer.start();
+		updateTimerTask = new UpdateTimerTask(p);
+		updateTimerTask.runTaskTimer(p, 0l, 20l);
 		
 		// Scoreboard
 		p.getScoreboardManager().initScoreboard();
@@ -175,6 +192,15 @@ public class BoSGameManager {
 	 */
 	public World getGameWorld() {
 		return gameWorld;
+	}
+	
+	/**
+	 * Returns the timer of the game.
+	 * 
+	 * @return The timer.
+	 */
+	public BoSTimer getTimer() {
+		return timer;
 	}
 	
 	/**

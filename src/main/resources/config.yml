@@ -15,6 +15,12 @@ lang: en_US
 
 
 
+# The duration of the game.
+# Format: "mm", "mm:ss" or "hh:mm:ss".
+duration: "60"
+
+
+
 start:        
     sound:
         name: NONE
