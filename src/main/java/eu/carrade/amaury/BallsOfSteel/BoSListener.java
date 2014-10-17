@@ -2,6 +2,7 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
@@ -146,12 +147,22 @@ public class BoSListener implements Listener {
 		BoSTeam team = p.getGameManager().getTrackedChests().get(chestLocation);
 		if(team != null) {
 			int diamonds = 0;
+			int oldDiamondsCount = team.getDiamondsCount();
+			
 			for(ItemStack item : ev.getInventory()) {
 				if(item != null && item.getType() == Material.DIAMOND) {
 					diamonds += item.getAmount();
 				}
 			}
+			
 			team.setDiamondsCount(diamonds);
+			
+			if(diamonds > oldDiamondsCount) {
+				new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countIncrease")).broadcast();
+			}
+			else if(diamonds < oldDiamondsCount) {
+				new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countDecrease")).broadcast();
+			}
 		}
 	}
 	

@@ -23,6 +23,22 @@ start:
 
 
 
+diamonds:
+    sounds:
+        # Played when a team place some diamonds in the chest
+        countIncrease:
+            name: SUCCESSFUL_HIT
+            volume: 1
+            pitch: 3
+        
+        # Played when a team take some diamonds from the chest
+        countDecrease:
+            name: NONE
+            volume: 1
+            pitch: 0.2
+
+
+
 # This is given to the player when the game start and when they respawn.
 equipment:
     food: true      # 1 stack of steaks
