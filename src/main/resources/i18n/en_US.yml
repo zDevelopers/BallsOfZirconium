@@ -63,11 +63,18 @@ keys:
     chests:
         otherTeamChest: "{ce}You cannot open the chests of another team."
     
+    timers:
+        hours: "{0}:{1}:{2}"
+        noHours: "{0}:{1}"
+    
     scoreboard:
         title: "Diamonds"
-        timer: "   {gold}{0}:{1}"
-        timerHours: "   {gold}{0}:{1}:{2}"
+        titleWithTimer: "{0}   {gold}{1}"
     
+    bar:
+        notStarted: "{aqua}Balls {white}of {yellow}Steel"
+        timeLeft: "{aqua}Time left: {yellow}{0}"
+
     team:
         syntaxError: "{ce}Syntax error, see /uh team."
         unknownCommand: "{ce}Unknown command. See /uh team for available commands."

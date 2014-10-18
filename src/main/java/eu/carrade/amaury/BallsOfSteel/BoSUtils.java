@@ -33,6 +33,8 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+
 public class BoSUtils {
 	
 	/**
@@ -97,8 +99,7 @@ public class BoSUtils {
 		else { // "hh:mm:ss"
 			return Integer.valueOf(splitted[0]) * 3600 + Integer.valueOf(splitted[1]) * 60 + Integer.valueOf(splitted[2]);
 		}
-	}
-	
+	}	
 	
 	/**
 	 * Finds a safe spot where teleport the player, and teleport the player to that spot.

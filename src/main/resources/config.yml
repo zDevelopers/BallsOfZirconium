@@ -21,7 +21,14 @@ duration: "60"
 
 
 
-start:        
+# Use the boss bar to display the time left of the game, and the winners?
+# If the bar is not used with this enabled, check if the BarAPI plugin is installed.
+# Available here: http://dev.bukkit.org/bukkit-plugins/bar-api/ .
+useBar: true
+
+
+
+start:
     sound:
         name: NONE
         volume: 1

@@ -29,6 +29,10 @@
       <id>bukkit-repo</id>
       <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>confuser-repo</id>
+      <url>http://ci.frostcast.net/plugin/repository/everything</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -37,6 +41,11 @@
       <version>1.7.9-R0.2</version>
       <type>jar</type>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.confuser</groupId>
+      <artifactId>BarAPI</artifactId>
+      <version>3.0</version>
     </dependency>
   </dependencies>
 </project>

@@ -187,7 +187,10 @@ public class BoSListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent ev) {
-		if(ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld())
+		if(!p.getGameManager().isGameRunning()) {
+			p.getBarAPIWrapper().setWaitingBar(ev.getPlayer());
+		}
+		else if(ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld())
 				|| p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null) {
 			
 			// Mainly useful on the first join.

@@ -56,7 +56,7 @@ public class BoSScoreboardManager {
 	public void initScoreboard() {
 		sidebar = sb.registerNewObjective("Diamonds", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-		updateTimer(p.getGameManager().getTimer());
+		updateTimer();
 		
 		for(BoSTeam team : p.getTeamManager().getTeams()) {
 			if(team.getPlayers().size() == 0) continue;
@@ -71,24 +71,46 @@ public class BoSScoreboardManager {
 	}
 	
 	/**
-	 * Updates the timer displayed in the scoreboard title.
+	 * Updates the timer displayed in the scoreboard title (if needed).
 	 * 
 	 * @param timer The timer.
 	 */
-	public void updateTimer(BoSTimer timer) {
+	public void updateTimer() {
+		String timerText = "";
+		if(!p.getBarAPIWrapper().isNeeded()) {
+			timerText = i.t("scoreboard.titleWithTimer", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
+		}
+		else {
+			timerText = sidebarTitle;
+		}
+		
+		sidebar.setDisplayName(getValidObjectiveDisplayName(timerText));
+	}
+	
+	/**
+	 * Generates a printable version of the timer.
+	 * <p>
+	 * Format: {@code mm:ss}, or (if needed) {@code hh:mm:ss}.
+	 * 
+	 * @param timer The timer.
+	 * 
+	 * @return The string representation.
+	 */
+	public String getTimerText(BoSTimer timer) {
 		String timerText = "";
 		
 		if(timer != null) {
 			if(timer.getDisplayHoursInTimer()) {
-				timerText = i.t("scoreboard.timerHours", format.format(timer.getHoursLeft()), format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+				timerText = i.t("timers.hours", format.format(timer.getHoursLeft()), format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
 			}
 			else {
-				timerText = i.t("scoreboard.timer", format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+				timerText = i.t("timers.noHours", format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
 			}
 		}
 		
-		sidebar.setDisplayName(getValidObjectiveDisplayName(sidebarTitle + timerText));
+		return timerText;
 	}
+	
 	
 	/**
 	 * Updates the diamonds score of the given team.

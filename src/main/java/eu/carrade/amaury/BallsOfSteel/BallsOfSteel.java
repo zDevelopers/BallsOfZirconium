@@ -22,6 +22,7 @@ package eu.carrade.amaury.BallsOfSteel;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import eu.carrade.amaury.BallsOfSteel.integration.BarAPIWrapper;
 import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
 
 public final class BallsOfSteel extends JavaPlugin {
@@ -33,6 +34,8 @@ public final class BallsOfSteel extends JavaPlugin {
 	private BoSScoreboardManager scoreboardManager = null;
 	private BoSTeamChatManager teamChatManager = null;
 	private BoSGameManager gameManager = null;
+	
+	private BarAPIWrapper barAPIWrapper = null;
 	
 	private I18n i18n = null;
 
@@ -65,6 +68,9 @@ public final class BallsOfSteel extends JavaPlugin {
 		
 		
 		getServer().getPluginManager().registerEvents(new BoSListener(this), this);
+		
+		
+		barAPIWrapper = new BarAPIWrapper(this);
 		
 		
 		// Imports teams from the config.
@@ -129,5 +135,10 @@ public final class BallsOfSteel extends JavaPlugin {
 	 */
 	public I18n getI18n() {
 		return i18n;
+	}
+	
+	
+	public BarAPIWrapper getBarAPIWrapper() {
+		return barAPIWrapper;
 	}
 }

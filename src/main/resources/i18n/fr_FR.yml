@@ -63,10 +63,17 @@ keys:
     chests:
         otherTeamChest: "{ce}Vous n'avez pas le droit d'ouvrir les coffres des autres équipes."
     
+    timers:
+        hours: "{0}:{1}:{2}"
+        noHours: "{0}:{1}"
+    
     scoreboard:
         title: "Diamants"
-        timer: "   {gold}{0}:{1}"
-        timerHours: "   {gold}{0}:{1}:{2}"
+        titleWithTimer: "{0}   {gold}{1}"
+    
+    bar:
+        notStarted: "{aqua}Balls {white}of {yellow}Steel"
+        timeLeft: "{aqua}Temps restant : {yellow}{0}"
     
     team:
         syntaxError: "{ce}Erreur de syntaxe, consultez /uh team."

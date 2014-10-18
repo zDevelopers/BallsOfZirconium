@@ -4,6 +4,9 @@ main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
 version: 0.1 §cdev§r
 author: "Amaury Carrade"
 
+softdepend:
+  - BarAPI
+
 awareness:
   - !@UTF8
 
