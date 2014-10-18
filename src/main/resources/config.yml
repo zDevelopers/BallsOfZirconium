@@ -57,7 +57,8 @@ equipment:
     food: true      # 1 stack of steaks
     blocks: true    # 2 stacks of dirt blocks
     tools: true     # pickaxe, axe, shovel
-    weapons: true   # sword, infinity bow, one arrow
+    sword: false    # sword
+    bow: true       # infinity bow, one arrow
     armor: "none"   # "none", "weak" (leather), "normal" (chainmail), "strong" (iron) or "strong+" (diamond).
 
 

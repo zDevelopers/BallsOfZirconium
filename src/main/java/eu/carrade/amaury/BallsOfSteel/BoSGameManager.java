@@ -263,9 +263,10 @@ public class BoSGameManager {
 		inv.clear();
 		
 		// Weapons
-		if(p.getConfig().getBoolean("equipment.weapons")) {
+		if(p.getConfig().getBoolean("equipment.sword")) {
 			inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
-			
+		}
+		if(p.getConfig().getBoolean("equipment.bow")) {
 			ItemStack bow = new ItemStack(Material.BOW, 1);
 			bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 			inv.addItem(bow);
