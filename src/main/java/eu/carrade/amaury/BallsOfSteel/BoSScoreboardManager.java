@@ -54,6 +54,10 @@ public class BoSScoreboardManager {
 	 * To be called when the game starts.
 	 */
 	public void initScoreboard() {
+		if(sb.getObjective("Diamonds") != null) {
+			sb.getObjective("Diamonds").unregister();
+		}
+		
 		sidebar = sb.registerNewObjective("Diamonds", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
 		updateTimer();
