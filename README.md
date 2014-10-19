@@ -13,3 +13,5 @@ Features:
    - food (one stack of steaks).
 
 This plugin is published under the GNU GPL license (version 3+).
+
+Development builds are [available on my Jenkins server](http://jenkins.carrade.eu/job/BallsOfSteel/).
