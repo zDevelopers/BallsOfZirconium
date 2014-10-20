@@ -74,6 +74,8 @@ keys:
     bar:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Temps restant : {yellow}{0}"
+        ended: "{blue}La partie est finie !"
+        winner: "{green}L'équipe {0}{green} a gagné, avec {aqua}{1}{green} diamants !"
     
     team:
         syntaxError: "{ce}Erreur de syntaxe, consultez /uh team."

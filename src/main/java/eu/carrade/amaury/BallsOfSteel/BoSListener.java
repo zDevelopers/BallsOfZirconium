@@ -224,8 +224,7 @@ public class BoSListener implements Listener {
 	@EventHandler
 	public void onTimerEnds(TimerEndsEvent ev) {
 		if(ev.getTimer().getName().equals(BoSGameManager.TIMER_NAME)) {
-			p.getServer().broadcastMessage(i.t("finish.stop"));
-			p.getGameManager().setGameRunning(false);
+			p.getGameManager().stop(true);
 		}
 	}
 }

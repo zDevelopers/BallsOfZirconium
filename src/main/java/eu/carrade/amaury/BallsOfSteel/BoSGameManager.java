@@ -179,6 +179,28 @@ public class BoSGameManager {
 	}
 	
 	/**
+	 * Ends the game.
+	 * <p>
+	 * <ul>
+	 *   <li>Displays "game ended" in the chat;</li>
+	 *   <li>displays "game ended" in the boss bar (if available);</li>
+	 *   <li>displays, 7 seconds after, the name of the winner in the boss bar (fallback on the chat).</li>
+	 * </ul>
+	 * 
+	 * @param broadcastStopInChat If true, a "game ended" message will be published in the chat.<br>
+	 * Set this to false if you restart the game before the end.
+	 */
+	public void stop(boolean broadcastStopInChat) {
+		if(broadcastStopInChat) {
+			p.getServer().broadcastMessage(i.t("finish.stop"));
+		}
+		
+		p.getBarAPIWrapper().setEndBar();
+		
+		p.getGameManager().setGameRunning(false);
+	}
+	
+	/**
 	 * Returns {@code true} if the game is launched.
 	 * 
 	 * @return {@code True} if the game is launched.
@@ -241,6 +263,25 @@ public class BoSGameManager {
 	}
 	
 	/**
+	 * Returns the current winner of the game (aka the team with the higest diamond count).
+	 * 
+	 * @return The team.
+	 */
+	public BoSTeam getCurrentWinnerTeam() {
+		int bestCount = -1;
+		BoSTeam winner = null;
+		
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getDiamondsCount() > bestCount) {
+				bestCount = team.getDiamondsCount();
+				winner = team;
+			}
+		}
+		
+		return winner;
+	}
+	
+	/**
 	 * Equips the given player with iron tools.
 	 * <p>
 	 * Following the configuration:
@@ -248,7 +289,8 @@ public class BoSGameManager {
 	 *  - equipment.food: some food (1 stack of steak);
 	 *  - equipment.blocks: 2 stack of dirt blocks;
 	 *  - equipment.tools: pickaxe, axe, shovel;
-	 *  - equipment.weapons: sword, infinity bow, one arrow;
+	 *  - equipment.sword: sword;
+	 *  - equipment.bow: infinity bow, one arrow;
 	 *  - equipment.armor:
 	 *     - "none": nothing;
 	 *     - "weak": leather armor;

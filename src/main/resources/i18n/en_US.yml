@@ -74,6 +74,8 @@ keys:
     bar:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Time left: {yellow}{0}"
+        ended: "{blue}The game is finished!"
+        winner: "{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!"
 
     team:
         syntaxError: "{ce}Syntax error, see /uh team."
