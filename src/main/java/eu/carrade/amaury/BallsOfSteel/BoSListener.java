@@ -166,10 +166,10 @@ public class BoSListener implements Listener {
 				p.getScoreboardManager().updateDiamondsScore(team);
 				
 				if(diamonds > oldDiamondsCount) {
-					soundCountIncrease.broadcast();
+					soundCountIncrease.broadcast(p.getGameManager().getGameWorld());
 				}
 				else if(diamonds < oldDiamondsCount) {
-					soundCountDecrease.broadcast();
+					soundCountDecrease.broadcast(p.getGameManager().getGameWorld());
 				}
 			}
 		}

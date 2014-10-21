@@ -95,7 +95,7 @@ public class BarAPIWrapper {
 	 * </ol>
 	 */
 	public void setEndBar() {
-		if(isNeeded() && p.getGameManager().isGameRunning()) {
+		if(isNeeded()) {
 			for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
 				BarAPI.setMessage(player, i.t("bar.ended"), 7);
 			}

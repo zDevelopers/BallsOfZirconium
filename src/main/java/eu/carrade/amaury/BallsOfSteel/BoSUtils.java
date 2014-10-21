@@ -21,6 +21,7 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
@@ -99,7 +100,23 @@ public class BoSUtils {
 		else { // "hh:mm:ss"
 			return Integer.valueOf(splitted[0]) * 3600 + Integer.valueOf(splitted[1]) * 60 + Integer.valueOf(splitted[2]);
 		}
-	}	
+	}
+	
+	
+	/**
+	 * Broadcasts a message to a world.
+	 * 
+	 * @param world The world where the message will be broadcasted.
+	 * @param message The message to broadcast.
+	 */
+	public static void worldBroadcast(World world, String message) {
+		for(Player player : world.getPlayers()) {
+			player.sendMessage(message);
+		}
+		
+		Bukkit.getConsoleSender().sendMessage("[" + world.getName() + "] " + message);
+	}
+	
 	
 	/**
 	 * Finds a safe spot where teleport the player, and teleport the player to that spot.

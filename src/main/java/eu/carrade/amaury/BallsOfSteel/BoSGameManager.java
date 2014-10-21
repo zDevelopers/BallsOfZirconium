@@ -171,13 +171,10 @@ public class BoSGameManager {
 		p.getScoreboardManager().initScoreboard();
 		
 		// Sound
-		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast();
+		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast(getGameWorld());
 		
 		// Message
-		p.getServer().broadcastMessage(i.t("start.go"));
-		for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
-			player.sendMessage(i.t("start.go"));
-		}
+		BoSUtils.worldBroadcast(getGameWorld(), i.t("start.go"));
 		
 		running = true;
 	}
@@ -196,9 +193,7 @@ public class BoSGameManager {
 	 */
 	public void stop(boolean broadcastStopInChat) {
 		if(broadcastStopInChat) {
-			for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
-				player.sendMessage(i.t("finish.stop"));
-			}
+			BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.stop"));
 		}
 		
 		p.getGameManager().setGameRunning(false);
@@ -208,17 +203,40 @@ public class BoSGameManager {
 		}
 		else {
 			p.getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
-			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
-				@Override
-				public void run() {
-					BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
-					
-					for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
-						player.sendMessage(i.t("bar.winner", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
+		}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+			@Override
+			public void run() {
+				BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+				String winners = "";
+				int winnersCount = winner.getPlayers().size(), j = 0;
+				for(OfflinePlayer player : winner.getPlayers()) {
+					winners += player.getName();
+					if(j == winnersCount - 2) {
+						winners += " " + i.t("finish.and") + " ";
 					}
+					else if(j != winnersCount - 1) {
+						winners += ", ";
+					}
+					j++;
 				}
-			}, 100l);
+				
+				BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.broadcast", winners, winner.getDisplayName()));
+			}
+		}, 140l);
+	}
+	
+	/**
+	 * Restarts the game before the end of a game.
+	 */
+	public void restart(CommandSender sender) {
+		if(!isGameRunning()) {
+			start(sender);
+		}
+		else {
+			stop(false);
+			start(sender);
 		}
 	}
 	
