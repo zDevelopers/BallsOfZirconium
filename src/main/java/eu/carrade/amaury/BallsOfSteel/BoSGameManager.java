@@ -62,6 +62,11 @@ public class BoSGameManager {
 		} catch(IllegalArgumentException e) {
 			timer.setDuration(3600); // One hour by default.
 		}
+		
+		World configWorld = p.getServer().getWorld(p.getConfig().getString("world"));
+		if(configWorld != null) {
+			setGameWorld(configWorld);
+		}
 	}
 	
 	/**
@@ -145,8 +150,8 @@ public class BoSGameManager {
 			
 			// We can assume that all teams are teleported in the same world.
 			// We take the world of the spawn point of a team (the first non-empty).
-			if(gameWorld == null) {
-				gameWorld = team.getSpawnPoint().getWorld();
+			if(getGameWorld() == null) {
+				setGameWorld(team.getSpawnPoint().getWorld());
 			}
 		}
 		
@@ -259,10 +264,21 @@ public class BoSGameManager {
 	/**
 	 * Returns the world where the game take place.
 	 * 
-	 * @return The world where the game take place. {@code Null} if the game is not started.
+	 * @return The world where the game take place. {@code Null} if the game is not started
+	 * and a world was not explicitly set in the config.
 	 */
 	public World getGameWorld() {
 		return gameWorld;
+	}
+	
+	/**
+	 * Sets the world where the game take place.
+	 * 
+	 * @param world The world where the game take place.
+	 */
+	public void setGameWorld(World world) {
+		gameWorld = world;
+		p.getLogger().info("Game world set: " + gameWorld.getName() + ".");
 	}
 	
 	/**
