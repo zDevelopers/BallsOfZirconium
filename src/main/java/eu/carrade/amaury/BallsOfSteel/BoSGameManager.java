@@ -159,8 +159,6 @@ public class BoSGameManager {
 		gameWorld.setWeatherDuration(timer.getDuration() * 2 * 20);
 		
 		gameWorld.setPVP(true);
-		
-		gameWorld.setSpawnFlags(false, false); // Disables all mobs spawn.
 
 		// Timer
 		timer.start();
