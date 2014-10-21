@@ -81,7 +81,7 @@ public class BoSScoreboardManager {
 	 */
 	public void updateTimer() {
 		String timerText = "";
-		if(!p.getBarAPIWrapper().isNeeded()) {
+		if(!p.getBarAPIWrapper().isNeeded() && p.getGameManager().isGameRunning()) {
 			timerText = i.t("scoreboard.titleWithTimer", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
 		}
 		else {

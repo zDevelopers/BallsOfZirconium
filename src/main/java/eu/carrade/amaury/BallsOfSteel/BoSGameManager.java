@@ -22,6 +22,7 @@ package eu.carrade.amaury.BallsOfSteel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -174,6 +175,9 @@ public class BoSGameManager {
 		
 		// Message
 		p.getServer().broadcastMessage(i.t("start.go"));
+		for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+			player.sendMessage(i.t("start.go"));
+		}
 		
 		running = true;
 	}
@@ -192,12 +196,30 @@ public class BoSGameManager {
 	 */
 	public void stop(boolean broadcastStopInChat) {
 		if(broadcastStopInChat) {
-			p.getServer().broadcastMessage(i.t("finish.stop"));
+			for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+				player.sendMessage(i.t("finish.stop"));
+			}
 		}
 		
-		p.getBarAPIWrapper().setEndBar();
-		
 		p.getGameManager().setGameRunning(false);
+		
+		if(p.getBarAPIWrapper().isNeeded()) {
+			p.getBarAPIWrapper().setEndBar();
+		}
+		else {
+			p.getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+				@Override
+				public void run() {
+					BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+					
+					for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+						player.sendMessage(i.t("bar.winner", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
+					}
+				}
+			}, 100l);
+		}
 	}
 	
 	/**
