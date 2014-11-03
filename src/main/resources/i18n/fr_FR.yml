@@ -17,6 +17,7 @@ keys:
         helpStart: "{cc}/bos start {ci}: lance le jeu."
         helpTeam: "{cc}/bos team {ci}: gère les équipes. Exécutez /bos team pour plus de détails."
         helpFinish: "{cc}/uh finish {ci}: affiche le nom du/des vainqueurs et lance des feux d'artifices."
+        helpClearitems: "{cc}/bos clearitems {ci}: supprime tous les objets au sol du monde, à l'exception de ceux faits de diamant."
         helpAbout: "{cc}/uh about {ci}: informations à propos du plugin et des traductions."
         
         teamHelpTitle: "{aqua}------ Commandes liées aux équipes ------"
@@ -75,6 +76,10 @@ keys:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Temps restant : {yellow}{0}"
     
+    clearitems:
+        cleared: "{cs}Tous les objets au sol ont été supprimés dans le monde {0} (sauf ceux constitués de diamants)."
+        noWorld: "{ce}Impossible de supprimer les objets au sol depuis la console si le monde du jeu n'est pas défini (i.e. monde non configuré et jeu non démarré)."
+
     team:
         syntaxError: "{ce}Erreur de syntaxe, consultez /uh team."
         unknownCommand: "{ce}Commande inconnue. Consultez /uh team pour obtenir la liste des commandes disponibles."

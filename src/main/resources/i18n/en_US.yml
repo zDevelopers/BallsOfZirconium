@@ -17,6 +17,7 @@ keys:
         helpStart: "{cc}/bos start {ci}: launches the game."
         helpTeam: "{cc}/bos team {ci}: manages the teams. See /bos teams for details."
         helpFinish: "{cc}/bos finish {ci}: displays the name of the winners and launches some fireworks."
+        helpClearitems: "{cc}/bos clearitems {ci}: deletes all dropped items from the world, excepted diamond-based items."
         helpAbout: "{cc}/bos about {ci}: informations about the plugin and the translation."
         
         teamHelpTitle: "{aqua}------ Team commands ------"
@@ -74,7 +75,11 @@ keys:
     bar:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Time left: {yellow}{0}"
-
+    
+    clearitems:
+        cleared: "{cs}All items, diamonds-based items excepted, were destroyed in the world {0}."
+        noWorld: "{ce}Cannot clear the items from the console if the game's world is not set (i.e. world not set in the config and game not started)."
+    
     team:
         syntaxError: "{ce}Syntax error, see /uh team."
         unknownCommand: "{ce}Unknown command. See /uh team for available commands."

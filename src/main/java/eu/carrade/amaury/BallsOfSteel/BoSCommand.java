@@ -35,6 +35,9 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
@@ -57,6 +60,7 @@ public class BoSCommand implements CommandExecutor {
 		commands.add("start");
 		commands.add("team");
 		commands.add("finish");
+		commands.add("clearitems");
 		
 		teamCommands.add("add");
 		teamCommands.add("remove");
@@ -178,6 +182,7 @@ public class BoSCommand implements CommandExecutor {
 		sender.sendMessage(i.t("cmd.helpStart"));
 		sender.sendMessage(i.t("cmd.helpTeam"));
 		sender.sendMessage(i.t("cmd.helpFinish"));
+		sender.sendMessage(i.t("cmd.helpClearitems"));
 		sender.sendMessage(i.t("cmd.helpAbout"));
 	}
 	
@@ -612,6 +617,62 @@ public class BoSCommand implements CommandExecutor {
 			else {
 				sender.sendMessage(i.t("team.unknownCommand"));
 			}
+		}
+	}
+	
+	/**
+	 * This command clears all floating items in the sender's world, except diamonds.
+	 * <p>
+	 * If the sender is the console, this uses the game's world.<br>
+	 * If the game's world is null, nothing is removed.
+	 * 
+	 * Usage: /bos clearitems
+	 * 
+	 * @param sender
+	 * @param command
+	 * @param label
+	 * @param args
+	 */
+	@SuppressWarnings("unused")
+	private void doClearitems(CommandSender sender, Command command, String label, String[] args) {
+		World world;
+		if(sender instanceof Player) {
+			world = ((Player) sender).getWorld();
+		}
+		else if(sender instanceof BlockCommandSender) {
+			world = ((BlockCommandSender) sender).getBlock().getWorld();
+		}
+		else {
+			world = p.getGameManager().getGameWorld();
+		}
+		
+		if(world != null) {
+			for(Entity entity : world.getEntities()) {
+				if(entity.getType() == EntityType.DROPPED_ITEM) {
+					switch(((Item) entity).getItemStack().getType()) {
+						case DIAMOND:
+						case DIAMOND_AXE:
+						case DIAMOND_BARDING:
+						case DIAMOND_BLOCK:
+						case DIAMOND_BOOTS:
+						case DIAMOND_CHESTPLATE:
+						case DIAMOND_HELMET:
+						case DIAMOND_HOE:
+						case DIAMOND_LEGGINGS:
+						case DIAMOND_ORE:
+						case DIAMOND_PICKAXE:
+						case DIAMOND_SPADE:
+						case DIAMOND_SWORD:
+							continue;
+						default:
+							entity.remove();
+					}
+				}
+			}
+			sender.sendMessage(i.t("clearitems.cleared", world.getName()));
+		}
+		else {
+			sender.sendMessage(i.t("clearitems.noWorld"));
 		}
 	}
 	
