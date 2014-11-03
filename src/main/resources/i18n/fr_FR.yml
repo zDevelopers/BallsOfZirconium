@@ -15,6 +15,7 @@ keys:
         legendHelp: "{ci}Légende: {cc}/bos command <requis> [optionnel=valeur par défaut] <espaces autorisées ...>{ci}."
         
         helpStart: "{cc}/bos start {ci}: lance le jeu."
+        helpRestart: "{cc}/bos restart {ci}: redémarre le jeu, pendant une partie. Ne vide pas les coffres des équipes."
         helpTeam: "{cc}/bos team {ci}: gère les équipes. Exécutez /bos team pour plus de détails."
         helpFinish: "{cc}/uh finish {ci}: affiche le nom du/des vainqueurs et lance des feux d'artifices."
         helpClearitems: "{cc}/bos clearitems {ci}: supprime tous les objets au sol du monde, à l'exception de ceux faits de diamant."
@@ -24,7 +25,7 @@ keys:
         teamHelpAdd: "{cc}/bos team add <couleur> {ci}: ajoute une équipe de la couleur donnée."
         teamHelpAddName: "{cc}/bos team add <couleur> <nom ...> {ci}: ajoute une équipe avec le nom et la couleur donnés."
         teamHelpRemove: "{cc}/bos team remove <nom ...> {ci}: supprime une équipe."
-        helpTeamSpawn: "{cc}/bos team spawn [x,y,z | x,z] <nom ...> {ci}: enregistre le point de démarrage de l'équipe (localisation de l'envoyeur, ou coordonnées)."
+        teamHelpSpawn: "{cc}/bos team spawn [x,y,z | x,z] <nom ...> {ci}: enregistre le point de démarrage de l'équipe (localisation de l'envoyeur, ou coordonnées)."
         teamHelpChest: "{cc}/bos team chest [x,y,z] <name ...> {ci}: enregistre le coffre de l'équipe (où seront stockés les diamants), en utilisant les coordonnées données ou le bloc regardé par l'envoyeur."
         teamHelpJoin: "{cc}/bos team join <joueur> <nomÉquipe ...> {ci}: ajoute un joueur dans l'équipe donnée. Le nom de l'équipe est sa couleur, ou le nom explicite donné."
         teamHelpLeave: "{cc}/bos team leave <joueur> {ci}: retire un joueur de son équipe."
@@ -44,10 +45,10 @@ keys:
             license: "Publié sous licence générale publique GNU (version 3)."
     
     start:
-        already: "{ce}Le jeu est déjà démarré ! Rechargez ou redémarrez le serveur pour redémarrer."
+        already: "{ce}Le jeu est déjà démarré ! Utilisez {cc}/bos restart{ci} pour le redémarrer."
         noTeams: "{ce}Vous ne pouvez démarrer le jeu sans équipe non vide."
         noSpawnForSomeTeams: "{ce}Certaines équipes non vides n'ont pas de point de démarrage."
-        noChestForSomeTeams: "{ce}SCertaines équipes non vides n'ont pas de coffre."
+        noChestForSomeTeams: "{ce}Certaines équipes non vides n'ont pas de coffre."
         
         go: "{green}--- GO ---"
     
@@ -57,7 +58,7 @@ keys:
         
         and: "et"
         
-        broadcast:  "{darkgreen}{obfuscated}--{green} Félicitations à {0} (équipe {1}{green}) pour leur victoire ! {darkgreen}{obfuscated}--"
+        broadcast:  "{green}Félicitations à {0} (équipe {1}{green}) pour leur victoire !"
         
         stop: "{red}--- Terminé ---"
 
@@ -75,6 +76,8 @@ keys:
     bar:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Temps restant : {yellow}{0}"
+        ended: "{blue}La partie est finie !"
+        winner: "{green}L'équipe {0}{green} a gagné, avec {aqua}{1}{green} diamants !"
     
     clearitems:
         cleared: "{cs}Tous les objets au sol ont été supprimés dans le monde {0} (sauf ceux constitués de diamants)."

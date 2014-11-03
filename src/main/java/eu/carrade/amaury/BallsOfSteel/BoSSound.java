@@ -22,6 +22,7 @@ package eu.carrade.amaury.BallsOfSteel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -108,6 +109,17 @@ public class BoSSound {
 		}
 	}
 
+	/**
+	 * Plays this sound for all players in the given world, at the current location of the players.
+	 * 
+	 * @param world The world where the sound will be broadcasted.
+	 */
+	public void broadcast(World world) {
+		for(Player player : world.getPlayers()) {
+			play(player);
+		}
+	}
+	
 	public Sound getSound() {
 		return sound;
 	}
@@ -134,7 +146,7 @@ public class BoSSound {
 
 	@Override
 	public String toString() {
-		return "UHSound [sound=" + sound + ", volume=" + volume + ", pitch=" + pitch + "]";
+		return "BoSSound [sound=" + sound + ", volume=" + volume + ", pitch=" + pitch + "]";
 	}
 
 	@Override

@@ -15,6 +15,7 @@ keys:
         legendHelp: "{ci}Legend: {cc}/bos command <required> [optional=default] <spaces allowed ...>{ci}."
         
         helpStart: "{cc}/bos start {ci}: launches the game."
+        helpRestart: "{cc}/bos restart {ci}: restarts the game, during a party. This will not empty the diamond chest."
         helpTeam: "{cc}/bos team {ci}: manages the teams. See /bos teams for details."
         helpFinish: "{cc}/bos finish {ci}: displays the name of the winners and launches some fireworks."
         helpClearitems: "{cc}/bos clearitems {ci}: deletes all dropped items from the world, excepted diamond-based items."
@@ -24,7 +25,7 @@ keys:
         teamHelpAdd: "{cc}/bos team add <color> {ci}: adds a team with the provided color."
         teamHelpAddName: "{cc}/bos team add <color> <name ...> {ci}: adds a named team with the provided name and color."
         teamHelpRemove: "{cc}/bos team remove <name ...> {ci}: removes a team"
-        helpTeamSpawn: "{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of the team (location of the sender or coordinates)."
+        teamHelpSpawn: "{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of the team (location of the sender or coordinates)."
         teamHelpChest: "{cc}/bos team chest [x,y,z] <name ...> {ci}: sets the chest of this team (where the diamonds will be stored), using the given coordinates or the block the sender is looking at."
         teamHelpJoin: "{cc}/bos team join <player> <teamName ...>{ci}: adds a player inside the given team. The name of the team is it color, or the explicit name given."
         teamHelpLeave: "{cc}/bos team leave <player> {ci}: removes a player from his team."
@@ -44,7 +45,7 @@ keys:
             license: "Published under the GNU General Public License (version 3)."
     
     start:
-        already: "{ce}The game is already started! Reload or restart the server to restart the game."
+        already: "{ce}The game is already started! Use {cc}/bos restart{ci} to restart it."
         noTeams: "{ce}You cannot start the game without any non-empty team."
         noSpawnForSomeTeams: "{ce}Some non-empty teams don't have a spawn point."
         noChestForSomeTeams: "{ce}Some non-empty teams don't have a chest."
@@ -57,7 +58,7 @@ keys:
         
         and: "and"
         
-        broadcast: "{darkgreen}{obfuscated}--{green} Congratulations to {0} (team {1}{green}) for their victory! {darkgreen}{obfuscated}--"
+        broadcast: "{green}Congratulations to {0} (team {1}{green}) for their victory!"
         
         stop: "{red}--- The End ---"
     
@@ -75,7 +76,9 @@ keys:
     bar:
         notStarted: "{aqua}Balls {white}of {yellow}Steel"
         timeLeft: "{aqua}Time left: {yellow}{0}"
-    
+        ended: "{blue}The game is finished!"
+        winner: "{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!"
+
     clearitems:
         cleared: "{cs}All items, diamonds-based items excepted, were destroyed in the world {0}."
         noWorld: "{ce}Cannot clear the items from the console if the game's world is not set (i.e. world not set in the config and game not started)."

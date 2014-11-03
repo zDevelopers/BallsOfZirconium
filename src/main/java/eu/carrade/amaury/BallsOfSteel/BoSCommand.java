@@ -58,6 +58,7 @@ public class BoSCommand implements CommandExecutor {
 		
 		commands.add("about");
 		commands.add("start");
+		commands.add("restart");
 		commands.add("team");
 		commands.add("finish");
 		commands.add("clearitems");
@@ -180,6 +181,7 @@ public class BoSCommand implements CommandExecutor {
 		sender.sendMessage(i.t("cmd.legendHelp"));
 		
 		sender.sendMessage(i.t("cmd.helpStart"));
+		sender.sendMessage(i.t("cmd.helpRestart"));
 		sender.sendMessage(i.t("cmd.helpTeam"));
 		sender.sendMessage(i.t("cmd.helpFinish"));
 		sender.sendMessage(i.t("cmd.helpClearitems"));
@@ -276,6 +278,23 @@ public class BoSCommand implements CommandExecutor {
 		} catch(IllegalStateException e) {
 			sender.sendMessage(i.t("start.already"));
 		}
+	}
+
+	/**
+	 * This command restarts the game.
+	 * <p>
+	 * The chests are not emptied.
+	 * 
+	 * Usage: /bos restart
+	 * 
+	 * @param sender
+	 * @param command
+	 * @param label
+	 * @param args
+	 */
+	@SuppressWarnings("unused")
+	private void doRestart(CommandSender sender, Command command, String label, String[] args) {
+		p.getGameManager().restart(sender);
 	}
 	
 

@@ -54,6 +54,10 @@ public class BoSScoreboardManager {
 	 * To be called when the game starts.
 	 */
 	public void initScoreboard() {
+		if(sb.getObjective("Diamonds") != null) {
+			sb.getObjective("Diamonds").unregister();
+		}
+		
 		sidebar = sb.registerNewObjective("Diamonds", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
 		updateTimer();
@@ -77,7 +81,7 @@ public class BoSScoreboardManager {
 	 */
 	public void updateTimer() {
 		String timerText = "";
-		if(!p.getBarAPIWrapper().isNeeded()) {
+		if(!p.getBarAPIWrapper().isNeeded() && p.getGameManager().isGameRunning()) {
 			timerText = i.t("scoreboard.titleWithTimer", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
 		}
 		else {

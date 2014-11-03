@@ -5,8 +5,10 @@ import me.confuser.barapi.BarAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.BoSTimer;
 import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 
@@ -82,6 +84,34 @@ public class BarAPIWrapper {
 				
 				BarAPI.setMessage(player, message, timer.getPercentage());
 			}
+		}
+	}
+	
+	/**
+	 * Displays the end bar, with two states:
+	 * <ol>
+	 *   <li>a message saying the game is ended (7 seconds);</li>
+	 *   <li>a message displaying the winner (permanent).</li>
+	 * </ol>
+	 */
+	public void setEndBar() {
+		if(isNeeded()) {
+			for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+				BarAPI.setMessage(player, i.t("bar.ended"), 7);
+			}
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(p, new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+					
+					for(Player player : p.getGameManager().getGameWorld().getPlayers()) {
+						BarAPI.setMessage(player, i.t("bar.winner", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
+					}
+				}
+				
+			}, 140l);
 		}
 	}
 }

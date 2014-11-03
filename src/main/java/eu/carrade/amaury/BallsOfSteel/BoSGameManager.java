@@ -22,6 +22,7 @@ package eu.carrade.amaury.BallsOfSteel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,6 +61,11 @@ public class BoSGameManager {
 			timer.setDuration(BoSUtils.string2Time(p.getConfig().getString("duration", "60")));
 		} catch(IllegalArgumentException e) {
 			timer.setDuration(3600); // One hour by default.
+		}
+		
+		World configWorld = p.getServer().getWorld(p.getConfig().getString("world"));
+		if(configWorld != null) {
+			setGameWorld(configWorld);
 		}
 	}
 	
@@ -144,8 +150,8 @@ public class BoSGameManager {
 			
 			// We can assume that all teams are teleported in the same world.
 			// We take the world of the spawn point of a team (the first non-empty).
-			if(gameWorld == null) {
-				gameWorld = team.getSpawnPoint().getWorld();
+			if(getGameWorld() == null) {
+				setGameWorld(team.getSpawnPoint().getWorld());
 			}
 		}
 		
@@ -158,8 +164,6 @@ public class BoSGameManager {
 		gameWorld.setWeatherDuration(timer.getDuration() * 2 * 20);
 		
 		gameWorld.setPVP(true);
-		
-		gameWorld.setSpawnFlags(false, false); // Disables all mobs spawn.
 
 		// Timer
 		timer.start();
@@ -170,12 +174,73 @@ public class BoSGameManager {
 		p.getScoreboardManager().initScoreboard();
 		
 		// Sound
-		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast();
+		new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast(getGameWorld());
 		
 		// Message
-		p.getServer().broadcastMessage(i.t("start.go"));
+		BoSUtils.worldBroadcast(getGameWorld(), i.t("start.go"));
 		
 		running = true;
+	}
+	
+	/**
+	 * Ends the game.
+	 * <p>
+	 * <ul>
+	 *   <li>Displays "game ended" in the chat;</li>
+	 *   <li>displays "game ended" in the boss bar (if available);</li>
+	 *   <li>displays, 7 seconds after, the name of the winner in the boss bar (fallback on the chat).</li>
+	 * </ul>
+	 * 
+	 * @param broadcastStopInChat If true, a "game ended" message will be published in the chat.<br>
+	 * Set this to false if you restart the game before the end.
+	 */
+	public void stop(boolean broadcastStopInChat) {
+		if(broadcastStopInChat) {
+			BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.stop"));
+		}
+		
+		p.getGameManager().setGameRunning(false);
+		
+		if(p.getBarAPIWrapper().isNeeded()) {
+			p.getBarAPIWrapper().setEndBar();
+		}
+		else {
+			p.getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
+		}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable() {
+			@Override
+			public void run() {
+				BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+				String winners = "";
+				int winnersCount = winner.getPlayers().size(), j = 0;
+				for(OfflinePlayer player : winner.getPlayers()) {
+					winners += player.getName();
+					if(j == winnersCount - 2) {
+						winners += " " + i.t("finish.and") + " ";
+					}
+					else if(j != winnersCount - 1) {
+						winners += ", ";
+					}
+					j++;
+				}
+				
+				BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.broadcast", winners, winner.getDisplayName()));
+			}
+		}, 140l);
+	}
+	
+	/**
+	 * Restarts the game before the end of a game.
+	 */
+	public void restart(CommandSender sender) {
+		if(!isGameRunning()) {
+			start(sender);
+		}
+		else {
+			stop(false);
+			start(sender);
+		}
 	}
 	
 	/**
@@ -199,10 +264,21 @@ public class BoSGameManager {
 	/**
 	 * Returns the world where the game take place.
 	 * 
-	 * @return The world where the game take place. {@code Null} if the game is not started.
+	 * @return The world where the game take place. {@code Null} if the game is not started
+	 * and a world was not explicitly set in the config.
 	 */
 	public World getGameWorld() {
 		return gameWorld;
+	}
+	
+	/**
+	 * Sets the world where the game take place.
+	 * 
+	 * @param world The world where the game take place.
+	 */
+	public void setGameWorld(World world) {
+		gameWorld = world;
+		p.getLogger().info("Game world set: " + gameWorld.getName() + ".");
 	}
 	
 	/**
@@ -241,6 +317,25 @@ public class BoSGameManager {
 	}
 	
 	/**
+	 * Returns the current winner of the game (aka the team with the higest diamond count).
+	 * 
+	 * @return The team.
+	 */
+	public BoSTeam getCurrentWinnerTeam() {
+		int bestCount = -1;
+		BoSTeam winner = null;
+		
+		for(BoSTeam team : p.getTeamManager().getTeams()) {
+			if(team.getDiamondsCount() > bestCount) {
+				bestCount = team.getDiamondsCount();
+				winner = team;
+			}
+		}
+		
+		return winner;
+	}
+	
+	/**
 	 * Equips the given player with iron tools.
 	 * <p>
 	 * Following the configuration:
@@ -248,7 +343,8 @@ public class BoSGameManager {
 	 *  - equipment.food: some food (1 stack of steak);
 	 *  - equipment.blocks: 2 stack of dirt blocks;
 	 *  - equipment.tools: pickaxe, axe, shovel;
-	 *  - equipment.weapons: sword, infinity bow, one arrow;
+	 *  - equipment.sword: sword;
+	 *  - equipment.bow: infinity bow, one arrow;
 	 *  - equipment.armor:
 	 *     - "none": nothing;
 	 *     - "weak": leather armor;

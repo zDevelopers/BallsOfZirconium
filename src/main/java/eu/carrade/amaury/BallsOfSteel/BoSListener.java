@@ -166,10 +166,10 @@ public class BoSListener implements Listener {
 				p.getScoreboardManager().updateDiamondsScore(team);
 				
 				if(diamonds > oldDiamondsCount) {
-					soundCountIncrease.broadcast();
+					soundCountIncrease.broadcast(p.getGameManager().getGameWorld());
 				}
 				else if(diamonds < oldDiamondsCount) {
-					soundCountDecrease.broadcast();
+					soundCountDecrease.broadcast(p.getGameManager().getGameWorld());
 				}
 			}
 		}
@@ -224,8 +224,7 @@ public class BoSListener implements Listener {
 	@EventHandler
 	public void onTimerEnds(TimerEndsEvent ev) {
 		if(ev.getTimer().getName().equals(BoSGameManager.TIMER_NAME)) {
-			p.getServer().broadcastMessage(i.t("finish.stop"));
-			p.getGameManager().setGameRunning(false);
+			p.getGameManager().stop(true);
 		}
 	}
 }
