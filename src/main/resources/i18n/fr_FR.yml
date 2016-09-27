@@ -154,4 +154,3 @@ keys:
             
             format: "{gold}[{0}{gold} -> son équipe] {reset}{1}"
             formatOtherTeam: "{gold}[{0}{gold} -> équipe {1}{gold}] {reset}{2}"
-
