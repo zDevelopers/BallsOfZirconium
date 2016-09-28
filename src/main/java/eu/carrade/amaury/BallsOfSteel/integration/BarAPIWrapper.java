@@ -1,8 +1,8 @@
 package eu.carrade.amaury.BallsOfSteel.integration;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.BoSTimer;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
+import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

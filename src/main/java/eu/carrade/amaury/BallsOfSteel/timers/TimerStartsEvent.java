@@ -1,6 +1,5 @@
-package eu.carrade.amaury.BallsOfSteel.events;
+package eu.carrade.amaury.BallsOfSteel.timers;
 
-import eu.carrade.amaury.BallsOfSteel.BoSTimer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

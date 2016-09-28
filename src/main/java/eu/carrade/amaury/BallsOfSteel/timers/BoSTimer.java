@@ -1,7 +1,5 @@
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.timers;
 
-import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
-import eu.carrade.amaury.BallsOfSteel.events.TimerStartsEvent;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

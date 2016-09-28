@@ -1,6 +1,10 @@
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.game;
 
-import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
+import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Location;
 import org.bukkit.Material;

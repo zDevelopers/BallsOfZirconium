@@ -16,7 +16,7 @@
  * this program.  If not, see [http://www.gnu.org/licenses/].
  */
 
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

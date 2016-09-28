@@ -16,9 +16,14 @@
  */
 
 
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.game;
 
-import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
+import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
+import eu.carrade.amaury.BallsOfSteel.timers.UpdateTimerTask;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

@@ -16,8 +16,9 @@
  * this program.  If not, see [http://www.gnu.org/licenses/].
  */
 
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.teams;
 
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.entity.Player;
 

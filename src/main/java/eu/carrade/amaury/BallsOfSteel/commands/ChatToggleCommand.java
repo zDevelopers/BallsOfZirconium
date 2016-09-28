@@ -32,8 +32,8 @@
 package eu.carrade.amaury.BallsOfSteel.commands;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.BoSUtils;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;

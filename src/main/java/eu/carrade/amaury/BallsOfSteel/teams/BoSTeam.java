@@ -16,8 +16,10 @@
  * this program.  If not, see [http://www.gnu.org/licenses/].
  */
 
-package eu.carrade.amaury.BallsOfSteel;
+package eu.carrade.amaury.BallsOfSteel.teams;
 
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;

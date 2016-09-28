@@ -16,7 +16,7 @@
  * this program.  If not, see [http://www.gnu.org/licenses/].
  */
 
-package eu.carrade.amaury.BallsOfSteel.task;
+package eu.carrade.amaury.BallsOfSteel.timers;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import org.bukkit.scheduler.BukkitRunnable;
