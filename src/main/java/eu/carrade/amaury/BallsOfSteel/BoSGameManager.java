@@ -80,7 +80,6 @@ public class BoSGameManager
      */
     public void start(CommandSender sender)
     {
-
         if (running)
         {
             throw new IllegalStateException("The game is already started!");

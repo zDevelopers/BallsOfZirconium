@@ -18,15 +18,25 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
+import eu.carrade.amaury.BallsOfSteel.commands.AboutCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.ChatGlobalCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
 import eu.carrade.amaury.BallsOfSteel.integration.BarAPIWrapper;
 import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
+import fr.zcraft.zlib.components.commands.Commands;
+import fr.zcraft.zlib.components.i18n.I18n;
+import fr.zcraft.zlib.core.ZLib;
 import fr.zcraft.zlib.core.ZPlugin;
 
 
 public final class BallsOfSteel extends ZPlugin
 {
-    private BoSCommand commandManager = null;
-    private BoSTabCompleter tabCompleter = null;
+    private static BallsOfSteel instance;
 
     private BoSTeamManager teamManager = null;
     private BoSScoreboardManager scoreboardManager = null;
@@ -38,26 +48,30 @@ public final class BallsOfSteel extends ZPlugin
     @Override
     public void onEnable()
     {
+        instance = this;
+
         this.saveDefaultConfig();
+
+        loadComponents(I18n.class, Commands.class);
+
+        I18n.useDefaultPrimaryLocale();
 
         teamManager = new BoSTeamManager(this);
         teamChatManager = new BoSTeamChatManager(this);
         scoreboardManager = new BoSScoreboardManager(this);
         gameManager = new BoSGameManager(this);
 
-        commandManager = new BoSCommand(this);
-        tabCompleter = new BoSTabCompleter(this);
+        Commands.register("bos",
+                AboutCommand.class, ClearItemsCommand.class,
+                ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
+                StartCommand.class, RestartCommand.class, TeamsCommand.class
+        );
 
-        getCommand("bos").setExecutor(commandManager);
-        getCommand("t").setExecutor(commandManager);
-        getCommand("g").setExecutor(commandManager);
-        getCommand("togglechat").setExecutor(commandManager);
+        Commands.registerShortcut("bos", ChatTeamCommand.class, "t");
+        Commands.registerShortcut("bos", ChatGlobalCommand.class, "g");
+        Commands.registerShortcut("bos", ChatToggleCommand.class, "togglechat");
 
-        getCommand("bos").setTabCompleter(tabCompleter);
-        getCommand("togglechat").setTabCompleter(tabCompleter);
-
-
-        getServer().getPluginManager().registerEvents(new BoSListener(this), this);
+        ZLib.registerEvents(new BoSListener(this));
 
 
         barAPIWrapper = new BarAPIWrapper(this);
@@ -70,6 +84,11 @@ public final class BallsOfSteel extends ZPlugin
         // Started here, so a timer can be displayed before the start of the game
         // (example: countdown before the start).
         new UpdateTimerTask(this).runTaskTimer(this, 20l, 20l);
+    }
+
+    public static BallsOfSteel get()
+    {
+        return instance;
     }
 
     /**
@@ -94,14 +113,6 @@ public final class BallsOfSteel extends ZPlugin
     public BoSScoreboardManager getScoreboardManager()
     {
         return scoreboardManager;
-    }
-
-    /**
-     * Returns the command manager.
-     */
-    public BoSCommand getCommandManager()
-    {
-        return commandManager;
     }
 
     /**
