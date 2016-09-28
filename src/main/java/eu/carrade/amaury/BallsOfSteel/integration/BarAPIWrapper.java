@@ -3,8 +3,7 @@ package eu.carrade.amaury.BallsOfSteel.integration;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.BoSTimer;
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
-import me.confuser.barapi.BarAPI;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -13,9 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class BarAPIWrapper
 {
-
     private BallsOfSteel p = null;
-    private I18n i = null;
 
     private boolean enabled = false;
     private boolean wanted = false;
@@ -34,14 +31,10 @@ public class BarAPIWrapper
 
         enabled = true;
         wanted = p.getConfig().getBoolean("useBar");
-
-        i = p.getI18n();
     }
 
     /**
      * Returns true if the BarAPI is available.
-     *
-     * @return
      */
     public boolean isEnabled()
     {
@@ -50,8 +43,6 @@ public class BarAPIWrapper
 
     /**
      * Returns true if the bar is enabled in the config.
-     *
-     * @return
      */
     public boolean isWanted()
     {
@@ -60,8 +51,6 @@ public class BarAPIWrapper
 
     /**
      * Returns true if the bar is available and wanted.
-     *
-     * @return
      */
     public boolean isNeeded()
     {
@@ -78,7 +67,7 @@ public class BarAPIWrapper
     {
         if (isNeeded())
         {
-            BarAPI.setMessage(player, i.t("bar.notStarted"));
+            //BarAPI.setMessage(player, I.t("{aqua}Balls {white}of {yellow}Steel"));
         }
     }
 
@@ -92,9 +81,9 @@ public class BarAPIWrapper
             for (Player player : p.getGameManager().getGameWorld().getPlayers())
             {
                 BoSTimer timer = p.getGameManager().getTimer();
-                String message = i.t("bar.timeLeft", p.getScoreboardManager().getTimerText(timer));
+                String message = I.t("{aqua}Time left: {yellow}{0}", p.getScoreboardManager().getTimerText(timer));
 
-                BarAPI.setMessage(player, message, timer.getPercentage());
+                //BarAPI.setMessage(player, message, timer.getPercentage());
             }
         }
     }
@@ -110,7 +99,7 @@ public class BarAPIWrapper
         {
             for (Player player : p.getGameManager().getGameWorld().getPlayers())
             {
-                BarAPI.setMessage(player, i.t("bar.ended"), 7);
+                //BarAPI.setMessage(player, I.t("{blue}The game is finished!"), 7);
             }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(p, new BukkitRunnable()
@@ -123,7 +112,7 @@ public class BarAPIWrapper
 
                     for (Player player : p.getGameManager().getGameWorld().getPlayers())
                     {
-                        BarAPI.setMessage(player, i.t("bar.winner", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
+                        //BarAPI.setMessage(player, I.t("{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
                     }
                 }
 

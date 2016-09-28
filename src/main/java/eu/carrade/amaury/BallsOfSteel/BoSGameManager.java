@@ -18,8 +18,8 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -39,7 +39,6 @@ import java.util.Map;
 public class BoSGameManager
 {
     private BallsOfSteel p = null;
-    private I18n i = null;
 
     private boolean running = false;
 
@@ -53,7 +52,6 @@ public class BoSGameManager
     public BoSGameManager(BallsOfSteel plugin)
     {
         this.p = plugin;
-        this.i = p.getI18n();
 
         timer = new BoSTimer(TIMER_NAME);
 
@@ -101,7 +99,7 @@ public class BoSGameManager
         }
         if (onlyEmpty)
         {
-            sender.sendMessage(i.t("start.noTeams"));
+            sender.sendMessage(I.t("{ce}You cannot start the game without any non-empty team."));
             return;
         }
 
@@ -131,11 +129,11 @@ public class BoSGameManager
 
         if (!spawnsOK)
         {
-            sender.sendMessage(i.t("start.noSpawnForSomeTeams"));
+            sender.sendMessage(I.t("{ce}Some non-empty teams don't have a spawn point."));
         }
         if (!chestsOK)
         {
-            sender.sendMessage(i.t("start.noChestForSomeTeams"));
+            sender.sendMessage(I.t("{ce}Some non-empty teams don't have a chest."));
         }
         if (!(chestsOK && spawnsOK))
         {
@@ -197,7 +195,7 @@ public class BoSGameManager
         new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast(getGameWorld());
 
         // Message
-        BoSUtils.worldBroadcast(getGameWorld(), i.t("start.go"));
+        BoSUtils.worldBroadcast(getGameWorld(), I.t("{green}--- GO ---"));
 
         running = true;
     }
@@ -218,7 +216,7 @@ public class BoSGameManager
     {
         if (broadcastStopInChat)
         {
-            BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.stop"));
+            BoSUtils.worldBroadcast(getGameWorld(), I.t("{red}--- The End ---"));
         }
 
         p.getGameManager().setGameRunning(false);
@@ -245,7 +243,7 @@ public class BoSGameManager
                     winners += player.getName();
                     if (j == winnersCount - 2)
                     {
-                        winners += " " + i.t("finish.and") + " ";
+                        winners += " " + I.t("and") + " ";
                     }
                     else if (j != winnersCount - 1)
                     {
@@ -254,7 +252,7 @@ public class BoSGameManager
                     j++;
                 }
 
-                BoSUtils.worldBroadcast(getGameWorld(), i.t("finish.broadcast", winners, winner.getDisplayName()));
+                BoSUtils.worldBroadcast(getGameWorld(), I.t("{green}Congratulations to {0} (team {1}{green}) for their victory!", winners, winner.getDisplayName()));
             }
         }, 140l);
     }

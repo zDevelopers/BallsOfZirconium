@@ -18,13 +18,12 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
 import eu.carrade.amaury.BallsOfSteel.integration.BarAPIWrapper;
 import eu.carrade.amaury.BallsOfSteel.task.UpdateTimerTask;
-import org.bukkit.plugin.java.JavaPlugin;
+import fr.zcraft.zlib.core.ZPlugin;
 
 
-public final class BallsOfSteel extends JavaPlugin
+public final class BallsOfSteel extends ZPlugin
 {
     private BoSCommand commandManager = null;
     private BoSTabCompleter tabCompleter = null;
@@ -36,21 +35,10 @@ public final class BallsOfSteel extends JavaPlugin
 
     private BarAPIWrapper barAPIWrapper = null;
 
-    private I18n i18n = null;
-
     @Override
     public void onEnable()
     {
         this.saveDefaultConfig();
-
-        if (getConfig().getString("lang") == null)
-        {
-            i18n = new I18n(this);
-        }
-        else
-        {
-            i18n = new I18n(this, getConfig().getString("lang"));
-        }
 
         teamManager = new BoSTeamManager(this);
         teamChatManager = new BoSTeamChatManager(this);
@@ -82,8 +70,6 @@ public final class BallsOfSteel extends JavaPlugin
         // Started here, so a timer can be displayed before the start of the game
         // (example: countdown before the start).
         new UpdateTimerTask(this).runTaskTimer(this, 20l, 20l);
-
-        getLogger().info(i18n.t("load.loaded"));
     }
 
     /**
@@ -124,14 +110,6 @@ public final class BallsOfSteel extends JavaPlugin
     public BoSTeamChatManager getTeamChatManager()
     {
         return teamChatManager;
-    }
-
-    /**
-     * Returns the internationalization manager.
-     */
-    public I18n getI18n()
-    {
-        return i18n;
     }
 
 

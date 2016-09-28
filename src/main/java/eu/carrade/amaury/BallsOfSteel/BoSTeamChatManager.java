@@ -18,7 +18,7 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -30,16 +30,14 @@ import java.util.UUID;
 
 public class BoSTeamChatManager
 {
-    BallsOfSteel p = null;
-    I18n i = null;
+    private BallsOfSteel p = null;
 
-    List<UUID> teamChatLocked = new ArrayList<UUID>();
-    Map<UUID, BoSTeam> otherTeamChatLocked = new HashMap<UUID, BoSTeam>();
+    private List<UUID> teamChatLocked = new ArrayList<>();
+    private Map<UUID, BoSTeam> otherTeamChatLocked = new HashMap<>();
 
     public BoSTeamChatManager(BallsOfSteel p)
     {
         this.p = p;
-        this.i = p.getI18n();
     }
 
     /**
@@ -66,32 +64,32 @@ public class BoSTeamChatManager
         // Permission check
         if (team == null && !sender.hasPermission("uh.teamchat.self"))
         {
-            sender.sendMessage(i.t("team.message.notAllowed.self"));
+            sender.sendMessage(I.t("{ce}You are not allowed to send a private message to your team."));
             return;
         }
         if (team != null && !sender.hasPermission("uh.teamchat.others"))
         {
-            sender.sendMessage(i.t("team.message.notAllowed.others"));
+            sender.sendMessage(I.t("{ce}You are not allowed to enter in the private chat of another team."));
             return;
         }
 
-        String rawMessage = null;
-        BoSTeam recipient = null;
+        final String rawMessage;
+        final BoSTeam recipient;
 
         if (team == null)
         {
-            rawMessage = i.t("team.message.format", sender.getDisplayName(), message);
+            rawMessage = I.t("{gold}[{0}{gold} -> his team] {reset}{1}", sender.getDisplayName(), message);
             recipient = p.getTeamManager().getTeamForPlayer(sender);
 
             if (recipient == null)
             {
-                sender.sendMessage(i.t("team.message.noTeam"));
+                sender.sendMessage(I.t("{ce}You are not in a team!"));
                 return;
             }
         }
         else
         {
-            rawMessage = i.t("team.message.formatOtherTeam", sender.getDisplayName(), team.getDisplayName(), message);
+            rawMessage = I.t("{gold}[{0}{gold} -> team {1}{gold}] {reset}{2}", sender.getDisplayName(), team.getDisplayName(), message);
             recipient = team;
         }
 
@@ -175,12 +173,12 @@ public class BoSTeamChatManager
         // Permission check
         if (team == null && !player.hasPermission("uh.teamchat.self"))
         {
-            player.sendMessage(i.t("team.message.notAllowed.self"));
+            player.sendMessage(I.t("{ce}You are not allowed to send a private message to your team."));
             return false;
         }
         if (team != null && !player.hasPermission("uh.teamchat.others"))
         {
-            player.sendMessage(i.t("team.message.notAllowed.others"));
+            player.sendMessage(I.t("{ce}You are not allowed to enter in the private chat of another team."));
             return false;
         }
 

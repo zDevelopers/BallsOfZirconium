@@ -18,7 +18,7 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 public class BoSTeamManager
 {
     private BallsOfSteel p = null;
-    private I18n i = null;
     private ArrayList<BoSTeam> teams = new ArrayList<BoSTeam>();
 
     private int maxPlayersPerTeam;
@@ -38,8 +37,6 @@ public class BoSTeamManager
     public BoSTeamManager(BallsOfSteel plugin)
     {
         this.p = plugin;
-        this.i = p.getI18n();
-
         this.maxPlayersPerTeam = p.getConfig().getInt("teams-options.maxPlayersPerTeam");
     }
 
@@ -159,7 +156,7 @@ public class BoSTeamManager
 
         removePlayerFromTeam(player, true);
         team.addPlayer(player);
-        player.sendMessage(i.t("team.addplayer.added", team.getDisplayName()));
+        player.sendMessage(I.t("{aqua}You are now in the {0}{aqua} team.", team.getDisplayName()));
     }
 
     /**
@@ -176,7 +173,7 @@ public class BoSTeamManager
             team.removePlayer(player);
             if (!dontNotify && player.isOnline())
             {
-                ((Player) player).sendMessage(i.t("team.removeplayer.removed", team.getDisplayName()));
+                ((Player) player).sendMessage(I.t("{darkaqua}You are no longer part of the {0}{darkaqua} team.", team.getDisplayName()));
             }
         }
     }
@@ -205,7 +202,7 @@ public class BoSTeamManager
             this.removeTeam(team, dontNotify);
         }
         // 2: internal list reset
-        teams = new ArrayList<BoSTeam>();
+        teams = new ArrayList<>();
     }
 
     /**
@@ -224,8 +221,6 @@ public class BoSTeamManager
 
     /**
      * Sets the correct display name of a player, according to his team.
-     *
-     * @param player
      */
     public void colorizePlayer(OfflinePlayer offlinePlayer)
     {
@@ -310,9 +305,9 @@ public class BoSTeamManager
      * @param player2 The second player
      * @return True if the players are in the same team, false else.
      */
-    public boolean inSameTeam(Player pl, Player pl2)
+    public boolean inSameTeam(Player player1, Player player2)
     {
-        return (getTeamForPlayer(pl).equals(getTeamForPlayer(pl2)));
+        return (getTeamForPlayer(player1).equals(getTeamForPlayer(player2)));
     }
 
     /**
@@ -333,25 +328,27 @@ public class BoSTeamManager
                     ChatColor color = getChatColorByName(teamRawSeparated[0]);
                     if (color == null)
                     {
-                        p.getLogger().warning(i.t("load.invalidTeam", (String) teamRaw));
+                        p.getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
                     }
                     else
                     {
+                        // "color,name"
                         if (teamRawSeparated.length == 2)
-                        { // "color,name"
+                        {
                             addTeam(color, teamRawSeparated[1]);
-                            p.getLogger().info(i.t("load.namedTeamAdded", teamRawSeparated[1], teamRawSeparated[0]));
+                            p.getLogger().info(I.t("Team {0} ({1}) added from the config file", teamRawSeparated[1], teamRawSeparated[0]));
                             teamsCount++;
                         }
+                        // "color"
                         else if (teamRawSeparated.length == 1)
-                        { // "color"
+                        {
                             addTeam(color, teamRawSeparated[0]);
-                            p.getLogger().info(i.t("load.teamAdded", teamRawSeparated[0]));
+                            p.getLogger().info(I.t("Team {0} added from the config file", teamRawSeparated[0]));
                             teamsCount++;
                         }
                         else
                         {
-                            p.getLogger().warning(i.t("load.invalidTeam", (String) teamRaw));
+                            p.getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
                         }
                     }
                 }
@@ -414,5 +411,4 @@ public class BoSTeamManager
     {
         return StringToChatColor.getChatColorByName(name);
     }
-
 }

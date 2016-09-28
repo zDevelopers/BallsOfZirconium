@@ -18,7 +18,7 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -31,7 +31,6 @@ import java.text.DecimalFormat;
 public class BoSScoreboardManager
 {
     private BallsOfSteel p = null;
-    private I18n i = null;
     private Scoreboard sb = null;
     private Objective sidebar = null;
 
@@ -41,11 +40,10 @@ public class BoSScoreboardManager
     public BoSScoreboardManager(BallsOfSteel p)
     {
         this.p = p;
-        this.i = p.getI18n();
 
         this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        this.sidebarTitle = i.t("scoreboard.title");
+        this.sidebarTitle = I.t("Diamonds");
     }
 
     /**
@@ -80,15 +78,13 @@ public class BoSScoreboardManager
 
     /**
      * Updates the timer displayed in the scoreboard title (if needed).
-     *
-     * @param timer The timer.
      */
     public void updateTimer()
     {
-        String timerText = "";
+        final String timerText;
         if (!p.getBarAPIWrapper().isNeeded() && p.getGameManager().isGameRunning())
         {
-            timerText = i.t("scoreboard.titleWithTimer", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
+            timerText = I.t("{0}   {gold}{1}", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
         }
         else
         {
@@ -115,11 +111,11 @@ public class BoSScoreboardManager
         {
             if (timer.getDisplayHoursInTimer())
             {
-                timerText = i.t("timers.hours", format.format(timer.getHoursLeft()), format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+                timerText = I.t("{0}:{1}:{2}", format.format(timer.getHoursLeft()), format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
             }
             else
             {
-                timerText = i.t("timers.noHours", format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
+                timerText = I.t("{0}:{1}", format.format(timer.getMinutesLeft()), format.format(timer.getSecondsLeft()));
             }
         }
 

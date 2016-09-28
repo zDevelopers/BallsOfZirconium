@@ -18,7 +18,8 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.components.i18n.I18n;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -38,24 +39,21 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 public class BoSCommand implements CommandExecutor
 {
-
     private BallsOfSteel p = null;
 
-    private ArrayList<String> commands = new ArrayList<String>();
-    private ArrayList<String> teamCommands = new ArrayList<String>();
-
-    private I18n i = null;
+    private ArrayList<String> commands = new ArrayList<>();
+    private ArrayList<String> teamCommands = new ArrayList<>();
 
 
     public BoSCommand(BallsOfSteel p)
     {
         this.p = p;
-        this.i = p.getI18n();
 
         commands.add("about");
         commands.add("start");
@@ -175,7 +173,7 @@ public class BoSCommand implements CommandExecutor
         }
         catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
         {
-            sender.sendMessage(i.t("cmd.errorLoad"));
+            sender.sendMessage(I.t("{ce}An error occurred, see console for details. This is probably a bug."));
             e.printStackTrace();
             return false;
         }
@@ -192,21 +190,21 @@ public class BoSCommand implements CommandExecutor
     {
         if (error)
         {
-            sender.sendMessage(i.t("cmd.errorUnknown"));
+            sender.sendMessage(I.t("{ce}This subcommand does not exists. See /bos for the available commands."));
             return;
         }
 
         if (sender instanceof Player) sender.sendMessage("");
-        sender.sendMessage(i.t("cmd.titleHelp", p.getDescription().getDescription(), p.getDescription().getVersion()));
+        sender.sendMessage(I.t("{yellow}{0} - version {1}", p.getDescription().getDescription(), p.getDescription().getVersion()));
 
-        sender.sendMessage(i.t("cmd.legendHelp"));
+        sender.sendMessage(I.t("{ci}Legend: {cc}/bos command <required> [optional=default] <spaces allowed ...>{ci}."));
 
-        sender.sendMessage(i.t("cmd.helpStart"));
-        sender.sendMessage(i.t("cmd.helpRestart"));
-        sender.sendMessage(i.t("cmd.helpTeam"));
-        sender.sendMessage(i.t("cmd.helpFinish"));
-        sender.sendMessage(i.t("cmd.helpClearitems"));
-        sender.sendMessage(i.t("cmd.helpAbout"));
+        sender.sendMessage(I.t("{cc}/bos start {ci}: launches the game."));
+        sender.sendMessage(I.t("{cc}/bos restart {ci}: restarts the game, during a party. This will not empty the diamond chest."));
+        sender.sendMessage(I.t("{cc}/bos team {ci}: manages the teams. See /bos teams for details."));
+        sender.sendMessage(I.t("{cc}/bos finish {ci}: displays the name of the winners and launches some fireworks."));
+        sender.sendMessage(I.t("{cc}/bos clearitems {ci}: deletes all dropped items from the world, excepted diamond-based items."));
+        sender.sendMessage(I.t("{cc}/bos about {ci}: informations about the plugin and the translation."));
     }
 
 
@@ -246,7 +244,7 @@ public class BoSCommand implements CommandExecutor
      */
     private void unauthorized(CommandSender sender, Command command)
     {
-        sender.sendMessage(i.t("cmd.errorUnauthorized"));
+        sender.sendMessage(I.t("{ce}Hahahahahaha no."));
     }
 
 
@@ -264,7 +262,7 @@ public class BoSCommand implements CommandExecutor
     private void doAbout(CommandSender sender, Command command, String label, String[] args)
     {
         if (sender instanceof Player) sender.sendMessage("");
-        sender.sendMessage(i.t("cmd.titleHelp", p.getDescription().getDescription(), p.getDescription().getVersion()));
+        sender.sendMessage(I.t("{yellow}{0} - version {1}", p.getDescription().getDescription(), p.getDescription().getVersion()));
 
         String authors = "";
         List<String> listAuthors = p.getDescription().getAuthors();
@@ -276,7 +274,7 @@ public class BoSCommand implements CommandExecutor
             }
             else if (author == listAuthors.get(listAuthors.size() - 1))
             {
-                authors += " " + i.t("about.and") + " ";
+                authors += " " + I.t("and") + " ";
             }
             else
             {
@@ -284,13 +282,13 @@ public class BoSCommand implements CommandExecutor
             }
             authors += author;
         }
-        sender.sendMessage(i.t("about.authors", authors));
+        sender.sendMessage(I.t("Plugin made with love by {0}.", authors));
 
-        sender.sendMessage(i.t("about.i18n.title"));
-        sender.sendMessage(i.t("about.i18n.selected", i.getSelectedLanguage(), i.getTranslator(i.getSelectedLanguage())));
-        sender.sendMessage(i.t("about.i18n.fallback", i.getDefaultLanguage(), i.getTranslator(i.getDefaultLanguage())));
-        sender.sendMessage(i.t("about.license.title"));
-        sender.sendMessage(i.t("about.license.license"));
+        sender.sendMessage(I.t("{aqua}------ Translations ------"));
+        sender.sendMessage(I.t("Current language: {0} (translated by {1}).", I18n.getPrimaryLocale().getDisplayName(), I18n.getLastTranslator(I18n.getPrimaryLocale())));
+        sender.sendMessage(I.t("Fallback language: {0} (translated by {1}).", I18n.getFallbackLocale().getDisplayName(), I18n.getLastTranslator(I18n.getFallbackLocale())));
+        sender.sendMessage(I.t("{aqua}------ License ------"));
+        sender.sendMessage(I.t("Published under the GNU General Public License (version 3)."));
     }
 
     /**
@@ -312,7 +310,7 @@ public class BoSCommand implements CommandExecutor
         }
         catch (IllegalStateException e)
         {
-            sender.sendMessage(i.t("start.already"));
+            sender.sendMessage(I.t("{ce}The game is already started! Use {cc}/bos restart{ci} to restart it."));
         }
     }
 
@@ -352,19 +350,19 @@ public class BoSCommand implements CommandExecutor
         if (args.length == 1)
         { // No action provided: doc
             if (sender instanceof Player) sender.sendMessage("");
-            sender.sendMessage(i.t("cmd.titleHelp", p.getDescription().getDescription(), p.getDescription().getVersion()));
-            sender.sendMessage(i.t("cmd.legendHelp"));
+            sender.sendMessage(I.t("{yellow}{0} - version {1}", p.getDescription().getDescription(), p.getDescription().getVersion()));
+            sender.sendMessage(I.t("{ci}Legend: {cc}/bos command <required> [optional=default] <spaces allowed ...>{ci}."));
 
-            sender.sendMessage(i.t("cmd.teamHelpTitle"));
-            sender.sendMessage(i.t("cmd.teamHelpAdd"));
-            sender.sendMessage(i.t("cmd.teamHelpAddName"));
-            sender.sendMessage(i.t("cmd.teamHelpRemove"));
-            sender.sendMessage(i.t("cmd.teamHelpSpawn"));
-            sender.sendMessage(i.t("cmd.teamHelpChest"));
-            sender.sendMessage(i.t("cmd.teamHelpJoin"));
-            sender.sendMessage(i.t("cmd.teamHelpLeave"));
-            sender.sendMessage(i.t("cmd.teamHelpList"));
-            sender.sendMessage(i.t("cmd.teamHelpReset"));
+            sender.sendMessage(I.t("{aqua}------ Team commands ------"));
+            sender.sendMessage(I.t("{cc}/bos team add <color> {ci}: adds a team with the provided color."));
+            sender.sendMessage(I.t("{cc}/bos team add <color> <name ...> {ci}: adds a named team with the provided name and color."));
+            sender.sendMessage(I.t("{cc}/bos team remove <name ...> {ci}: removes a team"));
+            sender.sendMessage(I.t("{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of the team (location of the sender or coordinates)."));
+            sender.sendMessage(I.t("{cc}/bos team chest [x,y,z] <name ...> {ci}: sets the chest of this team (where the diamonds will be stored), using the given coordinates or the block the sender is looking at."));
+            sender.sendMessage(I.t("{cc}/bos team join <player> <teamName ...>{ci}: adds a player inside the given team. The name of the team is it color, or the explicit name given."));
+            sender.sendMessage(I.t("{cc}/bos team leave <player> {ci}: removes a player from his team."));
+            sender.sendMessage(I.t("{cc}/bos team list {ci}: lists the teams and their players."));
+            sender.sendMessage(I.t("{cc}/bos team reset {ci}: removes all teams."));
         }
         else
         {
@@ -380,7 +378,7 @@ public class BoSCommand implements CommandExecutor
 
                     if (color == null)
                     {
-                        sender.sendMessage(i.t("team.add.errorColor"));
+                        sender.sendMessage(I.t("{ce}Unable to add the team, check the color name. Tip: use Tab to autocomplete."));
                     }
                     else
                     {
@@ -390,9 +388,9 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (IllegalArgumentException e)
                         {
-                            sender.sendMessage(i.t("team.add.errorExists"));
+                            sender.sendMessage(I.t("{ce}This team already exists."));
                         }
-                        sender.sendMessage(i.t("team.add.added", color.toString() + args[2]));
+                        sender.sendMessage(I.t("{cs}Team {0}{cs} added.", color.toString() + args[2]));
                     }
 
                 }
@@ -403,7 +401,7 @@ public class BoSCommand implements CommandExecutor
 
                     if (color == null)
                     {
-                        sender.sendMessage(i.t("team.add.errorColor"));
+                        sender.sendMessage(I.t("{ce}Unable to add the team, check the color name. Tip: use Tab to autocomplete."));
                     }
                     else
                     {
@@ -415,16 +413,16 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (IllegalArgumentException e)
                         {
-                            sender.sendMessage(i.t("team.add.errorExists"));
+                            sender.sendMessage(I.t("{ce}This team already exists."));
                             return;
                         }
-                        sender.sendMessage(i.t("team.add.added", color.toString() + name));
+                        sender.sendMessage(I.t("{cs}Team {0}{cs} added.", color.toString() + name));
                     }
 
                 }
                 else
                 {
-                    sender.sendMessage(i.t("team.syntaxError"));
+                    sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                 }
             }
 
@@ -436,16 +434,16 @@ public class BoSCommand implements CommandExecutor
                     String name = BoSUtils.getStringFromCommandArguments(args, 2);
                     if (!tm.removeTeam(name))
                     {
-                        sender.sendMessage(i.t("team.remove.doesNotExists"));
+                        sender.sendMessage(I.t("{ce}This team does not exists."));
                     }
                     else
                     {
-                        sender.sendMessage(i.t("team.remove.removed", name));
+                        sender.sendMessage(I.t("{cs}Team {0} deleted.", name));
                     }
                 }
                 else
                 {
-                    sender.sendMessage(i.t("team.syntaxError"));
+                    sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                 }
             }
 
@@ -482,7 +480,7 @@ public class BoSCommand implements CommandExecutor
                 { // /bos spawn <team ...>
                     if (!(sender instanceof Player))
                     {
-                        sender.sendMessage(i.t("team.spawn.noConsole"));
+                        sender.sendMessage(I.t("{ce}You must specify the coordinates from the console."));
                         return;
                     }
 
@@ -506,7 +504,7 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (NumberFormatException e)
                         {
-                            sender.sendMessage(i.t("team.spawn.NaN"));
+                            sender.sendMessage(I.t("{ce}The coordinates need to be numbers."));
                             return;
                         }
                     }
@@ -522,20 +520,20 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (NumberFormatException e)
                         {
-                            sender.sendMessage(i.t("team.spawn.NaN"));
+                            sender.sendMessage(I.t("{ce}The coordinates need to be numbers."));
                             return;
                         }
                     }
                     else
                     {
-                        sender.sendMessage(i.t("team.syntaxError"));
+                        sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                         return;
                     }
                 }
 
                 if (teamName == null)
                 { // Unknown team
-                    sender.sendMessage(i.t("team.spawn.unknown"));
+                    sender.sendMessage(I.t("{ce}This team does not exists."));
                     return;
                 }
 
@@ -543,7 +541,7 @@ public class BoSCommand implements CommandExecutor
 
                 team.setSpawnPoint(spawnPoint);
 
-                sender.sendMessage(i.t("team.spawn.set", team.getDisplayName(), String.valueOf(spawnPoint.getBlockX()), String.valueOf(spawnPoint.getBlockY()), String.valueOf(spawnPoint.getBlockZ())));
+                sender.sendMessage(I.t("{cs}The spawn point of the team {0}{cs} is now {1};{2};{3}.", team.getDisplayName(), String.valueOf(spawnPoint.getBlockX()), String.valueOf(spawnPoint.getBlockY()), String.valueOf(spawnPoint.getBlockZ())));
             }
 
 
@@ -579,13 +577,13 @@ public class BoSCommand implements CommandExecutor
                 { // /bos chest <team ...>
                     if (!(sender instanceof Player))
                     {
-                        sender.sendMessage(i.t("team.chest.noConsole"));
+                        sender.sendMessage(I.t("{ce}You must specify the coordinates from the console."));
                         return;
                     }
 
                     teamName = nameTeamWithoutCoords;
 
-                    Block chest = ((Player) sender).getTargetBlock(null, 10);
+                    Block chest = ((Player) sender).getTargetBlock(Collections.<Material>emptySet(), 10);
                     if (chest != null)
                     {
                         if (chest.getType() == Material.CHEST || chest.getType() == Material.TRAPPED_CHEST)
@@ -594,13 +592,13 @@ public class BoSCommand implements CommandExecutor
                         }
                         else
                         {
-                            sender.sendMessage(i.t("team.chest.notLookingAtAChest"));
+                            sender.sendMessage(I.t("{ce}You are not looking at a chest usable by more than one player!"));
                             return;
                         }
                     }
                     else
                     {
-                        sender.sendMessage(i.t("team.chest.notLookingAtSomething"));
+                        sender.sendMessage(I.t("{ce}You are not looking at anything..."));
                         return;
                     }
                 }
@@ -622,20 +620,20 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (NumberFormatException e)
                         {
-                            sender.sendMessage(i.t("team.chest.NaN"));
+                            sender.sendMessage(I.t("{ce}The coordinates need to be numbers."));
                             return;
                         }
                     }
                     else
                     {
-                        sender.sendMessage(i.t("team.syntaxError"));
+                        sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                         return;
                     }
                 }
 
                 if (teamName == null)
                 { // Unknown team
-                    sender.sendMessage(i.t("team.chest.unknown"));
+                    sender.sendMessage(I.t("{ce}This team does not exists."));
                     return;
                 }
 
@@ -647,11 +645,11 @@ public class BoSCommand implements CommandExecutor
                 }
                 catch (IllegalArgumentException e)
                 {
-                    sender.sendMessage(i.t("team.chest.notAChest"));
+                    sender.sendMessage(I.t("{ce}There isn't any chest usable by more than one player here."));
                     return;
                 }
 
-                sender.sendMessage(i.t("team.chest.set", team.getDisplayName(), String.valueOf(chestLocation.getBlockX()), String.valueOf(chestLocation.getBlockY()), String.valueOf(chestLocation.getBlockZ())));
+                sender.sendMessage(I.t("{cs}This chest (at {1};{2};{3}) is now the private chest of the team {0}{cs}.", team.getDisplayName(), String.valueOf(chestLocation.getBlockX()), String.valueOf(chestLocation.getBlockY()), String.valueOf(chestLocation.getBlockZ())));
             }
 
 
@@ -665,7 +663,7 @@ public class BoSCommand implements CommandExecutor
 
                     if (player == null || !player.isOnline())
                     {
-                        sender.sendMessage(i.t("team.addplayer.disconnected", args[2], teamName));
+                        sender.sendMessage(I.t("{ce}Unable to add the player {0} to the team {1}. The player must be connected.", args[2], teamName));
                     }
                     else
                     {
@@ -675,21 +673,21 @@ public class BoSCommand implements CommandExecutor
                         }
                         catch (IllegalArgumentException e)
                         {
-                            sender.sendMessage(i.t("team.addplayer.doesNotExists"));
+                            sender.sendMessage(I.t("{ce}This team does not exists."));
                             return;
                         }
                         catch (RuntimeException e)
                         {
-                            sender.sendMessage(i.t("team.addplayer.full", teamName));
+                            sender.sendMessage(I.t("{ce}The team {0}{ce} is full!", teamName));
                             return;
                         }
                         BoSTeam team = p.getTeamManager().getTeam(teamName);
-                        sender.sendMessage(i.t("team.addplayer.success", args[2], team.getDisplayName()));
+                        sender.sendMessage(I.t("{cs}The player {0} was successfully added to the team {1}", args[2], team.getDisplayName()));
                     }
                 }
                 else
                 {
-                    sender.sendMessage(i.t("team.syntaxError"));
+                    sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                 }
             }
 
@@ -703,17 +701,17 @@ public class BoSCommand implements CommandExecutor
 
                     if (player == null || !player.isOnline())
                     {
-                        sender.sendMessage(i.t("team.removeplayer.disconnected", args[2]));
+                        sender.sendMessage(I.t("{ce}The player {0} is disconnected!", args[2]));
                     }
                     else
                     {
                         tm.removePlayerFromTeam(player);
-                        sender.sendMessage(i.t("team.removeplayer.success", args[2]));
+                        sender.sendMessage(I.t("{cs}The player {0} was successfully removed from his team.", args[2]));
                     }
                 }
                 else
                 {
-                    sender.sendMessage(i.t("team.syntaxError"));
+                    sender.sendMessage(I.t("{ce}Syntax error, see /uh team."));
                 }
             }
 
@@ -722,26 +720,26 @@ public class BoSCommand implements CommandExecutor
             {
                 if (tm.getTeams().size() == 0)
                 {
-                    sender.sendMessage(i.t("team.list.nothing"));
+                    sender.sendMessage(I.t("{ce}There isn't any team to show."));
                     return;
                 }
 
                 for (final BoSTeam team : tm.getTeams())
                 {
-                    sender.sendMessage(i.t("team.list.itemTeam", team.getDisplayName(), ((Integer) team.getPlayers().size()).toString()));
+                    sender.sendMessage(I.t("{0} ({1} players)", team.getDisplayName(), ((Integer) team.getPlayers().size()).toString()));
                     for (final OfflinePlayer player : team.getPlayers())
                     {
                         String bullet = null;
                         if (player.isOnline())
                         {
-                            bullet = i.t("team.list.bulletPlayerOnline");
+                            bullet = I.t("{green} • ");
                         }
                         else
                         {
-                            bullet = i.t("team.list.bulletPlayerOffline");
+                            bullet = I.t("{red} • ");
                         }
 
-                        sender.sendMessage(bullet + i.t("team.list.itemPlayer", player.getName()));
+                        sender.sendMessage(bullet + I.t("{0}", player.getName()));
                     }
                 }
             }
@@ -749,12 +747,12 @@ public class BoSCommand implements CommandExecutor
             else if (subcommand.equalsIgnoreCase("reset"))
             {
                 tm.reset();
-                sender.sendMessage(i.t("team.reset.success"));
+                sender.sendMessage(I.t("{cs}All teams where removed."));
             }
 
             else
             {
-                sender.sendMessage(i.t("team.unknownCommand"));
+                sender.sendMessage(I.t("{ce}Unknown command. See /uh team for available commands."));
             }
         }
     }
@@ -816,11 +814,11 @@ public class BoSCommand implements CommandExecutor
                     }
                 }
             }
-            sender.sendMessage(i.t("clearitems.cleared", world.getName()));
+            sender.sendMessage(I.t("{cs}All items, diamonds-based items excepted, were destroyed in the world {0}.", world.getName()));
         }
         else
         {
-            sender.sendMessage(i.t("clearitems.noWorld"));
+            sender.sendMessage(I.t("{ce}Cannot clear the items from the console if the game's world is not set (i.e. world not set in the config and game not started)."));
         }
     }
 
@@ -845,10 +843,10 @@ public class BoSCommand implements CommandExecutor
 //		} catch(IllegalStateException e) {
 //			
 //			if(e.getMessage().equals(UHGameManager.FINISH_ERROR_NOT_STARTED)) {
-//				sender.sendMessage(i.t("finish.notStarted"));
+//				sender.sendMessage(I.t("{ce}The game is not started!"));
 //			}
 //			else if(e.getMessage().equals(UHGameManager.FINISH_ERROR_NOT_FINISHED)) {
-//				sender.sendMessage(i.t("finish.notFinished"));
+//				sender.sendMessage(I.t("{ce}The game is not finished!"));
 //			}
 //			else {
 //				throw e;
@@ -869,13 +867,13 @@ public class BoSCommand implements CommandExecutor
     {
         if (!(sender instanceof Player))
         {
-            sender.sendMessage(i.t("team.message.noConsole"));
+            sender.sendMessage(I.t("{ce}You can't send a team-message from the console."));
             return;
         }
 
         if (args.length == 0)
         { // /t
-            sender.sendMessage(i.t("team.message.usage", "t"));
+            sender.sendMessage(I.t("{ce}Usage: /{0} <message>", "t"));
             return;
         }
 
@@ -900,13 +898,13 @@ public class BoSCommand implements CommandExecutor
     {
         if (!(sender instanceof Player))
         {
-            sender.sendMessage(i.t("team.message.noConsole"));
+            sender.sendMessage(I.t("{ce}You can't send a team-message from the console."));
             return;
         }
 
         if (args.length == 0)
         { // /g
-            sender.sendMessage(i.t("team.message.usage", "g"));
+            sender.sendMessage(I.t("{ce}Usage: /{0} <message>", "g"));
             return;
         }
 
@@ -931,7 +929,7 @@ public class BoSCommand implements CommandExecutor
     {
         if (!(sender instanceof Player))
         {
-            sender.sendMessage(i.t("team.message.noConsole"));
+            sender.sendMessage(I.t("{ce}You can't send a team-message from the console."));
             return;
         }
 
@@ -939,11 +937,11 @@ public class BoSCommand implements CommandExecutor
         { // /togglechat
             if (p.getTeamChatManager().toggleChatForPlayer((Player) sender))
             {
-                sender.sendMessage(i.t("team.message.toggle.nowTeamChat"));
+                sender.sendMessage(I.t("{cs}You are now chatting with your team only."));
             }
             else
             {
-                sender.sendMessage(i.t("team.message.toggle.nowGlobalChat"));
+                sender.sendMessage(I.t("{cs}You are now chatting with everyone."));
             }
         }
         else
@@ -955,12 +953,12 @@ public class BoSCommand implements CommandExecutor
             {
                 if (p.getTeamChatManager().toggleChatForPlayer((Player) sender, team))
                 {
-                    sender.sendMessage(i.t("team.message.toggle.nowOtherTeamChat", team.getDisplayName()));
+                    sender.sendMessage(I.t("{cs}You are now chatting with the team {0}{cs}.", team.getDisplayName()));
                 }
             }
             else
             {
-                sender.sendMessage(i.t("team.message.toggle.unknownTeam"));
+                sender.sendMessage(I.t("{ce}This team does not exists."));
             }
         }
     }

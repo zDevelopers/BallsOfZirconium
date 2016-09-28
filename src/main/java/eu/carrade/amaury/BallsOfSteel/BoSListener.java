@@ -1,7 +1,7 @@
 package eu.carrade.amaury.BallsOfSteel;
 
 import eu.carrade.amaury.BallsOfSteel.events.TimerEndsEvent;
-import eu.carrade.amaury.BallsOfSteel.i18n.I18n;
+import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 public class BoSListener implements Listener
 {
     private BallsOfSteel p = null;
-    private I18n i = null;
 
     BoSSound soundCountIncrease = null;
     BoSSound soundCountDecrease = null;
@@ -31,7 +30,6 @@ public class BoSListener implements Listener
     public BoSListener(BallsOfSteel plugin)
     {
         this.p = plugin;
-        this.i = p.getI18n();
 
         soundCountIncrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countIncrease"));
         soundCountDecrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countDecrease"));
@@ -76,7 +74,7 @@ public class BoSListener implements Listener
         if (p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
                 && (playerTeam == null || (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1()) && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2()))))
         {
-            ev.getPlayer().sendMessage(i.t("chests.otherTeamChest"));
+            ev.getPlayer().sendMessage(I.t("{ce}You cannot open the chests of another team."));
             ev.setCancelled(true);
         }
     }

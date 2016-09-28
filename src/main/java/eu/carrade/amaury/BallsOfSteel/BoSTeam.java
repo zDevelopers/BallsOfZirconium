@@ -18,6 +18,7 @@
 
 package eu.carrade.amaury.BallsOfSteel;
 
+import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,7 +54,7 @@ public class BoSTeam
 
     private int diamonds = 0;
 
-    private ArrayList<UUID> players = new ArrayList<UUID>();
+    private ArrayList<UUID> players = new ArrayList<>();
 
 
     public BoSTeam(String name, ChatColor color, BallsOfSteel plugin)
@@ -363,7 +364,7 @@ public class BoSTeam
         {
             Player player = plugin.getServer().getPlayer(id);
 
-            player.sendMessage(plugin.getI18n().t("team.removeplayer.removed", getDisplayName()));
+            player.sendMessage(I.t("{darkaqua}You are no longer part of the {0}{darkaqua} team.", getDisplayName()));
             unregisterPlayer(player);
         }
 
@@ -424,8 +425,6 @@ public class BoSTeam
 
     /**
      * Returns the color of the team.
-     *
-     * @return
      */
     public ChatColor getColor()
     {
@@ -436,16 +435,6 @@ public class BoSTeam
     @Override
     public boolean equals(Object otherTeam)
     {
-        if (!(otherTeam instanceof BoSTeam))
-        {
-            return false;
-        }
-
-        if (!((BoSTeam) otherTeam).getName().equals(this.getName()))
-        {
-            return false;
-        }
-
-        return true;
+        return otherTeam instanceof BoSTeam && ((BoSTeam) otherTeam).getName().equals(this.getName());
     }
 }

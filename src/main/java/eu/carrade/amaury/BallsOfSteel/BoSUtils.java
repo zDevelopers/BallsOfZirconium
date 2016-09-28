@@ -89,24 +89,24 @@ public class BoSUtils
      */
     public static int string2Time(String text)
     {
-        String[] splitted = text.split(":");
+        String[] split = text.split(":");
 
-        if (splitted.length > 3)
+        switch (split.length)
         {
-            throw new IllegalArgumentException("Badely formatted string in string2time, formats allowed are mm, mm:ss or hh:mm:ss.");
-        }
+            // "mm"
+            case 1:
+                return Integer.valueOf(split[0]) * 60;
 
-        if (splitted.length == 1)
-        { // "mm"
-            return Integer.valueOf(splitted[0]) * 60;
-        }
-        else if (splitted.length == 2)
-        { // "mm:ss"
-            return Integer.valueOf(splitted[0]) * 60 + Integer.valueOf(splitted[1]);
-        }
-        else
-        { // "hh:mm:ss"
-            return Integer.valueOf(splitted[0]) * 3600 + Integer.valueOf(splitted[1]) * 60 + Integer.valueOf(splitted[2]);
+            // "mm:ss"
+            case 2:
+                return Integer.valueOf(split[0]) * 60 + Integer.valueOf(split[1]);
+
+            // "hh:mm:ss"
+            case 3:
+                return Integer.valueOf(split[0]) * 3600 + Integer.valueOf(split[1]) * 60 + Integer.valueOf(split[2]);
+
+            default:
+                throw new IllegalArgumentException("Badly formatted string in string2time, formats allowed are mm, mm:ss or hh:mm:ss.");
         }
     }
 
@@ -141,21 +141,14 @@ public class BoSUtils
      */
     public static boolean safeTP(Player player, Location location, boolean force)
     {
-        // If the target is safe, let's go
-        if (isSafeSpot(location))
+        // If the target is safe or forced, let's go
+        if (force || isSafeSpot(location))
         {
             player.teleport(location);
             return true;
         }
 
-        // If the teleportation is forced, let's go
-        if (force)
-        {
-            player.teleport(location);
-            return true;
-        }
-
-        Location safeSpot = findSafeSpot(location);
+        final Location safeSpot = findSafeSpot(location);
 
         // A spot was found, let's teleport.
         if (safeSpot != null)
@@ -186,14 +179,13 @@ public class BoSUtils
     public static Location findSafeSpot(Location location)
     {
         // We try to find a spot above or below the target (this is probably the good solution, because
-        // if the spot is obstrued, because this is mainly used to teleport players back after their
+        // if the spot is obstructed, because this is mainly used to teleport players back after their
         // death, the cause is likely to be a falling block or an arrow shot during a fall).
 
         Location safeSpot = null;
-        // Max height (thx to WorldBorder)
         final int maxHeight = (location.getWorld().getEnvironment() == World.Environment.NETHER) ? 125 : location.getWorld().getMaxHeight() - 2;
 
-        for (int yGrow = (int) location.getBlockY(), yDecr = (int) location.getBlockY(); yDecr >= 1 || yGrow <= maxHeight; yDecr--, yGrow++)
+        for (int yGrow = location.getBlockY(), yDecr = location.getBlockY(); yDecr >= 1 || yGrow <= maxHeight; yDecr--, yGrow++)
         {
             // Above?
             if (yGrow < maxHeight)
@@ -238,23 +230,15 @@ public class BoSUtils
      */
     public static boolean isSafeSpot(Location location)
     {
-        Block blockCenter = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Block blockAbove = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ());
-        Block blockBelow = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ());
+        final Block blockCenter = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        final Block blockAbove  = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY() + 1, location.getBlockZ());
+        final Block blockBelow  = location.getWorld().getBlockAt(location.getBlockX(), location.getBlockY() - 1, location.getBlockZ());
 
-        if ((blockCenter.getType().isTransparent() || (blockCenter.isLiquid() && !blockCenter.getType().equals(Material.LAVA) && !blockCenter.getType().equals(Material.STATIONARY_LAVA)))
-                && (blockAbove.getType().isTransparent() || (blockAbove.isLiquid() && !blockAbove.getType().equals(Material.LAVA) && !blockCenter.getType().equals(Material.STATIONARY_LAVA))))
-        {
-            // two breathable blocks: ok
+        // Two breathable blocks, and the block below is solid, or liquid (but not lava)
+        return (blockCenter.getType().isTransparent() || (blockCenter.isLiquid() && !blockCenter.getType().equals(Material.LAVA) && !blockCenter.getType().equals(Material.STATIONARY_LAVA)))
+                && (blockAbove.getType().isTransparent() || (blockAbove.isLiquid() && !blockAbove.getType().equals(Material.LAVA) && !blockCenter.getType().equals(Material.STATIONARY_LAVA)))
+                && (blockBelow.getType().isSolid() || blockBelow.getType().equals(Material.WATER) || blockBelow.getType().equals(Material.STATIONARY_WATER));
 
-            if (blockBelow.getType().isSolid() || blockBelow.getType().equals(Material.WATER) || blockBelow.equals(Material.STATIONARY_WATER))
-            {
-                // The block below is solid, or liquid (but not lava)
-                return true;
-            }
-            return false;
-        }
-        return false;
     }
 
     /**
