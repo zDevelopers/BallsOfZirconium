@@ -6,8 +6,8 @@ import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.text.MessageSender;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -123,7 +123,7 @@ public class BoSChestsListener implements Listener
         if (p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
                 && (playerTeam == null || (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1()) && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2()))))
         {
-            ev.getPlayer().sendMessage(I.t("{ce}You cannot open the chests of another team."));
+            MessageSender.sendActionBarMessage(ev.getPlayer(), I.t("{ce}You cannot open the chests of another team."));
             ev.setCancelled(true);
 
             if (soundChestLocked != null) soundChestLocked.play(ev.getPlayer());
@@ -215,9 +215,18 @@ public class BoSChestsListener implements Listener
 
                 for (ItemStack item : ev.getInventory())
                 {
-                    if (item != null && item.getType() == Material.DIAMOND)
+                    if (item != null)
                     {
-                        diamonds += item.getAmount();
+                        switch (item.getType())
+                        {
+                            case DIAMOND:
+                                diamonds += item.getAmount();
+                                break;
+
+                            case DIAMOND_BLOCK:
+                                diamonds += 9 * item.getAmount();
+                                break;
+                        }
                     }
                 }
 
