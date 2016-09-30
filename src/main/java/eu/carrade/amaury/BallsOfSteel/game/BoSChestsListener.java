@@ -8,6 +8,7 @@ import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.event.EventHandler;
@@ -17,11 +18,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
 
 
 public class BoSChestsListener implements Listener
@@ -86,6 +90,21 @@ public class BoSChestsListener implements Listener
         if (p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation()))
         {
             ev.setCancelled(true);
+        }
+    }
+
+    /**
+     * Used to prevent the diamond chests to be destroyed.
+     */
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent ev)
+    {
+        for (Block block : new ArrayList<>(ev.blockList()))
+        {
+            if (p.getGameManager().getTrackedChests().containsKey(block.getLocation()))
+            {
+                ev.blockList().remove(block);
+            }
         }
     }
 
