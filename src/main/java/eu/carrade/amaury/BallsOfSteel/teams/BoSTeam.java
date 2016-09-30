@@ -19,8 +19,13 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
+import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
+import eu.carrade.amaury.BallsOfSteel.utils.StringToChatColor;
+import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -35,16 +40,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 
 public class BoSTeam
 {
-    private BallsOfSteel plugin = null;
-
     private String name = null;
     private String internalName = null;
     private String displayName = null;
@@ -60,19 +65,17 @@ public class BoSTeam
     private ArrayList<UUID> players = new ArrayList<>();
 
 
-    public BoSTeam(String name, ChatColor color, BallsOfSteel plugin)
+    public BoSTeam(String name, ChatColor color)
     {
         Validate.notNull(name, "The name cannot be null.");
-        Validate.notNull(plugin, "The plugin cannot be null.");
-
-        this.plugin = plugin;
+        Validate.notNull(BallsOfSteel.get(), "The plugin cannot be null.");
 
         this.name = name;
         this.color = color;
 
         // We use a random internal name because the name of a team, in Minecraft vanilla, is limited
         // (16 characters max).
-        Random rand = new Random();
+        final Random rand = new Random();
         this.internalName = String.valueOf(rand.nextInt(99999999)) + String.valueOf(rand.nextInt(99999999));
 
         if (this.color != null)
@@ -84,18 +87,16 @@ public class BoSTeam
             this.displayName = name;
         }
 
-        Scoreboard sb = this.plugin.getScoreboardManager().getScoreboard();
-
-        sb.registerNewTeam(this.internalName);
-        Team t = sb.getTeam(this.internalName);
+        final Scoreboard sb = BallsOfSteel.get().getScoreboardManager().getScoreboard();
+        final Team t = sb.registerNewTeam(this.internalName);
 
         if (this.color != null)
         {
             t.setPrefix(this.color.toString());
         }
 
-        t.setCanSeeFriendlyInvisibles(Config.TEAMS_OPTIONS.CAN_SEE_FRIENDLY_INVISIBLES.get());
-        t.setAllowFriendlyFire(Config.TEAMS_OPTIONS.ALLOW_FRIENDLY_FIRE.get());
+        t.setCanSeeFriendlyInvisibles(GameConfig.TEAMS_OPTIONS.CAN_SEE_FRIENDLY_INVISIBLES.get());
+        t.setAllowFriendlyFire(GameConfig.TEAMS_OPTIONS.ALLOW_FRIENDLY_FIRE.get());
     }
 
     /**
@@ -134,7 +135,7 @@ public class BoSTeam
             chestLocation1 = null;
             chestLocation2 = null;
 
-            plugin.getGameManager().updateTrackedChests();
+            BallsOfSteel.get().getGameManager().updateTrackedChests();
 
             return;
         }
@@ -174,7 +175,7 @@ public class BoSTeam
                 chestLocation2 = null;
             }
 
-            plugin.getGameManager().updateTrackedChests();
+            BallsOfSteel.get().getGameManager().updateTrackedChests();
         }
         else
         {
@@ -268,14 +269,14 @@ public class BoSTeam
 
         for (UUID id : players)
         {
-            Player player = plugin.getServer().getPlayer(id);
+            Player player = BallsOfSteel.get().getServer().getPlayer(id);
             if (player != null)
             {
                 playersList.add(player);
             }
             else
             {
-                playersList.add(plugin.getServer().getOfflinePlayer(id));
+                playersList.add(BallsOfSteel.get().getServer().getOfflinePlayer(id));
             }
         }
 
@@ -291,7 +292,7 @@ public class BoSTeam
 
         for (UUID id : players)
         {
-            Player player = plugin.getServer().getPlayer(id);
+            Player player = BallsOfSteel.get().getServer().getPlayer(id);
             if (player != null)
             {
                 playersList.add(player);
@@ -311,9 +312,9 @@ public class BoSTeam
         Validate.notNull(player, "The player cannot be null.");
 
         players.add(player.getUniqueId());
-        plugin.getScoreboardManager().getScoreboard().getTeam(this.internalName).addPlayer(player);
+        BallsOfSteel.get().getScoreboardManager().getScoreboard().getTeam(this.internalName).addPlayer(player);
 
-        plugin.getTeamManager().colorizePlayer(player);
+        BallsOfSteel.get().getTeamsManager().colorizePlayer(player);
     }
 
     /**
@@ -339,8 +340,8 @@ public class BoSTeam
      */
     private void unregisterPlayer(OfflinePlayer player)
     {
-        plugin.getScoreboardManager().getScoreboard().getTeam(this.internalName).removePlayer(player);
-        plugin.getTeamManager().colorizePlayer(player);
+        BallsOfSteel.get().getScoreboardManager().getScoreboard().getTeam(this.internalName).removePlayer(player);
+        BallsOfSteel.get().getTeamsManager().colorizePlayer(player);
     }
 
     /**
@@ -353,7 +354,7 @@ public class BoSTeam
         // We removes the players from the team (scoreboard team too)
         for (UUID id : players)
         {
-            Player player = plugin.getServer().getPlayer(id);
+            Player player = BallsOfSteel.get().getServer().getPlayer(id);
 
             player.sendMessage(I.t("{darkaqua}You are no longer part of the {0}{darkaqua} team.", getDisplayName()));
             unregisterPlayer(player);
@@ -362,7 +363,7 @@ public class BoSTeam
         this.players.clear();
 
         // Then the scoreboard team is deleted.
-        plugin.getScoreboardManager().getScoreboard().getTeam(this.internalName).unregister();
+        BallsOfSteel.get().getScoreboardManager().getScoreboard().getTeam(this.internalName).unregister();
 
     }
 
@@ -408,7 +409,7 @@ public class BoSTeam
 
         for (UUID id : players)
         {
-            plugin.getServer().getPlayer(id).teleport(lo);
+            BallsOfSteel.get().getServer().getPlayer(id).teleport(lo);
         }
     }
 
@@ -425,5 +426,51 @@ public class BoSTeam
     public boolean equals(Object otherTeam)
     {
         return otherTeam instanceof BoSTeam && ((BoSTeam) otherTeam).getName().equals(this.getName());
+    }
+
+
+    @ConfigurationValueHandler
+    public static ChatColor handleChatColor(String color) throws ConfigurationParseException
+    {
+        final ChatColor chatColor = StringToChatColor.getChatColorByName(color);
+        if (chatColor == null) throw new ConfigurationParseException("Invalid chat color", color);
+
+        return chatColor;
+    }
+
+    @ConfigurationValueHandler
+    public static BoSTeam handleTeam(Map map) throws ConfigurationParseException
+    {
+        final World world = BallsOfSteel.get().getGameManager().getGameWorld();
+
+
+        if (!map.containsKey("name"))
+            throw new ConfigurationParseException("Team name required", map);
+
+        if (!map.containsKey("color"))
+            throw new ConfigurationParseException("Team color required", map);
+
+        if (!map.containsKey("chest"))
+            throw new ConfigurationParseException("Team chest required", map);
+
+        if (!map.containsKey("spawn"))
+            throw new ConfigurationParseException("Team spawn required", map);
+
+
+        final BoSTeam team = new BoSTeam(map.get("name").toString(), ConfigurationValueHandlers.handleValue(map.get("color").toString(), ChatColor.class));
+
+        team.setSpawnPoint(ConfigurationValueHandlers.handleValue(map.get("spawn"), PitchedVector.class).toLocation(world));
+
+        try
+        {
+            team.setChest(ConfigurationValueHandlers.handleValue(map.get("chest"), Vector.class).toLocation(world));
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new ConfigurationParseException("Invalid chest for the team " + team.getName() + ": " + e.getMessage(), map.get("chest").toString());
+        }
+
+
+        return team;
     }
 }

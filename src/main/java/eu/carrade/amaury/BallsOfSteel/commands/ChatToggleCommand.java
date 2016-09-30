@@ -71,7 +71,7 @@ public class ChatToggleCommand extends Command
         else
         {
             String teamName = BoSUtils.getStringFromCommandArguments(args, 0);
-            BoSTeam team = BallsOfSteel.get().getTeamManager().getTeam(teamName);
+            BoSTeam team = BallsOfSteel.get().getTeamsManager().getTeam(teamName);
 
             if (team != null)
             {

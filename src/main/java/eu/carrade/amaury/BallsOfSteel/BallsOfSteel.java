@@ -43,7 +43,7 @@ public final class BallsOfSteel extends ZPlugin
 {
     private static BallsOfSteel instance;
 
-    private BoSTeamsManager teamManager = null;
+    private BoSTeamsManager teamsManager = null;
     private BoSScoreboardManager scoreboardManager = null;
     private BoSTeamChatManager teamChatManager = null;
     private BoSGameManager gameManager = null;
@@ -55,16 +55,18 @@ public final class BallsOfSteel extends ZPlugin
     {
         instance = this;
 
-        this.saveDefaultConfig();
+        saveDefaultConfig();
+        saveResource("map.yml", false);
 
-        loadComponents(I18n.class, Commands.class, Config.class, Timers.class);
+        loadComponents(I18n.class, Commands.class, GameConfig.class, MapConfig.class, Timers.class);
 
-        I18n.setPrimaryLocale(Config.LANG.get());
+        I18n.setPrimaryLocale(GameConfig.LANG.get());
 
-        teamManager       = loadComponent(BoSTeamsManager.class);
-        teamChatManager   = loadComponent(BoSTeamChatManager.class);
-        scoreboardManager = loadComponent(BoSScoreboardManager.class);
+        // Important: game manager and scoreboard manager before teams manager
         gameManager       = loadComponent(BoSGameManager.class);
+        scoreboardManager = loadComponent(BoSScoreboardManager.class);
+        teamsManager      = loadComponent(BoSTeamsManager.class);
+        teamChatManager   = loadComponent(BoSTeamChatManager.class);
         barAPIWrapper     = loadComponent(BarAPIWrapper.class);
 
         Commands.register("bos",
@@ -96,9 +98,9 @@ public final class BallsOfSteel extends ZPlugin
     /**
      * Returns the team manager.
      */
-    public BoSTeamsManager getTeamManager()
+    public BoSTeamsManager getTeamsManager()
     {
-        return teamManager;
+        return teamsManager;
     }
 
     /**

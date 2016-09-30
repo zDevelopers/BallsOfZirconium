@@ -20,14 +20,6 @@ gameName: "Balls of Steel"
 
 
 
-# Specify here the world where the game will take place.
-# If this is left empty, the world will be automatically detected, based on the
-# teams' spawn points, but the “waiting” boss bar, displayed when the game is
-# not started, will be displayed to everyone on the server.
-world:
-
-
-
 # The duration of the game.
 # Format: "mm", "mm:ss" or "hh:mm:ss".
 duration: "59:59"

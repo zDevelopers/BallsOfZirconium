@@ -1,7 +1,7 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
@@ -40,9 +40,9 @@ public class BoSChestsListener implements Listener
     {
         this.p = plugin;
 
-        soundCountIncrease = Config.DIAMONDS.SOUNDS.COUNT_INCREASE.get();
-        soundCountDecrease = Config.DIAMONDS.SOUNDS.COUNT_DECREASE.get();
-        soundChestLocked   = Config.DIAMONDS.SOUNDS.CHEST_LOCKED.get();
+        soundCountIncrease = GameConfig.DIAMONDS.SOUNDS.COUNT_INCREASE.get();
+        soundCountDecrease = GameConfig.DIAMONDS.SOUNDS.COUNT_DECREASE.get();
+        soundChestLocked   = GameConfig.DIAMONDS.SOUNDS.CHEST_LOCKED.get();
     }
 
     /**
@@ -118,7 +118,7 @@ public class BoSChestsListener implements Listener
         if (ev.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!BoSUtils.isSharedChest(ev.getClickedBlock())) return;
 
-        BoSTeam playerTeam = p.getTeamManager().getTeamForPlayer(ev.getPlayer());
+        BoSTeam playerTeam = p.getTeamsManager().getTeamForPlayer(ev.getPlayer());
 
         if (p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
                 && (playerTeam == null || (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1()) && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2()))))

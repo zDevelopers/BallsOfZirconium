@@ -35,6 +35,7 @@ import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
+import eu.carrade.amaury.BallsOfSteel.utils.StringToChatColor;
 import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
@@ -57,7 +58,7 @@ import java.util.Set;
 public class TeamsCommand extends Command
 {
     private final List<String> colors = new ArrayList<>();
-    private final BoSTeamsManager tm = BallsOfSteel.get().getTeamManager();
+    private final BoSTeamsManager tm = BallsOfSteel.get().getTeamsManager();
 
     public TeamsCommand()
     {
@@ -123,8 +124,7 @@ public class TeamsCommand extends Command
         // /bos team add <color>
         if (args.length == 2)
         {
-
-            ChatColor color = BallsOfSteel.get().getTeamManager().getChatColorByName(args[1]);
+            ChatColor color = StringToChatColor.getChatColorByName(args[1]);
 
             if (color == null)
             {
@@ -148,8 +148,7 @@ public class TeamsCommand extends Command
         // /bos team add <color> <name ...>
         else if (args.length >= 3)
         {
-
-            ChatColor color = BallsOfSteel.get().getTeamManager().getChatColorByName(args[1]);
+            ChatColor color = StringToChatColor.getChatColorByName(args[1]);
 
             if (color == null)
             {
@@ -228,7 +227,7 @@ public class TeamsCommand extends Command
         }
 
         // /bos spawn <team ...>
-        if (BallsOfSteel.get().getTeamManager().getTeam(nameTeamWithoutCoords) != null)
+        if (BallsOfSteel.get().getTeamsManager().getTeam(nameTeamWithoutCoords) != null)
         {
             if (!(sender instanceof Player))
             {
@@ -240,7 +239,7 @@ public class TeamsCommand extends Command
         }
 
         // /bos spawn <x,y,z> <team ...>
-        else if (BallsOfSteel.get().getTeamManager().getTeam(nameTeamWithCoords) != null)
+        else if (BallsOfSteel.get().getTeamsManager().getTeam(nameTeamWithCoords) != null)
         {
             teamName = nameTeamWithCoords;
 
@@ -287,7 +286,7 @@ public class TeamsCommand extends Command
             error(I.t("{ce}This team does not exists."));
         }
 
-        BoSTeam team = BallsOfSteel.get().getTeamManager().getTeam(teamName); // This cannot be null, here.
+        BoSTeam team = BallsOfSteel.get().getTeamsManager().getTeam(teamName); // This cannot be null, here.
 
         team.setSpawnPoint(spawnPoint);
 
@@ -323,7 +322,7 @@ public class TeamsCommand extends Command
         }
 
         // /bos chest <team ...>
-        if (BallsOfSteel.get().getTeamManager().getTeam(nameTeamWithoutCoordinates) != null)
+        if (BallsOfSteel.get().getTeamsManager().getTeam(nameTeamWithoutCoordinates) != null)
         {
             if (!(sender instanceof Player))
             {
@@ -351,7 +350,7 @@ public class TeamsCommand extends Command
         }
 
         // /bos chest <x,y,z> <team ...>
-        else if (BallsOfSteel.get().getTeamManager().getTeam(nameTeamWithCoordinates) != null)
+        else if (BallsOfSteel.get().getTeamsManager().getTeam(nameTeamWithCoordinates) != null)
         {
             teamName = nameTeamWithCoordinates;
 
@@ -384,7 +383,7 @@ public class TeamsCommand extends Command
             error(I.t("{ce}This team does not exists."));
         }
 
-        final BoSTeam team = BallsOfSteel.get().getTeamManager().getTeam(teamName); // This cannot be null, here.
+        final BoSTeam team = BallsOfSteel.get().getTeamsManager().getTeam(teamName); // This cannot be null, here.
 
         try
         {
@@ -425,7 +424,7 @@ public class TeamsCommand extends Command
                     error(I.t("{ce}The team {0}{ce} is full!", teamName));
                 }
 
-                final BoSTeam team = BallsOfSteel.get().getTeamManager().getTeam(teamName);
+                final BoSTeam team = BallsOfSteel.get().getTeamsManager().getTeam(teamName);
                 success(I.t("{cs}The player {0} was successfully added to the team {1}", args[1], team.getDisplayName()));
             }
         }
@@ -513,7 +512,7 @@ public class TeamsCommand extends Command
             else if (args[1].equalsIgnoreCase("remove"))
             {
                 ArrayList<String> teamNames = new ArrayList<String>();
-                for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+                for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
                 {
                     teamNames.add(team.getName());
                 }

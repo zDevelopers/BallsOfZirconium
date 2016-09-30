@@ -4,18 +4,17 @@ import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
-import fr.zcraft.zlib.components.configuration.ConfigurationList;
 import fr.zcraft.zlib.components.configuration.ConfigurationSection;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.Sound;
-import org.bukkit.World;
 
 import java.util.Locale;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.*;
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.item;
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.section;
 
 
-public class Config extends Configuration
+public class GameConfig extends Configuration
 {
     static
     {
@@ -26,7 +25,6 @@ public class Config extends Configuration
     static public final ConfigurationItem<Locale> LANG = item("lang", Locale.getDefault());
 
     static public final ConfigurationItem<String> GAME_NAME = item("gameName", "Balls of Steel");
-    static public final ConfigurationItem<World> WORLD = item("world", null);
     static public final ConfigurationItem<String> DURATION = item("duration", "59:59");
     static public final ConfigurationItem<Boolean> USE_BAR = item("useBar", true);
     
@@ -72,5 +70,4 @@ public class Config extends Configuration
     }
     
     static public final ConfigurationItem<Boolean> LOG_TEAM_CHAT = item("logTeamChat", false);
-    static public final ConfigurationList<String> TEAMS = list("teams", String.class);
 }

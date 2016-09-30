@@ -19,7 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.entity.Player;
@@ -79,7 +79,7 @@ public class BoSTeamChatManager extends ZLibComponent implements Listener
         if (team == null)
         {
             rawMessage = I.t("{gold}[{0}{gold} -> his team] {reset}{1}", sender.getDisplayName(), message);
-            recipient = BallsOfSteel.get().getTeamManager().getTeamForPlayer(sender);
+            recipient = BallsOfSteel.get().getTeamsManager().getTeamForPlayer(sender);
 
             if (recipient == null)
             {
@@ -126,7 +126,7 @@ public class BoSTeamChatManager extends ZLibComponent implements Listener
         }
 
         // ... and to the console.
-        if (Config.LOG_TEAM_CHAT.get())
+        if (GameConfig.LOG_TEAM_CHAT.get())
         {
             BallsOfSteel.get().getServer().getConsoleSender().sendMessage(rawMessage);
         }
@@ -228,7 +228,7 @@ public class BoSTeamChatManager extends ZLibComponent implements Listener
         else
         {
             BoSTeam lockedTeam = this.otherTeamChatLocked.get(player.getUniqueId());
-            BoSTeam playerTeam = BallsOfSteel.get().getTeamManager().getTeamForPlayer(player);
+            BoSTeam playerTeam = BallsOfSteel.get().getTeamsManager().getTeamForPlayer(player);
             return (lockedTeam != null && lockedTeam.equals(team)) || (playerTeam != null && playerTeam.equals(team));
         }
     }

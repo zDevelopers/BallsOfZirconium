@@ -1,7 +1,7 @@
 package eu.carrade.amaury.BallsOfSteel.integration;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import fr.zcraft.zlib.components.i18n.I;
@@ -29,7 +29,7 @@ public class BarAPIWrapper extends ZLibComponent
         }
 
         enabled = true;
-        wanted = Config.USE_BAR.get();
+        wanted = GameConfig.USE_BAR.get();
     }
 
     /**

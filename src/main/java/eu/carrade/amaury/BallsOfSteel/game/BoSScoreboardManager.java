@@ -19,7 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import fr.zcraft.zlib.components.i18n.I;
@@ -47,7 +47,7 @@ public class BoSScoreboardManager extends ZLibComponent
     {
         this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        this.sidebarTitle = Config.GAME_NAME.get();
+        this.sidebarTitle = GameConfig.GAME_NAME.get();
     }
 
 
@@ -67,7 +67,7 @@ public class BoSScoreboardManager extends ZLibComponent
         sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
         updateTimer();
 
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue;
 

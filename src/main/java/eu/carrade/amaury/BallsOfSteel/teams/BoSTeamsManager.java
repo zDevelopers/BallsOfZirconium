@@ -19,9 +19,11 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
+import fr.zcraft.zlib.tools.runners.RunTask;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -38,9 +40,16 @@ public class BoSTeamsManager extends ZLibComponent
     @Override
     public void onEnable()
     {
-        this.maxPlayersPerTeam = Config.TEAMS_OPTIONS.MAX_PLAYERS_PER_TEAM.get();
+        this.maxPlayersPerTeam = GameConfig.TEAMS_OPTIONS.MAX_PLAYERS_PER_TEAM.get();
 
-        importTeamsFromConfig();
+        // Wait for all components initialization
+        RunTask.nextTick(new Runnable() {
+            @Override
+            public void run()
+            {
+                importTeamsFromConfig();
+            }
+        });
     }
 
 
@@ -58,7 +67,7 @@ public class BoSTeamsManager extends ZLibComponent
             throw new IllegalArgumentException("There is already a team named " + name + " registered!");
         }
 
-        teams.add(new BoSTeam(name, color, BallsOfSteel.get()));
+        teams.add(new BoSTeam(name, color));
     }
 
     /**
@@ -220,7 +229,7 @@ public class BoSTeamsManager extends ZLibComponent
      */
     public void colorizePlayer(OfflinePlayer offlinePlayer)
     {
-        if (!Config.COLORIZE_CHAT.get() || !offlinePlayer.isOnline())
+        if (!GameConfig.COLORIZE_CHAT.get() || !offlinePlayer.isOnline())
             return;
 
         final Player player = (Player) offlinePlayer;
@@ -305,98 +314,15 @@ public class BoSTeamsManager extends ZLibComponent
      */
     public int importTeamsFromConfig()
     {
-        if (BallsOfSteel.get().getConfig().getList("teams") != null)
+        int count = 0;
+        for (BoSTeam team : MapConfig.TEAMS)
         {
-            int teamsCount = 0;
-            for (Object teamRaw : BallsOfSteel.get().getConfig().getList("teams"))
-            {
-                if (teamRaw instanceof String && teamRaw != null)
-                {
-                    String[] teamRawSeparated = ((String) teamRaw).split(",");
-                    ChatColor color = getChatColorByName(teamRawSeparated[0]);
-                    if (color == null)
-                    {
-                        BallsOfSteel.get().getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
-                    }
-                    else
-                    {
-                        // "color,name"
-                        if (teamRawSeparated.length == 2)
-                        {
-                            addTeam(color, teamRawSeparated[1]);
-                            BallsOfSteel.get().getLogger().info(I.t("Team {0} ({1}) added from the config file", teamRawSeparated[1], teamRawSeparated[0]));
-                            teamsCount++;
-                        }
-                        // "color"
-                        else if (teamRawSeparated.length == 1)
-                        {
-                            addTeam(color, teamRawSeparated[0]);
-                            BallsOfSteel.get().getLogger().info(I.t("Team {0} added from the config file", teamRawSeparated[0]));
-                            teamsCount++;
-                        }
-                        else
-                        {
-                            BallsOfSteel.get().getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
-                        }
-                    }
-                }
-            }
-
-            return teamsCount;
+            addTeam(team);
+            count++;
         }
 
-        return 0;
-    }
+        BallsOfSteel.get().getGameManager().updateTrackedChests();
 
-
-    /**
-     * Used to convert a string to a ChatColor object.
-     */
-    private enum StringToChatColor
-    {
-        AQUA("Aqua", ChatColor.AQUA),
-        BLACK("Black", ChatColor.BLACK),
-        BLUE("Blue", ChatColor.BLUE),
-        DARK_AQUA("Darkaqua", ChatColor.DARK_AQUA),
-        DARK_BLUE("Darkblue", ChatColor.DARK_BLUE),
-        DARK_GRAY("Darkgray", ChatColor.DARK_GRAY),
-        DARK_GREEN("Darkgreen", ChatColor.DARK_GREEN),
-        DARK_PURPLE("Darkpurple", ChatColor.DARK_PURPLE),
-        DARK_RED("Darkred", ChatColor.DARK_RED),
-        GOLD("Gold", ChatColor.GOLD),
-        GRAY("Gray", ChatColor.GRAY),
-        GREEN("Green", ChatColor.GREEN),
-        LIGHT_PURPLE("Lightpurple", ChatColor.LIGHT_PURPLE),
-        RED("Red", ChatColor.RED),
-        WHITE("White", ChatColor.WHITE),
-        YELLOW("Yellow", ChatColor.YELLOW);
-
-        private String name;
-        private ChatColor color;
-
-        StringToChatColor(String name, ChatColor color)
-        {
-            this.name = name;
-            this.color = color;
-        }
-
-        public static ChatColor getChatColorByName(String name)
-        {
-            for (StringToChatColor stcc : values())
-            {
-                if (stcc.name.equalsIgnoreCase(name)) return stcc.color;
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Utility: return the ChatColor version of a color, or null if the provided color is invalid.
-     * @param name The name of the color.
-     * @return ChatColor
-     */
-    public ChatColor getChatColorByName(String name)
-    {
-        return StringToChatColor.getChatColorByName(name);
+        return count;
     }
 }

@@ -18,13 +18,15 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.Config;
+import eu.carrade.amaury.BallsOfSteel.GameConfig;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
+import fr.zcraft.zlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -70,18 +72,14 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
         try
         {
-            timer.setDuration(BoSUtils.string2Time(Config.DURATION.get()));
+            timer.setDuration(BoSUtils.string2Time(GameConfig.DURATION.get()));
         }
         catch (IllegalArgumentException e)
         {
             timer.setDuration(3600); // One hour by default.
         }
 
-        final World configWorld = Config.WORLD.get();
-        if (configWorld != null)
-        {
-            setGameWorld(configWorld);
-        }
+        setGameWorld(MapConfig.WORLD.get());
     }
 
 
@@ -102,7 +100,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
         // Check: non-empty teams registered
         boolean onlyEmpty = true;
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getPlayers().size() != 0)
             {
@@ -120,7 +118,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         // Check: all the teams with players inside needs to have a chest and a spawn point.
         boolean chestsOK = true;
         boolean spawnsOK = true;
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue; // empty team
 
@@ -154,7 +152,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         }
 
         // Teleportation, equipment
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue;
 
@@ -203,8 +201,8 @@ public class BoSGameManager extends ZLibComponent implements Listener
         BallsOfSteel.get().getScoreboardManager().initScoreboard();
 
         // Sound
-        if (Config.START.SOUND.get() != null)
-            Config.START.SOUND.get().broadcast(gameWorld);
+        if (GameConfig.START.SOUND.get() != null)
+            GameConfig.START.SOUND.get().broadcast(gameWorld);
 
         // Message
         BoSUtils.worldBroadcast(gameWorld, I.t("{green}--- GO ---"));
@@ -343,7 +341,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
     public void updateTrackedChests()
     {
         trackedChests.clear();
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getChestLocation1() != null)
             {
@@ -378,7 +376,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         int bestCount = -1;
         BoSTeam winner = null;
 
-        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamsManager().getTeams())
         {
             if (team.getDiamondsCount() > bestCount)
             {
@@ -415,11 +413,11 @@ public class BoSGameManager extends ZLibComponent implements Listener
         inv.clear();
 
         // Weapons
-        if (Config.EQUIPMENT.SWORD.get())
+        if (GameConfig.EQUIPMENT.SWORD.get())
         {
             inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
         }
-        if (Config.EQUIPMENT.BOW.get())
+        if (GameConfig.EQUIPMENT.BOW.get())
         {
             ItemStack bow = new ItemStack(Material.BOW, 1);
             bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
@@ -430,7 +428,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         }
 
         // Tools
-        if (Config.EQUIPMENT.TOOLS.get())
+        if (GameConfig.EQUIPMENT.TOOLS.get())
         {
             inv.addItem(new ItemStack(Material.IRON_PICKAXE, 1));
             inv.addItem(new ItemStack(Material.IRON_AXE, 1));
@@ -438,8 +436,8 @@ public class BoSGameManager extends ZLibComponent implements Listener
         }
 
         // Food & blocks
-        boolean food = Config.EQUIPMENT.FOOD.get();
-        boolean blocks = Config.EQUIPMENT.BLOCKS.get();
+        boolean food = GameConfig.EQUIPMENT.FOOD.get();
+        boolean blocks = GameConfig.EQUIPMENT.BLOCKS.get();
         if (food || blocks)
         {
             ItemStack foodStack = new ItemStack(Material.COOKED_BEEF, 64);
@@ -457,7 +455,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         }
 
         // Armor
-        switch (Config.EQUIPMENT.ARMOR.get())
+        switch (GameConfig.EQUIPMENT.ARMOR.get())
         {
             case NONE:
                 break;
@@ -511,13 +509,13 @@ public class BoSGameManager extends ZLibComponent implements Listener
         {
             BallsOfSteel.get().getBarAPIWrapper().setWaitingBar(ev.getPlayer());
         }
-        else if (ev.getPlayer().getWorld().equals(getGameWorld()) || BallsOfSteel.get().getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
+        else if (ev.getPlayer().getWorld().equals(getGameWorld()) || BallsOfSteel.get().getTeamsManager().getTeamForPlayer(ev.getPlayer()) != null)
         {
             // Mainly useful on the first join.
             BallsOfSteel.get().getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
 
             // The display name is reset when the player logs off.
-            BallsOfSteel.get().getTeamManager().colorizePlayer(ev.getPlayer());
+            BallsOfSteel.get().getTeamsManager().colorizePlayer(ev.getPlayer());
         }
     }
 
@@ -529,10 +527,19 @@ public class BoSGameManager extends ZLibComponent implements Listener
     {
         if (isGameRunning() && ev.getPlayer().getWorld().equals(getGameWorld()))
         {
-            if (BallsOfSteel.get().getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
+            final BoSTeam team = BallsOfSteel.get().getTeamsManager().getTeamForPlayer(ev.getPlayer());
+            if (team != null)
             {
                 // The player is in a team, aka a "playing player".
                 equipPlayer(ev.getPlayer());
+
+                RunTask.nextTick(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        ev.getPlayer().teleport(team.getSpawnPoint());
+                    }
+                });
             }
         }
     }
