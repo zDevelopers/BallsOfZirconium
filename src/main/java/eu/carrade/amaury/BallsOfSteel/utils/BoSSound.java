@@ -18,12 +18,16 @@
 
 package eu.carrade.amaury.BallsOfSteel.utils;
 
+import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 
 /**
@@ -55,31 +59,6 @@ public class BoSSound
     }
 
     /**
-     * Constructs a sound from a configuration section.
-     * <p>
-     * Format:
-     * <pre>
-     * key:
-     *     name: string parsable as a sound. If not parsable, null used (i.e. no sound played).
-     *     volume: decimal number
-     *     pitch: decimal number
-     * </pre>
-     *
-     * @param config The configuration section.
-     */
-    public BoSSound(ConfigurationSection config)
-    {
-        if (config == null)
-        {
-            return;
-        }
-
-        this.sound = string2Sound(config.getString("name"));
-        this.volume = (float) config.getDouble("volume");
-        this.pitch = (float) config.getDouble("pitch");
-    }
-
-    /**
      * Plays the sound for the specified player.
      * <p>
      * The sound is played at the current location of the player.
@@ -103,7 +82,8 @@ public class BoSSound
      */
     public void play(Player player, Location location)
     {
-        player.playSound(location, sound, volume, pitch);
+        if (sound != null)
+            player.playSound(location, sound, volume, pitch);
     }
 
     /**
@@ -192,7 +172,7 @@ public class BoSSound
         {
             return false;
         }
-        BoSSound other = (BoSSound) obj;
+        final BoSSound other = (BoSSound) obj;
         if (pitch == null)
         {
             if (other.pitch != null)
@@ -243,11 +223,42 @@ public class BoSSound
             }
             catch (IllegalArgumentException e)
             {
+                String[] prefixes = new String[] {"BLOCK_", "ENTITY_", "ITEM_", "MUSIC_", "WEATHER_"};
+                for (String prefix : prefixes)
+                {
+                    try { return Sound.valueOf(prefix + soundName); }
+                    catch(IllegalArgumentException ignored) {}
+                }
+
                 // Non-existent sound
                 return null;
             }
         }
 
         return null;
+    }
+
+
+
+    @ConfigurationValueHandler
+    public static BoSSound handleSound(String sound)
+    {
+        if (sound == null) return null;
+        return new BoSSound(string2Sound(sound));
+    }
+
+    @ConfigurationValueHandler
+    public static BoSSound handleSound(Map soundMap) throws ConfigurationParseException
+    {
+        if (soundMap == null) return null;
+        if (!soundMap.containsKey("name")) throw new ConfigurationParseException("Sound name required", soundMap);
+
+        final Sound sound = string2Sound(soundMap.get("name").toString());
+        if (sound == null) throw new ConfigurationParseException("Unknown sound", soundMap.get("name").toString());
+
+        final Float volume = soundMap.containsKey("volume") ? ConfigurationValueHandlers.handleFloatValue(soundMap.get("volume")) : 1f;
+        final Float pitch  = soundMap.containsKey("pitch")  ? ConfigurationValueHandlers.handleFloatValue(soundMap.get("pitch"))  : 1f;
+
+        return new BoSSound(sound, volume, pitch);
     }
 }

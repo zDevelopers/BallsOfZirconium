@@ -19,6 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
 import fr.zcraft.zlib.components.i18n.I;
@@ -46,7 +47,7 @@ public class BoSScoreboardManager
 
         this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
-        this.sidebarTitle = I.t("Diamonds");
+        this.sidebarTitle = Config.GAME_NAME.get();
     }
 
     /**
@@ -87,7 +88,7 @@ public class BoSScoreboardManager
         final String timerText;
         if (!p.getBarAPIWrapper().isNeeded() && p.getGameManager().isGameRunning())
         {
-            timerText = I.t("{0}   {gold}{1}", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
+            timerText = I.t("{0}{gray}│ {gold}{1}", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
         }
         else
         {

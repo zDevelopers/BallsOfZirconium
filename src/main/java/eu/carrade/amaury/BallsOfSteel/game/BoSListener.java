@@ -1,6 +1,7 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
@@ -30,13 +31,15 @@ public class BoSListener implements Listener
 
     BoSSound soundCountIncrease = null;
     BoSSound soundCountDecrease = null;
+    BoSSound soundChestLocked = null;
 
     public BoSListener(BallsOfSteel plugin)
     {
         this.p = plugin;
 
-        soundCountIncrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countIncrease"));
-        soundCountDecrease = new BoSSound(p.getConfig().getConfigurationSection("diamonds.sounds.countDecrease"));
+        soundCountIncrease = Config.DIAMONDS.SOUNDS.COUNT_INCREASE.get();
+        soundCountDecrease = Config.DIAMONDS.SOUNDS.COUNT_DECREASE.get();
+        soundChestLocked   = Config.DIAMONDS.SOUNDS.CHEST_LOCKED.get();
     }
 
     /**
@@ -69,7 +72,6 @@ public class BoSListener implements Listener
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent ev)
     {
-
         if (ev.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!BoSUtils.isSharedChest(ev.getClickedBlock())) return;
 
@@ -80,6 +82,8 @@ public class BoSListener implements Listener
         {
             ev.getPlayer().sendMessage(I.t("{ce}You cannot open the chests of another team."));
             ev.setCancelled(true);
+
+            if (soundChestLocked != null) soundChestLocked.play(ev.getPlayer());
         }
     }
 
@@ -179,11 +183,11 @@ public class BoSListener implements Listener
 
                 if (diamonds > oldDiamondsCount)
                 {
-                    soundCountIncrease.broadcast(p.getGameManager().getGameWorld());
+                    if (soundCountIncrease != null) soundCountIncrease.broadcast(p.getGameManager().getGameWorld());
                 }
                 else if (diamonds < oldDiamondsCount)
                 {
-                    soundCountDecrease.broadcast(p.getGameManager().getGameWorld());
+                    if (soundCountDecrease != null) soundCountDecrease.broadcast(p.getGameManager().getGameWorld());
                 }
             }
         }

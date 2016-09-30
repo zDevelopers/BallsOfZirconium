@@ -19,6 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -38,7 +39,7 @@ public class BoSTeamManager
     public BoSTeamManager(BallsOfSteel plugin)
     {
         this.p = plugin;
-        this.maxPlayersPerTeam = p.getConfig().getInt("teams-options.maxPlayersPerTeam");
+        this.maxPlayersPerTeam = Config.TEAMS_OPTIONS.MAX_PLAYERS_PER_TEAM.get();
     }
 
 
@@ -199,11 +200,10 @@ public class BoSTeamManager
     {
         // 1: scoreboard reset
         for (BoSTeam team : teams)
-        {
             this.removeTeam(team, dontNotify);
-        }
+
         // 2: internal list reset
-        teams = new ArrayList<>();
+        teams.clear();
     }
 
     /**
@@ -211,13 +211,7 @@ public class BoSTeamManager
      */
     public void reset()
     {
-        // 1: scoreboard reset
-        for (BoSTeam team : teams)
-        {
-            this.removeTeam(team, false);
-        }
-        // 2: internal list reset
-        teams = new ArrayList<BoSTeam>();
+        reset(false);
     }
 
     /**
@@ -225,19 +219,11 @@ public class BoSTeamManager
      */
     public void colorizePlayer(OfflinePlayer offlinePlayer)
     {
-        if (!p.getConfig().getBoolean("colorizeChat"))
-        {
+        if (!Config.COLORIZE_CHAT.get() || !offlinePlayer.isOnline())
             return;
-        }
 
-        if (!offlinePlayer.isOnline())
-        {
-            return;
-        }
-
-        Player player = (Player) offlinePlayer;
-
-        BoSTeam team = getTeamForPlayer(player);
+        final Player player = (Player) offlinePlayer;
+        final BoSTeam team = getTeamForPlayer(player);
 
         if (team == null)
         {

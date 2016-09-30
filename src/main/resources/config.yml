@@ -15,17 +15,22 @@ lang: en_US
 
 
 
+# The game name displayed in the sidebar
+gameName: "Balls of Steel"
+
+
+
 # Specify here the world where the game will take place.
 # If this is left empty, the world will be automatically detected, based on the
 # teams' spawn points, but the “waiting” boss bar, displayed when the game is
 # not started, will be displayed to everyone on the server.
-world: ""
+world:
 
 
 
 # The duration of the game.
 # Format: "mm", "mm:ss" or "hh:mm:ss".
-duration: "60"
+duration: "59:59"
 
 
 
@@ -48,7 +53,7 @@ diamonds:
     sounds:
         # Played when a team place some diamonds in the chest
         countIncrease:
-            name: SUCCESSFUL_HIT
+            name: ENTITY_ARROW_HIT_PLAYER
             volume: 1
             pitch: 3
         
@@ -57,6 +62,12 @@ diamonds:
             name: NONE
             volume: 1
             pitch: 0.2
+
+        # Played when someone try to access another team chest (to himself only)
+        chestLocked:
+            name: BLOCK_CHEST_LOCKED
+            volume: 2
+            pitch: 1
 
 
 
@@ -67,7 +78,7 @@ equipment:
     tools: true     # pickaxe, axe, shovel
     sword: false    # sword
     bow: true       # infinity bow, one arrow
-    armor: "none"   # "none", "weak" (leather), "normal" (chainmail), "strong" (iron) or "strong+" (diamond).
+    armor: "none"   # "none", "weak" (leather), "normal" (chainmail), "strong" (iron) or "very strong" (diamond).
 
 
 

@@ -19,6 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
@@ -93,8 +94,8 @@ public class BoSTeam
             t.setPrefix(this.color.toString());
         }
 
-        t.setCanSeeFriendlyInvisibles(plugin.getConfig().getBoolean("teams-options.canSeeFriendlyInvisibles", true));
-        t.setAllowFriendlyFire(plugin.getConfig().getBoolean("teams-options.allowFriendlyFire", true));
+        t.setCanSeeFriendlyInvisibles(Config.TEAMS_OPTIONS.CAN_SEE_FRIENDLY_INVISIBLES.get());
+        t.setAllowFriendlyFire(Config.TEAMS_OPTIONS.ALLOW_FRIENDLY_FIRE.get());
     }
 
     /**
@@ -227,8 +228,6 @@ public class BoSTeam
 
     /**
      * Returns the number of diamonds owned by this team.
-     *
-     * @return
      */
     public int getDiamondsCount()
     {
@@ -240,8 +239,6 @@ public class BoSTeam
      * Returns the name of the team.
      *
      * Can include spaces.
-     *
-     * @return
      */
     public String getName()
     {
@@ -256,8 +253,6 @@ public class BoSTeam
      *  - else, the name of the team with:
      *     - before, the color of the team;
      *     - after, the "reset" formatting mark (§r).
-     *
-     * @return
      */
     public String getDisplayName()
     {
@@ -266,8 +261,6 @@ public class BoSTeam
 
     /**
      * Returns the players inside this team.
-     *
-     * @return
      */
     public ArrayList<OfflinePlayer> getPlayers()
     {
@@ -291,12 +284,10 @@ public class BoSTeam
 
     /**
      * Returns the online players inside this team.
-     *
-     * @return
      */
     public ArrayList<Player> getOnlinePlayers()
     {
-        ArrayList<Player> playersList = new ArrayList<Player>();
+        ArrayList<Player> playersList = new ArrayList<>();
 
         for (UUID id : players)
         {
@@ -345,8 +336,6 @@ public class BoSTeam
      *
      * Internal use, avoids a ConcurrentModificationException in this.deleteTeam()
      * (this.players is listed and emptied simultaneously, else).
-     *
-     * @param player
      */
     private void unregisterPlayer(OfflinePlayer player)
     {
@@ -412,8 +401,6 @@ public class BoSTeam
 
     /**
      * Teleports the entire team to the given location.
-     *
-     * @param lo
      */
     public void teleportTo(Location lo)
     {

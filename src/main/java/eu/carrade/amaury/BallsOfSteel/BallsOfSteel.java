@@ -57,9 +57,9 @@ public final class BallsOfSteel extends ZPlugin
 
         this.saveDefaultConfig();
 
-        loadComponents(I18n.class, Commands.class);
+        loadComponents(I18n.class, Commands.class, Config.class);
 
-        I18n.useDefaultPrimaryLocale();
+        I18n.setPrimaryLocale(Config.LANG.get());
 
         teamManager = new BoSTeamManager(this);
         teamChatManager = new BoSTeamChatManager(this);

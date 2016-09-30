@@ -15,15 +15,14 @@
  * this program.  If not, see [http://www.gnu.org/licenses/].
  */
 
-
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
-import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import eu.carrade.amaury.BallsOfSteel.timers.UpdateTimerTask;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -48,11 +47,12 @@ public class BoSGameManager
     private boolean running = false;
 
     private World gameWorld = null;
-    private Map<Location, BoSTeam> trackedChests = new HashMap<Location, BoSTeam>();
+    private Map<Location, BoSTeam> trackedChests = new HashMap<>();
     private BoSTimer timer = null;
     private UpdateTimerTask updateTimerTask = null;
 
     public final static String TIMER_NAME = "eu.carrade.amaury.ballsofsteel";
+
 
     public BoSGameManager(BallsOfSteel plugin)
     {
@@ -62,19 +62,20 @@ public class BoSGameManager
 
         try
         {
-            timer.setDuration(BoSUtils.string2Time(p.getConfig().getString("duration", "60")));
+            timer.setDuration(BoSUtils.string2Time(Config.DURATION.get()));
         }
         catch (IllegalArgumentException e)
         {
             timer.setDuration(3600); // One hour by default.
         }
 
-        World configWorld = p.getServer().getWorld(p.getConfig().getString("world"));
+        final World configWorld = Config.WORLD.get();
         if (configWorld != null)
         {
             setGameWorld(configWorld);
         }
     }
+
 
     /**
      * Starts the game.
@@ -196,10 +197,10 @@ public class BoSGameManager
         p.getScoreboardManager().initScoreboard();
 
         // Sound
-        new BoSSound(p.getConfig().getConfigurationSection("start.sound")).broadcast(getGameWorld());
+        Config.START.SOUND.get().broadcast(gameWorld);
 
         // Message
-        BoSUtils.worldBroadcast(getGameWorld(), I.t("{green}--- GO ---"));
+        BoSUtils.worldBroadcast(gameWorld, I.t("{green}--- GO ---"));
 
         running = true;
     }
@@ -361,7 +362,7 @@ public class BoSGameManager
     }
 
     /**
-     * Returns the current winner of the game (aka the team with the higest diamond count).
+     * Returns the current winner of the game (aka the team with the highest diamond count).
      *
      * @return The team.
      */
@@ -407,21 +408,22 @@ public class BoSGameManager
         inv.clear();
 
         // Weapons
-        if (p.getConfig().getBoolean("equipment.sword"))
+        if (Config.EQUIPMENT.SWORD.get())
         {
             inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
         }
-        if (p.getConfig().getBoolean("equipment.bow"))
+        if (Config.EQUIPMENT.BOW.get())
         {
             ItemStack bow = new ItemStack(Material.BOW, 1);
             bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+            bow.addEnchantment(Enchantment.DURABILITY, 3);
             inv.addItem(bow);
 
             inv.setItem(9, new ItemStack(Material.ARROW, 1));
         }
 
         // Tools
-        if (p.getConfig().getBoolean("equipment.tools"))
+        if (Config.EQUIPMENT.TOOLS.get())
         {
             inv.addItem(new ItemStack(Material.IRON_PICKAXE, 1));
             inv.addItem(new ItemStack(Material.IRON_AXE, 1));
@@ -429,8 +431,8 @@ public class BoSGameManager
         }
 
         // Food & blocks
-        boolean food = p.getConfig().getBoolean("equipment.food");
-        boolean blocks = p.getConfig().getBoolean("equipment.blocks");
+        boolean food = Config.EQUIPMENT.FOOD.get();
+        boolean blocks = Config.EQUIPMENT.BLOCKS.get();
         if (food || blocks)
         {
             ItemStack foodStack = new ItemStack(Material.COOKED_BEEF, 64);
@@ -448,38 +450,72 @@ public class BoSGameManager
         }
 
         // Armor
-        if (!p.getConfig().getString("equipment.armor", "none").equals("none"))
+        switch (Config.EQUIPMENT.ARMOR.get())
         {
-            switch (p.getConfig().getString("equipment.armor"))
-            {
-                case "weak":
-                    inv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
-                    inv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
-                    inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-                    inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
-                    break;
-                case "strong":
-                    inv.setHelmet(new ItemStack(Material.IRON_HELMET));
-                    inv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-                    inv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-                    inv.setBoots(new ItemStack(Material.IRON_BOOTS));
-                    break;
-                case "strong+":
-                    inv.setHelmet(new ItemStack(Material.DIAMOND_HELMET));
-                    inv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
-                    inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
-                    inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
-                    break;
-                default: // "normal"
-                    inv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
-                    inv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-                    inv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
-                    inv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
-                    break;
-            }
+            case NONE:
+                break;
+
+            case WEAK:
+                inv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
+                inv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
+                inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
+                inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
+                break;
+
+            case NORMAL:
+                inv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+                inv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                inv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
+                inv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
+                break;
+
+            case STRONG:
+                inv.setHelmet(new ItemStack(Material.IRON_HELMET));
+                inv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
+                inv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
+                inv.setBoots(new ItemStack(Material.IRON_BOOTS));
+                break;
+
+            case VERY_STRONG:
+                inv.setHelmet(new ItemStack(Material.DIAMOND_HELMET));
+                inv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
+                inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+                inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+                break;
         }
 
         inv.setHeldItemSlot(0);
         player.updateInventory(); // Deprecated but needed
+    }
+
+    /**
+     * The player's armor type
+     */
+    public enum PlayerArmorType
+    {
+        /**
+         * No armor
+         */
+        NONE,
+
+        /**
+         * Leather armor
+         */
+        WEAK,
+
+        /**
+         * Chainmail armor
+         */
+        NORMAL,
+
+        /**
+         * Iron armor
+         */
+        STRONG,
+
+        /**
+         * Diamond armor
+         */
+        VERY_STRONG
     }
 }

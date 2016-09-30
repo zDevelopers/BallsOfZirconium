@@ -19,6 +19,7 @@
 package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.Config;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.entity.Player;
 
@@ -127,7 +128,7 @@ public class BoSTeamChatManager
         }
 
         // ... and to the console.
-        if (p.getConfig().getBoolean("logTeamChat"))
+        if (Config.LOG_TEAM_CHAT.get())
         {
             p.getServer().getConsoleSender().sendMessage(rawMessage);
         }
@@ -219,7 +220,6 @@ public class BoSTeamChatManager
      *
      * @param player The player.
      * @param team If non-null, this will check if the given player is spying the current team.
-     * @return
      */
     public boolean isTeamChatEnabled(Player player, BoSTeam team)
     {
@@ -239,7 +239,6 @@ public class BoSTeamChatManager
      * Returns true if the team chat is enabled for the given player.
      *
      * @param player The player.
-     * @return
      */
     public boolean isTeamChatEnabled(Player player)
     {
@@ -250,7 +249,6 @@ public class BoSTeamChatManager
      * Returns true if the given player is in the team chat of another team.
      *
      * @param player The player.
-     * @return
      */
     public boolean isOtherTeamChatEnabled(Player player)
     {
@@ -261,7 +259,6 @@ public class BoSTeamChatManager
      * Returns true if a team chat is enabled for the given player.
      *
      * @param player The player.
-     * @return
      */
     public boolean isAnyTeamChatEnabled(Player player)
     {
@@ -273,7 +270,6 @@ public class BoSTeamChatManager
      * the chat of another team.
      *
      * @param player The player.
-     * @return
      */
     public BoSTeam getOtherTeamEnabled(Player player)
     {

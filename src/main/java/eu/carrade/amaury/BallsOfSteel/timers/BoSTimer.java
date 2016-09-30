@@ -248,7 +248,7 @@ public class BoSTimer
     {
         if (running)
         {
-            return Float.valueOf(100 - ((System.currentTimeMillis() - this.startTime) / (10f * this.duration)));
+            return 100 - ((System.currentTimeMillis() - this.startTime) / (10f * this.duration));
         }
 
         return -1F;
