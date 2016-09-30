@@ -12,7 +12,7 @@ import java.util.UUID;
  *
  * @author Amaury Carrade
  */
-public class BoSTimer
+public class Timer
 {
     private UUID id = null;
     private String name = null;
@@ -40,7 +40,7 @@ public class BoSTimer
     private Boolean displayHoursInTimer = false;
 
 
-    public BoSTimer(String name)
+    public Timer(String name)
     {
         Validate.notNull(name, "The name cannot be null");
 
@@ -74,6 +74,8 @@ public class BoSTimer
     {
         this.running = true;
         this.startTime = System.currentTimeMillis();
+
+        Timers.registerTimer(this);
 
         Bukkit.getServer().getPluginManager().callEvent(new TimerStartsEvent(this));
     }
@@ -114,6 +116,8 @@ public class BoSTimer
                 this.oldHoursLeft = 0;
                 this.oldMinutesLeft = 0;
                 this.oldSecondsLeft = 0;
+
+                Timers.unregisterTimer(this);
             }
         }
     }
@@ -345,12 +349,12 @@ public class BoSTimer
     @Override
     public boolean equals(Object other)
     {
-        if (!(other instanceof BoSTimer))
+        if (!(other instanceof Timer))
         {
             return false;
         }
 
-        return ((BoSTimer) other).getName().equals(this.getName());
+        return ((Timer) other).getName().equals(this.getName());
     }
 
     @Override

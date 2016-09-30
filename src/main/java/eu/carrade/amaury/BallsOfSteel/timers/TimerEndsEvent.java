@@ -14,12 +14,12 @@ public final class TimerEndsEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
 
-    private BoSTimer timer;
+    private Timer timer;
     private Boolean timerWasUp = false;
     private Boolean restart = false;
 
 
-    public TimerEndsEvent(BoSTimer timer, Boolean timerUp)
+    public TimerEndsEvent(Timer timer, Boolean timerUp)
     {
         this.timer = timer;
 
@@ -31,7 +31,7 @@ public final class TimerEndsEvent extends Event
      *
      * @return the timer.
      */
-    public BoSTimer getTimer()
+    public Timer getTimer()
     {
         return timer;
     }

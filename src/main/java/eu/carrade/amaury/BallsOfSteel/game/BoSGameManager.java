@@ -20,10 +20,11 @@ package eu.carrade.amaury.BallsOfSteel.game;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
-import eu.carrade.amaury.BallsOfSteel.timers.UpdateTimerTask;
+import eu.carrade.amaury.BallsOfSteel.timers.Timer;
+import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -33,6 +34,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -40,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class BoSGameManager
+public class BoSGameManager extends ZLibComponent implements Listener
 {
     private BallsOfSteel p = null;
 
@@ -48,17 +53,20 @@ public class BoSGameManager
 
     private World gameWorld = null;
     private Map<Location, BoSTeam> trackedChests = new HashMap<>();
-    private BoSTimer timer = null;
-    private UpdateTimerTask updateTimerTask = null;
+    private Timer timer = null;
 
-    public final static String TIMER_NAME = "eu.carrade.amaury.ballsofsteel";
+    private final static String TIMER_NAME = "eu.carrade.amaury.ballsofsteel";
 
 
-    public BoSGameManager(BallsOfSteel plugin)
+    public BoSGameManager()
     {
-        this.p = plugin;
+        this.p = BallsOfSteel.get();
+    }
 
-        timer = new BoSTimer(TIMER_NAME);
+    @Override
+    protected void onEnable()
+    {
+        timer = new Timer(TIMER_NAME);
 
         try
         {
@@ -84,7 +92,7 @@ public class BoSGameManager
      *
      * @throws IllegalStateException if the game is already started.
      */
-    public void start(CommandSender sender)
+    public void start(final CommandSender sender)
     {
         if (running)
         {
@@ -94,7 +102,7 @@ public class BoSGameManager
 
         // Check: non-empty teams registered
         boolean onlyEmpty = true;
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getPlayers().size() != 0)
             {
@@ -112,7 +120,7 @@ public class BoSGameManager
         // Check: all the teams with players inside needs to have a chest and a spawn point.
         boolean chestsOK = true;
         boolean spawnsOK = true;
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue; // empty team
 
@@ -146,7 +154,7 @@ public class BoSGameManager
         }
 
         // Teleportation, equipment
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue;
 
@@ -190,14 +198,13 @@ public class BoSGameManager
 
         // Timer
         timer.start();
-        updateTimerTask = new UpdateTimerTask(p);
-        updateTimerTask.runTaskTimer(p, 0l, 20l);
 
         // Scoreboard
-        p.getScoreboardManager().initScoreboard();
+        BallsOfSteel.get().getScoreboardManager().initScoreboard();
 
         // Sound
-        Config.START.SOUND.get().broadcast(gameWorld);
+        if (Config.START.SOUND.get() != null)
+            Config.START.SOUND.get().broadcast(gameWorld);
 
         // Message
         BoSUtils.worldBroadcast(gameWorld, I.t("{green}--- GO ---"));
@@ -224,15 +231,15 @@ public class BoSGameManager
             BoSUtils.worldBroadcast(getGameWorld(), I.t("{red}--- The End ---"));
         }
 
-        p.getGameManager().setGameRunning(false);
+        setGameRunning(false);
 
-        if (p.getBarAPIWrapper().isNeeded())
+        if (BallsOfSteel.get().getBarAPIWrapper().isNeeded())
         {
-            p.getBarAPIWrapper().setEndBar();
+            BallsOfSteel.get().getBarAPIWrapper().setEndBar();
         }
         else
         {
-            p.getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
+            BallsOfSteel.get().getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
         }
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable()
@@ -240,7 +247,7 @@ public class BoSGameManager
             @Override
             public void run()
             {
-                BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+                BoSTeam winner = getCurrentWinnerTeam();
                 String winners = "";
                 int winnersCount = winner.getPlayers().size(), j = 0;
                 for (OfflinePlayer player : winner.getPlayers())
@@ -317,7 +324,7 @@ public class BoSGameManager
     public void setGameWorld(World world)
     {
         gameWorld = world;
-        p.getLogger().info("Game world set: " + gameWorld.getName() + ".");
+        BallsOfSteel.get().getLogger().info("Game world set: " + gameWorld.getName() + ".");
     }
 
     /**
@@ -325,7 +332,7 @@ public class BoSGameManager
      *
      * @return The timer.
      */
-    public BoSTimer getTimer()
+    public Timer getTimer()
     {
         return timer;
     }
@@ -336,7 +343,7 @@ public class BoSGameManager
     public void updateTrackedChests()
     {
         trackedChests.clear();
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getChestLocation1() != null)
             {
@@ -371,7 +378,7 @@ public class BoSGameManager
         int bestCount = -1;
         BoSTeam winner = null;
 
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getDiamondsCount() > bestCount)
             {
@@ -398,7 +405,7 @@ public class BoSGameManager
      *     - "weak": leather armor;
      *     - "normal": chainmail armor;
      *     - "strong": iron armor;
-     *     - "strong+": diamond armor.
+     *     - "very_strong": diamond armor.
      * </pre>
      * @param player The player to equip.
      */
@@ -487,6 +494,63 @@ public class BoSGameManager
         inv.setHeldItemSlot(0);
         player.updateInventory(); // Deprecated but needed
     }
+
+
+
+    /**
+     * Used to:
+     * - change the gamemode of the player, if the game is not running;
+     * - teleport the player to the spawn, if the game is not running;
+     * - update the scoreboard;
+     * - resurrect a player (if the player was offline).
+     */
+    @EventHandler
+    public void onPlayerJoin(final PlayerJoinEvent ev)
+    {
+        if (!isGameRunning())
+        {
+            BallsOfSteel.get().getBarAPIWrapper().setWaitingBar(ev.getPlayer());
+        }
+        else if (ev.getPlayer().getWorld().equals(getGameWorld()) || BallsOfSteel.get().getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
+        {
+            // Mainly useful on the first join.
+            BallsOfSteel.get().getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
+
+            // The display name is reset when the player logs off.
+            BallsOfSteel.get().getTeamManager().colorizePlayer(ev.getPlayer());
+        }
+    }
+
+    /**
+     * Used to equip the players when they respawn.
+     */
+    @EventHandler
+    public void onPlayerRespawn(final PlayerRespawnEvent ev)
+    {
+        if (isGameRunning() && ev.getPlayer().getWorld().equals(getGameWorld()))
+        {
+            if (BallsOfSteel.get().getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
+            {
+                // The player is in a team, aka a "playing player".
+                equipPlayer(ev.getPlayer());
+            }
+        }
+    }
+
+    /**
+     * Used to stop the game when the timer ends.
+     */
+    @EventHandler
+    public void onTimerEnds(TimerEndsEvent ev)
+    {
+        if (ev.getTimer().getName().equals(TIMER_NAME))
+        {
+            stop(true);
+        }
+    }
+
+
+
 
     /**
      * The player's armor type

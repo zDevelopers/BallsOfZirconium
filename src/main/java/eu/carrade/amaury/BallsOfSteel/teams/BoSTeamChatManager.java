@@ -21,7 +21,12 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,17 +35,10 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class BoSTeamChatManager
+public class BoSTeamChatManager extends ZLibComponent implements Listener
 {
-    private BallsOfSteel p = null;
-
     private List<UUID> teamChatLocked = new ArrayList<>();
     private Map<UUID, BoSTeam> otherTeamChatLocked = new HashMap<>();
-
-    public BoSTeamChatManager(BallsOfSteel p)
-    {
-        this.p = p;
-    }
 
     /**
      * Sends a team-message from the given sender.
@@ -81,7 +79,7 @@ public class BoSTeamChatManager
         if (team == null)
         {
             rawMessage = I.t("{gold}[{0}{gold} -> his team] {reset}{1}", sender.getDisplayName(), message);
-            recipient = p.getTeamManager().getTeamForPlayer(sender);
+            recipient = BallsOfSteel.get().getTeamManager().getTeamForPlayer(sender);
 
             if (recipient == null)
             {
@@ -122,7 +120,7 @@ public class BoSTeamChatManager
                 // The message is only sent to the spies not in the team, to avoid double messages
                 if (otherTeamChatLocked.get(playerId).equals(team) && !team.containsPlayer(playerId))
                 {
-                    p.getServer().getPlayer(playerId).sendMessage(rawMessage);
+                    BallsOfSteel.get().getServer().getPlayer(playerId).sendMessage(rawMessage);
                 }
             }
         }
@@ -130,7 +128,7 @@ public class BoSTeamChatManager
         // ... and to the console.
         if (Config.LOG_TEAM_CHAT.get())
         {
-            p.getServer().getConsoleSender().sendMessage(rawMessage);
+            BallsOfSteel.get().getServer().getConsoleSender().sendMessage(rawMessage);
         }
     }
 
@@ -230,7 +228,7 @@ public class BoSTeamChatManager
         else
         {
             BoSTeam lockedTeam = this.otherTeamChatLocked.get(player.getUniqueId());
-            BoSTeam playerTeam = p.getTeamManager().getTeamForPlayer(player);
+            BoSTeam playerTeam = BallsOfSteel.get().getTeamManager().getTeamForPlayer(player);
             return (lockedTeam != null && lockedTeam.equals(team)) || (playerTeam != null && playerTeam.equals(team));
         }
     }
@@ -274,5 +272,28 @@ public class BoSTeamChatManager
     public BoSTeam getOtherTeamEnabled(Player player)
     {
         return otherTeamChatLocked.get(player.getUniqueId());
+    }
+
+
+    // Priority LOWEST to be able to cancel the event before all other plugins
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onAsyncPlayerChat(final AsyncPlayerChatEvent ev)
+    {
+        // If the event is asynchronous, the message was sent by a "real" player.
+        // Else, the message was sent by a plugin (like our /g command, or another plugin), and
+        // the event is ignored.
+        if (ev.isAsynchronous())
+        {
+            if (isTeamChatEnabled(ev.getPlayer()))
+            {
+                ev.setCancelled(true);
+                sendTeamMessage(ev.getPlayer(), ev.getMessage());
+            }
+            else if (isOtherTeamChatEnabled(ev.getPlayer()))
+            {
+                ev.setCancelled(true);
+                sendTeamMessage(ev.getPlayer(), ev.getMessage(), getOtherTeamEnabled(ev.getPlayer()));
+            }
+        }
     }
 }

@@ -3,30 +3,28 @@ package eu.carrade.amaury.BallsOfSteel.integration;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
+import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-public class BarAPIWrapper
+public class BarAPIWrapper extends ZLibComponent
 {
-    private BallsOfSteel p = null;
-
     private boolean enabled = false;
     private boolean wanted = false;
 
-    public BarAPIWrapper(BallsOfSteel plugin)
+    @Override
+    public void onEnable()
     {
-        this.p = plugin;
-
         Plugin barTest = Bukkit.getServer().getPluginManager().getPlugin("BarAPI");
 
         if (barTest == null || !barTest.isEnabled())
         {
-            p.getLogger().warning("BarAPI is not present, so the integration was disabled.");
+            BallsOfSteel.get().getLogger().warning("BarAPI is not present, so the integration was disabled.");
             return;
         }
 
@@ -77,12 +75,12 @@ public class BarAPIWrapper
      */
     public void setRunningBar()
     {
-        if (isNeeded() && p.getGameManager().isGameRunning())
+        if (isNeeded() && BallsOfSteel.get().getGameManager().isGameRunning())
         {
-            for (Player player : p.getGameManager().getGameWorld().getPlayers())
+            for (Player player : BallsOfSteel.get().getGameManager().getGameWorld().getPlayers())
             {
-                BoSTimer timer = p.getGameManager().getTimer();
-                String message = I.t("{aqua}Time left: {yellow}{0}", p.getScoreboardManager().getTimerText(timer));
+                Timer timer = BallsOfSteel.get().getGameManager().getTimer();
+                String message = I.t("{aqua}Time left: {yellow}{0}", BallsOfSteel.get().getScoreboardManager().getTimerText(timer));
 
                 //BarAPI.setMessage(player, message, timer.getPercentage());
             }
@@ -98,20 +96,20 @@ public class BarAPIWrapper
     {
         if (isNeeded())
         {
-            for (Player player : p.getGameManager().getGameWorld().getPlayers())
+            for (Player player : BallsOfSteel.get().getGameManager().getGameWorld().getPlayers())
             {
                 //BarAPI.setMessage(player, I.t("{blue}The game is finished!"), 7);
             }
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(p, new BukkitRunnable()
+            Bukkit.getScheduler().scheduleSyncDelayedTask(BallsOfSteel.get(), new BukkitRunnable()
             {
 
                 @Override
                 public void run()
                 {
-                    BoSTeam winner = p.getGameManager().getCurrentWinnerTeam();
+                    BoSTeam winner = BallsOfSteel.get().getGameManager().getCurrentWinnerTeam();
 
-                    for (Player player : p.getGameManager().getGameWorld().getPlayers())
+                    for (Player player : BallsOfSteel.get().getGameManager().getGameWorld().getPlayers())
                     {
                         //BarAPI.setMessage(player, I.t("{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!", winner.getDisplayName(), String.valueOf(winner.getDiamondsCount())));
                     }

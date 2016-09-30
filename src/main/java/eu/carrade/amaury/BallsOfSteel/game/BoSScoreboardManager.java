@@ -21,8 +21,9 @@ package eu.carrade.amaury.BallsOfSteel.game;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.timers.BoSTimer;
+import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -32,23 +33,23 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.text.DecimalFormat;
 
 
-public class BoSScoreboardManager
+public class BoSScoreboardManager extends ZLibComponent
 {
-    private BallsOfSteel p = null;
     private Scoreboard sb = null;
     private Objective sidebar = null;
 
     private String sidebarTitle = null;
     private DecimalFormat format = new DecimalFormat("00");
 
-    public BoSScoreboardManager(BallsOfSteel p)
-    {
-        this.p = p;
 
+    @Override
+    protected void onEnable()
+    {
         this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
 
         this.sidebarTitle = Config.GAME_NAME.get();
     }
+
 
     /**
      * Initializes the scoreboard.
@@ -66,7 +67,7 @@ public class BoSScoreboardManager
         sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
         updateTimer();
 
-        for (BoSTeam team : p.getTeamManager().getTeams())
+        for (BoSTeam team : BallsOfSteel.get().getTeamManager().getTeams())
         {
             if (team.getPlayers().size() == 0) continue;
 
@@ -74,7 +75,7 @@ public class BoSScoreboardManager
             sidebar.getScore(getValidScoreboardName(team.getDisplayName())).setScore(0);
         }
 
-        for (Player player : p.getGameManager().getGameWorld().getPlayers())
+        for (Player player : BallsOfSteel.get().getGameManager().getGameWorld().getPlayers())
         {
             setScoreboardForPlayer(player);
         }
@@ -86,9 +87,9 @@ public class BoSScoreboardManager
     public void updateTimer()
     {
         final String timerText;
-        if (!p.getBarAPIWrapper().isNeeded() && p.getGameManager().isGameRunning())
+        if (!BallsOfSteel.get().getBarAPIWrapper().isNeeded() && BallsOfSteel.get().getGameManager().isGameRunning())
         {
-            timerText = I.t("{0}{gray}│ {gold}{1}", sidebarTitle, getTimerText(p.getGameManager().getTimer()));
+            timerText = I.t("{0}{gray}│ {gold}{1}", sidebarTitle, getTimerText(BallsOfSteel.get().getGameManager().getTimer()));
         }
         else
         {
@@ -107,7 +108,7 @@ public class BoSScoreboardManager
      *
      * @return The string representation.
      */
-    public String getTimerText(BoSTimer timer)
+    public String getTimerText(Timer timer)
     {
         String timerText = "";
 

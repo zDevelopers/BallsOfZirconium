@@ -33,7 +33,7 @@ package eu.carrade.amaury.BallsOfSteel.commands;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
-import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamManager;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
@@ -57,7 +57,7 @@ import java.util.Set;
 public class TeamsCommand extends Command
 {
     private final List<String> colors = new ArrayList<>();
-    private final BoSTeamManager tm = BallsOfSteel.get().getTeamManager();
+    private final BoSTeamsManager tm = BallsOfSteel.get().getTeamManager();
 
     public TeamsCommand()
     {

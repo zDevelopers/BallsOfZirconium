@@ -12,9 +12,9 @@ import org.bukkit.event.HandlerList;
 public final class TimerStartsEvent extends Event
 {
     private static final HandlerList handlers = new HandlerList();
-    private BoSTimer timer;
+    private Timer timer;
 
-    public TimerStartsEvent(BoSTimer timer)
+    public TimerStartsEvent(Timer timer)
     {
         this.timer = timer;
     }
@@ -22,7 +22,7 @@ public final class TimerStartsEvent extends Event
     /**
      * Returns the timer.
      */
-    public BoSTimer getTimer()
+    public Timer getTimer()
     {
         return timer;
     }

@@ -21,6 +21,7 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -28,18 +29,18 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 
-public class BoSTeamManager
+public class BoSTeamsManager extends ZLibComponent
 {
-    private BallsOfSteel p = null;
-    private ArrayList<BoSTeam> teams = new ArrayList<BoSTeam>();
-
+    private ArrayList<BoSTeam> teams = new ArrayList<>();
     private int maxPlayersPerTeam;
 
 
-    public BoSTeamManager(BallsOfSteel plugin)
+    @Override
+    public void onEnable()
     {
-        this.p = plugin;
         this.maxPlayersPerTeam = Config.TEAMS_OPTIONS.MAX_PLAYERS_PER_TEAM.get();
+
+        importTeamsFromConfig();
     }
 
 
@@ -57,7 +58,7 @@ public class BoSTeamManager
             throw new IllegalArgumentException("There is already a team named " + name + " registered!");
         }
 
-        teams.add(new BoSTeam(name, color, p));
+        teams.add(new BoSTeam(name, color, BallsOfSteel.get()));
     }
 
     /**
@@ -304,10 +305,10 @@ public class BoSTeamManager
      */
     public int importTeamsFromConfig()
     {
-        if (p.getConfig().getList("teams") != null)
+        if (BallsOfSteel.get().getConfig().getList("teams") != null)
         {
             int teamsCount = 0;
-            for (Object teamRaw : p.getConfig().getList("teams"))
+            for (Object teamRaw : BallsOfSteel.get().getConfig().getList("teams"))
             {
                 if (teamRaw instanceof String && teamRaw != null)
                 {
@@ -315,7 +316,7 @@ public class BoSTeamManager
                     ChatColor color = getChatColorByName(teamRawSeparated[0]);
                     if (color == null)
                     {
-                        p.getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
+                        BallsOfSteel.get().getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
                     }
                     else
                     {
@@ -323,19 +324,19 @@ public class BoSTeamManager
                         if (teamRawSeparated.length == 2)
                         {
                             addTeam(color, teamRawSeparated[1]);
-                            p.getLogger().info(I.t("Team {0} ({1}) added from the config file", teamRawSeparated[1], teamRawSeparated[0]));
+                            BallsOfSteel.get().getLogger().info(I.t("Team {0} ({1}) added from the config file", teamRawSeparated[1], teamRawSeparated[0]));
                             teamsCount++;
                         }
                         // "color"
                         else if (teamRawSeparated.length == 1)
                         {
                             addTeam(color, teamRawSeparated[0]);
-                            p.getLogger().info(I.t("Team {0} added from the config file", teamRawSeparated[0]));
+                            BallsOfSteel.get().getLogger().info(I.t("Team {0} added from the config file", teamRawSeparated[0]));
                             teamsCount++;
                         }
                         else
                         {
-                            p.getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
+                            BallsOfSteel.get().getLogger().warning(I.t("Invalid team set in config: {0}", (String) teamRaw));
                         }
                     }
                 }

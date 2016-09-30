@@ -2,10 +2,9 @@ package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.Config;
-import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
+import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
-import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,16 +15,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 
-public class BoSListener implements Listener
+public class BoSChestsListener implements Listener
 {
     private BallsOfSteel p = null;
 
@@ -33,7 +32,7 @@ public class BoSListener implements Listener
     BoSSound soundCountDecrease = null;
     BoSSound soundChestLocked = null;
 
-    public BoSListener(BallsOfSteel plugin)
+    public BoSChestsListener(BallsOfSteel plugin)
     {
         this.p = plugin;
 
@@ -58,6 +57,18 @@ public class BoSListener implements Listener
      * Used to prevent the diamond chests to be destroyed.
      */
     @EventHandler
+    public void onBlockDamaged(BlockDamageEvent ev)
+    {
+        if (p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation()))
+        {
+            ev.setCancelled(true);
+        }
+    }
+
+    /**
+     * Used to prevent the diamond chests to be destroyed.
+     */
+    @EventHandler
     public void onBlockBurn(BlockBurnEvent ev)
     {
         if (p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation()))
@@ -65,6 +76,19 @@ public class BoSListener implements Listener
             ev.setCancelled(true);
         }
     }
+
+    /**
+     * Used to prevent the diamond chests to be destroyed.
+     */
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent ev)
+    {
+        if (p.getGameManager().getTrackedChests().containsKey(ev.getBlock().getLocation()))
+        {
+            ev.setCancelled(true);
+        }
+    }
+
 
     /**
      * Used to prevent player to access the chest of another team.
@@ -190,59 +214,6 @@ public class BoSListener implements Listener
                     if (soundCountDecrease != null) soundCountDecrease.broadcast(p.getGameManager().getGameWorld());
                 }
             }
-        }
-    }
-
-
-    /**
-     * Used to:
-     * - change the gamemode of the player, if the game is not running;
-     * - teleport the player to the spawn, if the game is not running;
-     * - update the scoreboard;
-     * - resurrect a player (if the player was offline).
-     */
-    @EventHandler
-    public void onPlayerJoin(final PlayerJoinEvent ev)
-    {
-        if (!p.getGameManager().isGameRunning())
-        {
-            p.getBarAPIWrapper().setWaitingBar(ev.getPlayer());
-        }
-        else if (ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld()) || p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
-        {
-            // Mainly useful on the first join.
-            p.getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());
-
-            // The display name is reset when the player logs off.
-            p.getTeamManager().colorizePlayer(ev.getPlayer());
-        }
-    }
-
-    /**
-     * Used to equip the players when they respawn.
-     */
-    @EventHandler
-    public void onPlayerRespawn(final PlayerRespawnEvent ev)
-    {
-        if (p.getGameManager().isGameRunning() && ev.getPlayer().getWorld().equals(p.getGameManager().getGameWorld()))
-        {
-            if (p.getTeamManager().getTeamForPlayer(ev.getPlayer()) != null)
-            {
-                // The player is in a team, aka a "playing player".
-                p.getGameManager().equipPlayer(ev.getPlayer());
-            }
-        }
-    }
-
-    /**
-     * Used to stop the game when the timer ends.
-     */
-    @EventHandler
-    public void onTimerEnds(TimerEndsEvent ev)
-    {
-        if (ev.getTimer().getName().equals(BoSGameManager.TIMER_NAME))
-        {
-            p.getGameManager().stop(true);
         }
     }
 }

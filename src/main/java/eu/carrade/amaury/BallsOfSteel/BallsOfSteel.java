@@ -27,12 +27,12 @@ import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
-import eu.carrade.amaury.BallsOfSteel.game.BoSListener;
+import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
 import eu.carrade.amaury.BallsOfSteel.integration.BarAPIWrapper;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
-import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamManager;
-import eu.carrade.amaury.BallsOfSteel.timers.UpdateTimerTask;
+import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
+import eu.carrade.amaury.BallsOfSteel.timers.Timers;
 import fr.zcraft.zlib.components.commands.Commands;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZLib;
@@ -43,7 +43,7 @@ public final class BallsOfSteel extends ZPlugin
 {
     private static BallsOfSteel instance;
 
-    private BoSTeamManager teamManager = null;
+    private BoSTeamsManager teamManager = null;
     private BoSScoreboardManager scoreboardManager = null;
     private BoSTeamChatManager teamChatManager = null;
     private BoSGameManager gameManager = null;
@@ -57,14 +57,15 @@ public final class BallsOfSteel extends ZPlugin
 
         this.saveDefaultConfig();
 
-        loadComponents(I18n.class, Commands.class, Config.class);
+        loadComponents(I18n.class, Commands.class, Config.class, Timers.class);
 
         I18n.setPrimaryLocale(Config.LANG.get());
 
-        teamManager = new BoSTeamManager(this);
-        teamChatManager = new BoSTeamChatManager(this);
-        scoreboardManager = new BoSScoreboardManager(this);
-        gameManager = new BoSGameManager(this);
+        teamManager       = loadComponent(BoSTeamsManager.class);
+        teamChatManager   = loadComponent(BoSTeamChatManager.class);
+        scoreboardManager = loadComponent(BoSScoreboardManager.class);
+        gameManager       = loadComponent(BoSGameManager.class);
+        barAPIWrapper     = loadComponent(BarAPIWrapper.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
@@ -76,19 +77,7 @@ public final class BallsOfSteel extends ZPlugin
         Commands.registerShortcut("bos", ChatGlobalCommand.class, "g");
         Commands.registerShortcut("bos", ChatToggleCommand.class, "togglechat");
 
-        ZLib.registerEvents(new BoSListener(this));
-
-
-        barAPIWrapper = new BarAPIWrapper(this);
-
-
-        // Imports teams from the config.
-        this.teamManager.importTeamsFromConfig();
-
-        // Starts the task that updates the timers.
-        // Started here, so a timer can be displayed before the start of the game
-        // (example: countdown before the start).
-        new UpdateTimerTask(this).runTaskTimer(this, 20l, 20l);
+        ZLib.registerEvents(new BoSChestsListener(this));
     }
 
     public static BallsOfSteel get()
@@ -107,7 +96,7 @@ public final class BallsOfSteel extends ZPlugin
     /**
      * Returns the team manager.
      */
-    public BoSTeamManager getTeamManager()
+    public BoSTeamsManager getTeamManager()
     {
         return teamManager;
     }
