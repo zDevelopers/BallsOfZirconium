@@ -27,11 +27,27 @@ duration: "59:59"
 
 
 # Use the boss bar to display the time left of the game, and the winners?
-# If the bar is not used with this enabled, check if the BarAPI plugin is installed.
-# Available here: http://dev.bukkit.org/bukkit-plugins/bar-api/ .
-useBar: true
+bar:
+    enabled: true
 
+    # The bar title displayed (can include colors)
+    title: "Balls of Steel"
 
+    # If true, the title is displayed alongside the timer during the game. Else, only before.
+    displayTitleDuringGame: false
+
+    # Bars colors: pink, blue, red, green, yellow, purple, white.
+    # Bars styles: solid, segmented_6, segmented_10, segmented_12, segmented_20.
+    barColorBeforeGame: YELLOW
+    barStyleBeforeGame: SOLID
+    barColorDuringGame: YELLOW
+    barColorCloseToEnd: RED
+    barStyleDuringGame: SEGMENTED_6
+
+    # The time left percentage used to determine if we are close to the end (and use the appropriate color).
+    # Between 0 and 1; 0.1 means we use the close to end color if less than 10% of the time is left (e.g. for one hour,
+    # 6 minutes left).
+    closeToEndPercentage: 0.167
 
 start:
     sound:

@@ -244,15 +244,15 @@ public class Timer
     /**
      * Returns the percentage of the time left.
      *
-     * @return The percentage, between {@code 0F} and {@code 100F}.<br> {@code
-     * 100F} if the timer was just started.<br> {@code -1F} if the timer is not
+     * @return The percentage, between {@code 0F} and {@code 1F}.<br> {@code
+     * 1F} if the timer was just started.<br> {@code -1F} if the timer is not
      * running.
      */
     public Float getPercentage()
     {
         if (running)
         {
-            return 100 - ((System.currentTimeMillis() - this.startTime) / (10f * this.duration));
+            return (100 - ((System.currentTimeMillis() - this.startTime) / (10f * this.duration))) / 100f;
         }
 
         return -1F;

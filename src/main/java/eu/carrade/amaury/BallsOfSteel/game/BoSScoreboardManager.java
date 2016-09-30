@@ -87,7 +87,7 @@ public class BoSScoreboardManager extends ZLibComponent
     public void updateTimer()
     {
         final String timerText;
-        if (!BallsOfSteel.get().getBarAPIWrapper().isNeeded() && BallsOfSteel.get().getGameManager().isGameRunning())
+        if (!BallsOfSteel.get().getBarManager().isEnabled() && BallsOfSteel.get().getGameManager().isGameRunning())
         {
             timerText = I.t("{0}{gray}│ {gold}{1}", sidebarTitle, getTimerText(BallsOfSteel.get().getGameManager().getTimer()));
         }

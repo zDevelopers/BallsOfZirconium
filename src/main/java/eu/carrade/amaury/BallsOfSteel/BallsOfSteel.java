@@ -29,7 +29,7 @@ import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
-import eu.carrade.amaury.BallsOfSteel.integration.BarAPIWrapper;
+import eu.carrade.amaury.BallsOfSteel.game.BarManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.timers.Timers;
@@ -48,7 +48,7 @@ public final class BallsOfSteel extends ZPlugin
     private BoSTeamChatManager teamChatManager = null;
     private BoSGameManager gameManager = null;
 
-    private BarAPIWrapper barAPIWrapper = null;
+    private BarManager barManager = null;
 
     @Override
     public void onEnable()
@@ -67,7 +67,7 @@ public final class BallsOfSteel extends ZPlugin
         scoreboardManager = loadComponent(BoSScoreboardManager.class);
         teamsManager      = loadComponent(BoSTeamsManager.class);
         teamChatManager   = loadComponent(BoSTeamChatManager.class);
-        barAPIWrapper     = loadComponent(BarAPIWrapper.class);
+        barManager = loadComponent(BarManager.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
@@ -120,8 +120,8 @@ public final class BallsOfSteel extends ZPlugin
     }
 
 
-    public BarAPIWrapper getBarAPIWrapper()
+    public BarManager getBarManager()
     {
-        return barAPIWrapper;
+        return barManager;
     }
 }

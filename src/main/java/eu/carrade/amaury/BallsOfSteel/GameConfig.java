@@ -7,6 +7,8 @@ import fr.zcraft.zlib.components.configuration.ConfigurationItem;
 import fr.zcraft.zlib.components.configuration.ConfigurationSection;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 
 import java.util.Locale;
 
@@ -27,7 +29,25 @@ public class GameConfig extends Configuration
     static public final ConfigurationItem<String> GAME_NAME = item("gameName", "Balls of Steel");
     static public final ConfigurationItem<String> DURATION = item("duration", "59:59");
     static public final ConfigurationItem<Boolean> USE_BAR = item("useBar", true);
-    
+
+    static public final BarSection BAR = section("BAR", BarSection.class);
+    static public class BarSection extends ConfigurationSection
+    {
+        public final ConfigurationItem<Boolean> ENABLED = item("enabled", true);
+        public final ConfigurationItem<String> TITLE = item("title", "Balls of Steel");
+        public final ConfigurationItem<Boolean> DISPLAY_TITLE_DURING_GAME = item("displayTitleDuringGame", false);
+
+        public final ConfigurationItem<BarColor> BAR_COLOR_BEFORE_GAME = item("barColorBeforeGame", BarColor.YELLOW);
+        public final ConfigurationItem<BarStyle> BAR_STYLE_BEFORE_GAME = item("barStyleBeforeGame", BarStyle.SOLID);
+        public final ConfigurationItem<BarColor> BAR_COLOR_DURING_GAME = item("barColorDuringGame", BarColor.YELLOW);
+        public final ConfigurationItem<BarColor> BAR_COLOR_CLOSE_TO_END = item("barColorCloseToEnd", BarColor.RED);
+        public final ConfigurationItem<BarStyle> BAR_STYLE_DURING_GAME = item("barStyleDuringGame", BarStyle.SEGMENTED_6);
+        public final ConfigurationItem<BarColor> BAR_COLOR_AFTER_GAME = item("barColorAfterGame", BarColor.YELLOW);
+        public final ConfigurationItem<BarStyle> BAR_STYLE_AFTER_GAME = item("barStyleAfterGame", BarStyle.SOLID);
+
+        public final ConfigurationItem<Double> CLOSE_TO_END_PERCENTAGE = item("closeToEndPercentage", 0.167);
+    }
+
     static public final StartSection START = section("start", StartSection.class);
     static public class StartSection extends ConfigurationSection
     {

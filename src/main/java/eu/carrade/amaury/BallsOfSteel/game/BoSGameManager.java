@@ -27,7 +27,6 @@ import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.runners.RunTask;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -200,6 +199,9 @@ public class BoSGameManager extends ZLibComponent implements Listener
         // Scoreboard
         BallsOfSteel.get().getScoreboardManager().initScoreboard();
 
+        // Bar
+        BallsOfSteel.get().getBarManager().useRunningBar();
+
         // Sound
         if (GameConfig.START.SOUND.get() != null)
             GameConfig.START.SOUND.get().broadcast(gameWorld);
@@ -231,16 +233,16 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
         setGameRunning(false);
 
-        if (BallsOfSteel.get().getBarAPIWrapper().isNeeded())
+        if (BallsOfSteel.get().getBarManager().isEnabled())
         {
-            BallsOfSteel.get().getBarAPIWrapper().setEndBar();
+            BallsOfSteel.get().getBarManager().useEndBar();
         }
         else
         {
             BallsOfSteel.get().getScoreboardManager().updateTimer(); // Hides the timer in the scoreboard, if this scoreboard is used.
         }
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(p, new Runnable()
+        RunTask.later(new Runnable()
         {
             @Override
             public void run()
@@ -505,11 +507,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent ev)
     {
-        if (!isGameRunning())
-        {
-            BallsOfSteel.get().getBarAPIWrapper().setWaitingBar(ev.getPlayer());
-        }
-        else if (ev.getPlayer().getWorld().equals(getGameWorld()) || BallsOfSteel.get().getTeamsManager().getTeamForPlayer(ev.getPlayer()) != null)
+        if (ev.getPlayer().getWorld().equals(getGameWorld()) || BallsOfSteel.get().getTeamsManager().getTeamForPlayer(ev.getPlayer()) != null)
         {
             // Mainly useful on the first join.
             BallsOfSteel.get().getScoreboardManager().setScoreboardForPlayer(ev.getPlayer());

@@ -83,9 +83,9 @@ public class Timers extends ZLibComponent
 
             if (BallsOfSteel.get().getGameManager().isGameRunning())
             {
-                if (BallsOfSteel.get().getBarAPIWrapper().isNeeded())
+                if (BallsOfSteel.get().getBarManager().isEnabled())
                 {
-                    BallsOfSteel.get().getBarAPIWrapper().setRunningBar();
+                    BallsOfSteel.get().getBarManager().updatePercentage();
                 }
                 else
                 {

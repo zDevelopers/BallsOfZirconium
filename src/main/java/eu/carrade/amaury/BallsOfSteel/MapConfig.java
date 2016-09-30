@@ -37,7 +37,6 @@ import fr.zcraft.zlib.components.configuration.ConfigurationInstance;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
 import fr.zcraft.zlib.components.configuration.ConfigurationList;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.World;
 
 import static fr.zcraft.zlib.components.configuration.ConfigurationItem.item;
@@ -55,7 +54,6 @@ public class MapConfig extends ConfigurationInstance
     public MapConfig()
     {
         super("map.yml");
-        PluginLogger.info("--- map.yml ---");
     }
 
     public static ConfigurationItem<World> WORLD = item("world-name", World.class);
