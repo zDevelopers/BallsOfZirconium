@@ -220,6 +220,7 @@ public class BoSChestsListener implements Listener
                         switch (item.getType())
                         {
                             case DIAMOND:
+                            case DIAMOND_ORE:
                                 diamonds += item.getAmount();
                                 break;
 
