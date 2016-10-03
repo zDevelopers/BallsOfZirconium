@@ -28,9 +28,8 @@ public class GameConfig extends Configuration
 
     static public final ConfigurationItem<String> GAME_NAME = item("gameName", "Balls of Steel");
     static public final ConfigurationItem<String> DURATION = item("duration", "59:59");
-    static public final ConfigurationItem<Boolean> USE_BAR = item("useBar", true);
 
-    static public final BarSection BAR = section("BAR", BarSection.class);
+    static public final BarSection BAR = section("bar", BarSection.class);
     static public class BarSection extends ConfigurationSection
     {
         public final ConfigurationItem<Boolean> ENABLED = item("enabled", true);

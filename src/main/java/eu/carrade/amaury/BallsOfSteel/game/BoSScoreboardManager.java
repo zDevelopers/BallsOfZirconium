@@ -50,6 +50,14 @@ public class BoSScoreboardManager extends ZLibComponent
         this.sidebarTitle = GameConfig.GAME_NAME.get();
     }
 
+    @Override
+    protected void onDisable()
+    {
+        if (sidebar != null)
+        {
+            sidebar.unregister();
+        }
+    }
 
     /**
      * Initializes the scoreboard.

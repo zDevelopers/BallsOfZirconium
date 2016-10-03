@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 
 public class BarManager extends ZLibComponent implements Listener
@@ -23,7 +24,7 @@ public class BarManager extends ZLibComponent implements Listener
     @Override
     public void onEnable()
     {
-        if (!GameConfig.USE_BAR.get())
+        if (!GameConfig.BAR.ENABLED.get())
             setEnabled(false);
 
         bar = Bukkit.createBossBar(GameConfig.BAR.TITLE.get(), GameConfig.BAR.BAR_COLOR_BEFORE_GAME.get(), GameConfig.BAR.BAR_STYLE_BEFORE_GAME.get());
@@ -44,6 +45,7 @@ public class BarManager extends ZLibComponent implements Listener
     protected void onDisable()
     {
         bar.setVisible(false);
+        bar.removeAll();
     }
 
     @EventHandler
@@ -52,6 +54,16 @@ public class BarManager extends ZLibComponent implements Listener
         if (isEnabled())
         {
             bar.addPlayer(ev.getPlayer());
+        }
+    }
+
+
+    @EventHandler
+    public void onPlayerLeft(PlayerQuitEvent ev)
+    {
+        if (isEnabled())
+        {
+            bar.removePlayer(ev.getPlayer());
         }
     }
 

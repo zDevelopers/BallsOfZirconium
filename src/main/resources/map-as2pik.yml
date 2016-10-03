@@ -1,7 +1,3 @@
-## This is a config file for a specific map. It's an example based on As2Pik's map publoshed on AceGames.
-## You can found other map files in this project's repository, at https://github.com/AmauryCarrade/BallsOfSteel/tree/master/src/main/resources .
-
-
 # Specify here the world where the game will take place.
 world-name: world
 
