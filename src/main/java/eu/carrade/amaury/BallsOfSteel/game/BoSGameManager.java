@@ -27,6 +27,7 @@ import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.runners.RunTask;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,6 +38,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -514,6 +516,44 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
             // The display name is reset when the player logs off.
             BallsOfSteel.get().getTeamsManager().colorizePlayer(ev.getPlayer());
+        }
+    }
+
+
+    /**
+     * Used to broadcast the amount of diamonds lost (if any).
+     */
+    @EventHandler
+    public void onPlayerDeath(final PlayerDeathEvent ev)
+    {
+        if (ev.getKeepInventory()) return;
+
+        int diamondsCount = 0;
+        for (final ItemStack item : ev.getEntity().getInventory())
+        {
+            if (item == null) continue;
+
+            switch (item.getType())
+            {
+                case DIAMOND:
+                case DIAMOND_ORE:
+                    diamondsCount += item.getAmount();
+                    break;
+
+                case DIAMOND_BLOCK:
+                    diamondsCount += 9 * item.getAmount();
+                    break;
+            }
+        }
+
+        if (diamondsCount > 0)
+        {
+            ev.setDeathMessage(
+                    StringUtils.stripEnd(ev.getDeathMessage(), null)
+                    + (ev.getDeathMessage().endsWith(".") ? "" : ".")
+                    + " "
+                    + I.tn("{gray}{0} diamond lost.", "{gray}{0} diamonds lost.", diamondsCount)
+            );
         }
     }
 

@@ -2,225 +2,141 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: Amaury Carrade\n"
-"POT-Creation-Date: 2016-09-28 02:26+0200\n"
-"PO-Revision-Date: 2016-09-28 02:28:27.953836\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-03 15:57+0200\n"
+"PO-Revision-Date: 2016-10-03 16:01+0100\n"
 "Last-Translator: Amaury Carrade\n"
 "Language-Team: Amaury Carrade\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.5\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:163
-msgid "{aqua}You are now in the {0}{aqua} team."
-msgstr "{aqua}Vous faites désormais partie de l'équipe {0}{aqua}."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:180
-msgid "{darkaqua}You are no longer part of the {0}{darkaqua} team."
-msgstr "{darkaqua}Vous ne faites plus partie de l'équipe {0}{darkaqua}."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:335
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:355
-#, java-format
-msgid "Invalid team set in config: {0}"
-msgstr "Équipe invalide dans la configuration : {0}"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:343
-#, java-format
-msgid "Team {0} ({1}) added from the config file"
-msgstr "Équipe {0} ({1}) ajoutée depuis le fichier de configuration."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamManager.java:350
-#, java-format
-msgid "Team {0} added from the config file"
-msgstr "Équipe {0} ajoutée depuis le fichier de configuration."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:70
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:179
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:67
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:176
 msgid "{ce}You are not allowed to send a private message to your team."
 msgstr ""
 "{ce}Vous n'avez pas le droit d'envoyer des messages privés à votre équipe."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:75
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:184
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:72
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:181
 msgid "{ce}You are not allowed to enter in the private chat of another team."
 msgstr ""
 "{ce}Vous n'avez pas le droit d'entrer dans le chat privé d'une autre équipe."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:84
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:81
 msgid "{gold}[{0}{gold} -> his team] {reset}{1}"
 msgstr "{gold}[{0}{gold} -> son équipe] {reset}{1}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:89
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:86
 msgid "{ce}You are not in a team!"
 msgstr "{ce}Vous n'êtes pas dans une équipe !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeamChatManager.java:95
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamChatManager.java:92
 msgid "{gold}[{0}{gold} -> team {1}{gold}] {reset}{2}"
 msgstr "{gold}[{0}{gold} -> équipe {1}{gold}] {reset}{2}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:105
-msgid "{ce}You cannot start the game without any non-empty team."
-msgstr "{ce}Vous ne pouvez démarrer le jeu sans équipe non vide."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeam.java:359
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamsManager.java:188
+msgid "{darkaqua}You are no longer part of the {0}{darkaqua} team."
+msgstr "{darkaqua}Vous ne faites plus partie de l'équipe {0}{darkaqua}."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:135
-msgid "{ce}Some non-empty teams don't have a spawn point."
-msgstr "{ce}Certaines équipes non vides n'ont pas de point de démarrage."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/teams/BoSTeamsManager.java:171
+msgid "{aqua}You are now in the {0}{aqua} team."
+msgstr "{aqua}Vous faites désormais partie de l'équipe {0}{aqua}."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:139
-msgid "{ce}Some non-empty teams don't have a chest."
-msgstr "{ce}Certaines équipes non vides n'ont pas de coffre."
-
-#. Message
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:201
-msgid "{green}--- GO ---"
-msgstr "{green}--- GO ---"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:222
-msgid "{red}--- The End ---"
-msgstr "{red}--- Terminé ---"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:249
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:281
-msgid "and"
-msgstr "et"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSGameManager.java:258
-msgid "{green}Congratulations to {0} (team {1}{green}) for their victory!"
-msgstr "{green}Félicitations à {0} (équipe {1}{green}) pour leur victoire !"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/integration/BarAPIWrapper.java:88
-msgid "{aqua}Time left: {yellow}{0}"
-msgstr "{aqua}Temps restant : {yellow}{0}"
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:180
-msgid ""
-"{ce}An error occurred, see console for details. This is probably a bug."
-msgstr ""
-"{ce}Une erreur est survenue, consultez la console pour plus de détails. Il "
-"s'agit probablement d'un bug."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:197
-msgid ""
-"{ce}This subcommand does not exists. See /bos for the available commands."
-msgstr ""
-"{ce}Cette commande n'existe pas. Tapez /bos pour la liste des commandes."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:202
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:269
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:357
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:53
 msgid "{yellow}{0} - version {1}"
 msgstr "{yellow}{0} - version {1}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:204
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:358
-msgid ""
-"{ci}Legend: {cc}/bos command <required> [optional=default] <spaces allowed "
-"...>{ci}."
-msgstr ""
-"{ci}Légende: {cc}/bos command <requis> [optionnel=valeur par défaut] "
-"<espaces autorisées ...>{ci}."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:66
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:260
+msgid "and"
+msgstr "et"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:206
-msgid "{cc}/bos start {ci}: launches the game."
-msgstr "{cc}/bos start {ci}: lance le jeu."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:207
-msgid ""
-"{cc}/bos restart {ci}: restarts the game, during a party. This will not "
-"empty the diamond chest."
-msgstr ""
-"{cc}/bos restart {ci}: redémarre le jeu, pendant une partie. Ne vide pas les"
-" coffres des équipes."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:208
-msgid "{cc}/bos team {ci}: manages the teams. See /bos teams for details."
-msgstr ""
-"{cc}/bos team {ci}: gère les équipes. Exécutez /bos team pour plus de "
-"détails."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:209
-msgid ""
-"{cc}/bos finish {ci}: displays the name of the winners and launches some "
-"fireworks."
-msgstr ""
-"{cc}/uh finish {ci}: affiche le nom du/des vainqueurs et lance des feux "
-"d'artifices."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:210
-msgid ""
-"{cc}/bos clearitems {ci}: deletes all dropped items from the world, excepted"
-" diamond-based items."
-msgstr ""
-"{cc}/bos clearitems {ci}: supprime tous les objets au sol du monde, à "
-"l'exception de ceux faits de diamant."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:211
-msgid ""
-"{cc}/bos about {ci}: informations about the plugin and the translation."
-msgstr ""
-"{cc}/uh about {ci}: informations à propos du plugin et des traductions."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:251
-msgid "{ce}Hahahahahaha no."
-msgstr "{ce}Hahahahahaha non."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:289
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:74
 #, java-format
 msgid "Plugin made with love by {0}."
 msgstr "Plugin réalisé avec amour par {0}."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:291
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:76
 msgid "{aqua}------ Translations ------"
 msgstr "{aqua}------ Traductions ------"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:292
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:77
 #, java-format
 msgid "Current language: {0} (translated by {1})."
 msgstr "Langue courante : {0} (traduit par {1})."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:293
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:78
 #, java-format
 msgid "Fallback language: {0} (translated by {1})."
 msgstr "Langue par défaut : {0} (traduit par {1})."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:294
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:79
 msgid "{aqua}------ License ------"
 msgstr "{aqua}------ Licence ------"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:295
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:80
 msgid "Published under the GNU General Public License (version 3)."
 msgstr "Publié sous licence générale publique GNU (version 3)."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:317
-msgid ""
-"{ce}The game is already started! Use {cc}/bos restart{ci} to restart it."
-msgstr ""
-"{ce}Le jeu est déjà démarré ! Utilisez {cc}/bos restart{ci} pour le "
-"redémarrer."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatToggleCommand.java:53
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatGlobalCommand.java:50
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatTeamCommand.java:50
+msgid "{ce}You can't send a team-message from the console."
+msgstr "{ce}Vous ne pouvez envoyer un message d'équipe depuis la console."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:360
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatToggleCommand.java:62
+msgid "{cs}You are now chatting with your team only."
+msgstr "{cs}Vous discutez désormais avec votre équipe."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatToggleCommand.java:66
+msgid "{cs}You are now chatting with everyone."
+msgstr "{cs}Vous discutez désormais avec tous le monde."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatToggleCommand.java:80
+msgid "{cs}You are now chatting with the team {0}{cs}."
+msgstr "{cs}Vous discutez désormais avec l'équipe {0}{cs}."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatToggleCommand.java:85
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:188
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:286
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:383
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:420
+msgid "{ce}This team does not exists."
+msgstr "{ce}Cette équipe n'existe pas."
+
+#. /t
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatGlobalCommand.java:56
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ChatTeamCommand.java:56
+msgid "{ce}Usage: /{0} <message>"
+msgstr "{ce}Utilisation : /{0} <message>"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:91
 msgid "{aqua}------ Team commands ------"
 msgstr "{aqua}------ Commandes liées aux équipes ------"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:361
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:92
 msgid "{cc}/bos team add <color> {ci}: adds a team with the provided color."
 msgstr ""
 "{cc}/bos team add <couleur> {ci}: ajoute une équipe de la couleur donnée."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:362
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:93
 msgid ""
 "{cc}/bos team add <color> <name ...> {ci}: adds a named team with the "
 "provided name and color."
 msgstr ""
-"{cc}/bos team add <couleur> <nom ...> {ci}: ajoute une équipe avec le nom et"
-" la couleur donnés."
+"{cc}/bos team add <couleur> <nom ...> {ci}: ajoute une équipe avec le nom et "
+"la couleur donnés."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:363
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:94
 msgid "{cc}/bos team remove <name ...> {ci}: removes a team"
 msgstr "{cc}/bos team remove <nom ...> {ci}: supprime une équipe."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:364
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:95
 msgid ""
 "{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of "
 "the team (location of the sender or coordinates)."
@@ -228,7 +144,7 @@ msgstr ""
 "{cc}/bos team spawn [x,y,z | x,z] <nom ...> {ci}: enregistre le point de "
 "démarrage de l'équipe (localisation de l'envoyeur, ou coordonnées)."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:365
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:96
 msgid ""
 "{cc}/bos team chest [x,y,z] <name ...> {ci}: sets the chest of this team "
 "(where the diamonds will be stored), using the given coordinates or the "
@@ -238,7 +154,7 @@ msgstr ""
 "l'équipe (où seront stockés les diamants), en utilisant les coordonnées "
 "données ou le bloc regardé par l'envoyeur."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:366
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:97
 msgid ""
 "{cc}/bos team join <player> <teamName ...>{ci}: adds a player inside the "
 "given team. The name of the team is it color, or the explicit name given."
@@ -247,96 +163,91 @@ msgstr ""
 "l'équipe donnée. Le nom de l'équipe est sa couleur, ou le nom explicite "
 "donné."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:367
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:98
 msgid "{cc}/bos team leave <player> {ci}: removes a player from his team."
 msgstr "{cc}/bos team leave <joueur> {ci}: retire un joueur de son équipe."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:368
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:99
 msgid "{cc}/bos team list {ci}: lists the teams and their players."
 msgstr "{cc}/bos team list {ci}: liste toutes les équipes et leurs membres."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:369
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:100
 msgid "{cc}/bos team reset {ci}: removes all teams."
 msgstr "{cc}/bos team reset {ci}: supprime toutes les équipes."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:385
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:408
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:117
+msgid "{ce}Unknown command. See /bos team for available commands."
+msgstr ""
+"{ce}Commande inconnue. Consultez /bos team pour obtenir la liste des "
+"commandes disponibles."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:131
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:155
 msgid ""
 "{ce}Unable to add the team, check the color name. Tip: use Tab to "
 "autocomplete."
 msgstr ""
-"{ce}Impossible d'ajouter l'équipe ; vérifiez le nom de la couleur. Conseil :"
-" utilisez l'autocomplétion."
+"{ce}Impossible d'ajouter l'équipe ; vérifiez le nom de la couleur. Conseil : "
+"utilisez l'autocomplétion."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:395
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:420
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:141
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:167
 msgid "{ce}This team already exists."
 msgstr "{ce}Cette équipe existe déjà."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:397
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:423
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:143
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:170
 msgid "{cs}Team {0}{cs} added."
 msgstr "{cs}Équipe {0}{cs} ajoutée."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:429
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:450
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:533
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:633
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:694
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:718
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:176
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:197
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:279
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:376
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:457
 msgid "{ce}Syntax error, see /uh team."
 msgstr "{ce}Erreur de syntaxe, consultez /uh team."
 
-#. Unknown team
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:441
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:540
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:640
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:680
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:965
-msgid "{ce}This team does not exists."
-msgstr "{ce}Cette équipe n'existe pas."
-
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:445
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:192
 msgid "{cs}Team {0} deleted."
 msgstr "{cs}Équipe {0} supprimée."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:487
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:584
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:234
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:329
 msgid "{ce}You must specify the coordinates from the console."
 msgstr "{ce}Vous devez spécifier les coordonnées depuis la console."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:511
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:527
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:627
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:259
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:274
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:371
 msgid "{ce}The coordinates need to be numbers."
 msgstr "{ce}Les coordonnées doivent être des nombres."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:548
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:293
 msgid "{cs}The spawn point of the team {0}{cs} is now {1};{2};{3}."
 msgstr ""
 "{cs}Le point de démarrage de l'équipe {0}{cs} est désormals {1};{2};{3}."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:599
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:343
 msgid "{ce}You are not looking at a chest usable by more than one player!"
 msgstr "{ce}Vous ne regardez pas un coffre utilisable par plusieurs joueurs !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:605
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:348
 msgid "{ce}You are not looking at anything..."
 msgstr "{ce}Vous ne regardez rien..."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:652
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:394
 msgid "{ce}There isn't any chest usable by more than one player here."
 msgstr "{ce}Il n'y a pas de coffre utilisable par plusieurs joueurs ici."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:656
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:397
 msgid ""
-"{cs}This chest (at {1};{2};{3}) is now the private chest of the team "
-"{0}{cs}."
+"{cs}This chest (at {1};{2};{3}) is now the private chest of the team {0}{cs}."
 msgstr ""
-"{cs}Ce coffre (aux coordonnées {1};{2};{3}) est désormals le coffre privé de"
-" l'équipe {0}{cs}."
+"{cs}Ce coffre (aux coordonnées {1};{2};{3}) est désormals le coffre privé de "
+"l'équipe {0}{cs}."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:670
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:410
 msgid ""
 "{ce}Unable to add the player {0} to the team {1}. The player must be "
 "connected."
@@ -344,55 +255,60 @@ msgstr ""
 "{ce}Impossible d'ajouter le joueur {0} dans l'équipe {1}. Le joueur doit "
 "être connecté."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:685
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:424
 msgid "{ce}The team {0}{ce} is full!"
 msgstr "{ce}L'équipe {0}{ce} est pleine !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:689
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:428
 msgid "{cs}The player {0} was successfully added to the team {1}"
 msgstr "{cs}Le joueur {0} a été ajouté à l'équipe {1}{cs} avec succès."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:708
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:433
+msgid "{ce}Syntax error, see /bos team."
+msgstr "{ce}Erreur de syntaxe, consultez /bos team."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:447
 msgid "{ce}The player {0} is disconnected!"
 msgstr "{ce}Le joueur {0} est déconnecté !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:713
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:452
 msgid "{cs}The player {0} was successfully removed from his team."
 msgstr "{cs}Le joueur {0} a été retiré de son équipe avec succès."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:727
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:465
 msgid "{ce}There isn't any team to show."
 msgstr "{ce}Il n'y a pas d'équipe à lister."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:733
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:470
 #, java-format
 msgid "{0} ({1} players)"
 msgstr "{0} ({1} joueurs)"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:739
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:476
 msgid "{green} • "
 msgstr "{green} • "
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:743
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:480
 msgid "{red} • "
 msgstr "{red} • "
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:746
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:483
 #, java-format
 msgid "{0}"
 msgstr "{0}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:754
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/TeamsCommand.java:491
 msgid "{cs}All teams where removed."
 msgstr "{cs}Toutes les équipes ont été supprimées."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:759
-msgid "{ce}Unknown command. See /uh team for available commands."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/StartCommand.java:53
+msgid ""
+"{ce}The game is already started! Use {cc}/bos restart{ci} to restart it."
 msgstr ""
-"{ce}Commande inconnue. Consultez /uh team pour obtenir la liste des "
-"commandes disponibles."
+"{ce}Le jeu est déjà démarré ! Utilisez {cc}/bos restart{ci} pour le "
+"redémarrer."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:821
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ClearItemsCommand.java:95
 msgid ""
 "{cs}All items, diamonds-based items excepted, were destroyed in the world "
 "{0}."
@@ -400,7 +316,7 @@ msgstr ""
 "{cs}Tous les objets au sol ont été supprimés dans le monde {0} (sauf ceux "
 "constitués de diamants)."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:825
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/ClearItemsCommand.java:99
 msgid ""
 "{ce}Cannot clear the items from the console if the game's world is not set "
 "(i.e. world not set in the config and game not started)."
@@ -408,53 +324,130 @@ msgstr ""
 "{ce}Impossible de supprimer les objets au sol depuis la console si le monde "
 "du jeu n'est pas défini (i.e. monde non configuré et jeu non démarré)."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:874
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:905
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:936
-msgid "{ce}You can't send a team-message from the console."
-msgstr "{ce}Vous ne pouvez envoyer un message d'équipe depuis la console."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BarManager.java:100
+msgid "{aqua}Time left: {yellow}{0}"
+msgstr "{aqua}Temps restant : {yellow}{0}"
 
-#. /t
-#. /g
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:880
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:911
-msgid "{ce}Usage: /{0} <message>"
-msgstr "{ce}Utilisation : /{0} <message>"
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BarManager.java:114
+msgid "{blue}The game is finished!"
+msgstr "{blue}Le jeu est terminé !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:944
-msgid "{cs}You are now chatting with your team only."
-msgstr "{cs}Vous discutez désormais avec votre équipe."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BarManager.java:125
+msgid "{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!"
+msgstr "{green}L'équipe {0}{green} l'emporte avec {aqua}{1}{green} diamants !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:948
-msgid "{cs}You are now chatting with everyone."
-msgstr "{cs}Vous discutez désormais avec tous le monde."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:114
+msgid "{ce}You cannot start the game without any non-empty team."
+msgstr "{ce}Vous ne pouvez démarrer le jeu sans équipe non vide."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSCommand.java:960
-msgid "{cs}You are now chatting with the team {0}{cs}."
-msgstr "{cs}Vous discutez désormais avec l'équipe {0}{cs}."
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:144
+msgid "{ce}Some non-empty teams don't have a spawn point."
+msgstr "{ce}Certaines équipes non vides n'ont pas de point de démarrage."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSScoreboardManager.java:49
-msgid "Diamonds"
-msgstr "Diamants"
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:148
+msgid "{ce}Some non-empty teams don't have a chest."
+msgstr "{ce}Certaines équipes non vides n'ont pas de coffre."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSScoreboardManager.java:90
-msgid "{0}   {gold}{1}"
-msgstr "{0}   {gold}{1}"
+#. Message
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:212
+msgid "{green}--- GO ---"
+msgstr "{green}--- GO ---"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSScoreboardManager.java:117
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:233
+msgid "{red}--- The End ---"
+msgstr "{red}--- Terminé ---"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:269
+msgid "{green}Congratulations to {0} (team {1}{green}) for their victory!"
+msgstr "{green}Félicitations à {0} (équipe {1}{green}) pour leur victoire !"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:555
+msgid "{gray}{0} diamond lost."
+msgid_plural "{gray}{0} diamonds lost."
+msgstr[0] "{gray}{0} diamant perdu."
+msgstr[1] "{gray}{0} diamants perdus."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSScoreboardManager.java:100
+msgid "{0}{gray}│ {gold}{1}"
+msgstr "{0}{gray}│ {gold}{1}"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSScoreboardManager.java:127
 #, java-format
 msgid "{0}:{1}:{2}"
 msgstr "{0}:{1}:{2}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSScoreboardManager.java:121
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSScoreboardManager.java:131
 #, java-format
 msgid "{0}:{1}"
 msgstr "{0}:{1}"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSListener.java:80
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSChestsListener.java:126
 msgid "{ce}You cannot open the chests of another team."
 msgstr "{ce}Vous n'avez pas le droit d'ouvrir les coffres des autres équipes."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/BoSTeam.java:366
-msgid "team.removeplayer.removed"
-msgstr ""
+#~ msgid "Invalid team set in config: {0}"
+#~ msgstr "Équipe invalide dans la configuration : {0}"
+
+#~ msgid "Team {0} ({1}) added from the config file"
+#~ msgstr "Équipe {0} ({1}) ajoutée depuis le fichier de configuration."
+
+#~ msgid "Team {0} added from the config file"
+#~ msgstr "Équipe {0} ajoutée depuis le fichier de configuration."
+
+#~ msgid ""
+#~ "{ce}An error occurred, see console for details. This is probably a bug."
+#~ msgstr ""
+#~ "{ce}Une erreur est survenue, consultez la console pour plus de détails. "
+#~ "Il s'agit probablement d'un bug."
+
+#~ msgid ""
+#~ "{ce}This subcommand does not exists. See /bos for the available commands."
+#~ msgstr ""
+#~ "{ce}Cette commande n'existe pas. Tapez /bos pour la liste des commandes."
+
+#~ msgid ""
+#~ "{ci}Legend: {cc}/bos command <required> [optional=default] <spaces "
+#~ "allowed ...>{ci}."
+#~ msgstr ""
+#~ "{ci}Légende: {cc}/bos command <requis> [optionnel=valeur par défaut] "
+#~ "<espaces autorisées ...>{ci}."
+
+#~ msgid "{cc}/bos start {ci}: launches the game."
+#~ msgstr "{cc}/bos start {ci}: lance le jeu."
+
+#~ msgid ""
+#~ "{cc}/bos restart {ci}: restarts the game, during a party. This will not "
+#~ "empty the diamond chest."
+#~ msgstr ""
+#~ "{cc}/bos restart {ci}: redémarre le jeu, pendant une partie. Ne vide pas "
+#~ "les coffres des équipes."
+
+#~ msgid "{cc}/bos team {ci}: manages the teams. See /bos teams for details."
+#~ msgstr ""
+#~ "{cc}/bos team {ci}: gère les équipes. Exécutez /bos team pour plus de "
+#~ "détails."
+
+#~ msgid ""
+#~ "{cc}/bos finish {ci}: displays the name of the winners and launches some "
+#~ "fireworks."
+#~ msgstr ""
+#~ "{cc}/uh finish {ci}: affiche le nom du/des vainqueurs et lance des feux "
+#~ "d'artifices."
+
+#~ msgid ""
+#~ "{cc}/bos clearitems {ci}: deletes all dropped items from the world, "
+#~ "excepted diamond-based items."
+#~ msgstr ""
+#~ "{cc}/bos clearitems {ci}: supprime tous les objets au sol du monde, à "
+#~ "l'exception de ceux faits de diamant."
+
+#~ msgid ""
+#~ "{cc}/bos about {ci}: informations about the plugin and the translation."
+#~ msgstr ""
+#~ "{cc}/uh about {ci}: informations à propos du plugin et des traductions."
+
+#~ msgid "{ce}Hahahahahaha no."
+#~ msgstr "{ce}Hahahahahaha non."
+
+#~ msgid "Diamonds"
+#~ msgstr "Diamants"
