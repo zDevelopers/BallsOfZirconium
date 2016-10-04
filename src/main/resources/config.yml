@@ -88,6 +88,18 @@ equipment:
     bow: true       # infinity bow, one arrow
     armor: "none"   # "none", "weak" (leather), "normal" (chainmail), "strong" (iron) or "very strong" (diamond).
 
+    # If true, all the enabled equipments above will be given only if they were built
+    # in survival before (foods and blocks excepted).
+    survivalMode: false
+
+    # If true, players will, as example, unlock the pickaxe with any pickaxe crafted.
+    # If false, only with an iron pickaxe. The same for any other tool (if relevant).
+    unlockWithAnyMaterial: false
+
+    # If true, tools given enchanted will be enchanted when crafted.
+    # Also, if this is true, players will receive an arrow while crafing a bow.
+    craftEnchanted: true
+
 
 
 # If true, the name of the players will be colorized according to the teams.

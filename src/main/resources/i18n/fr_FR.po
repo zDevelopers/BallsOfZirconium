@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 15:57+0200\n"
-"PO-Revision-Date: 2016-10-03 16:01+0100\n"
+"POT-Creation-Date: 2016-10-04 02:40+0200\n"
+"PO-Revision-Date: 2016-10-04 02:43+0100\n"
 "Last-Translator: Amaury Carrade\n"
 "Language-Team: Amaury Carrade\n"
 "Language: fr_FR\n"
@@ -52,7 +52,7 @@ msgid "{yellow}{0} - version {1}"
 msgstr "{yellow}{0} - version {1}"
 
 #: src/main/java/eu/carrade/amaury/BallsOfSteel/commands/AboutCommand.java:66
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:260
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:257
 msgid "and"
 msgstr "et"
 
@@ -336,32 +336,32 @@ msgstr "{blue}Le jeu est terminé !"
 msgid "{green}The {0}{green} team won the game with {aqua}{1}{green} diamonds!"
 msgstr "{green}L'équipe {0}{green} l'emporte avec {aqua}{1}{green} diamants !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:114
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:111
 msgid "{ce}You cannot start the game without any non-empty team."
 msgstr "{ce}Vous ne pouvez démarrer le jeu sans équipe non vide."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:144
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:141
 msgid "{ce}Some non-empty teams don't have a spawn point."
 msgstr "{ce}Certaines équipes non vides n'ont pas de point de démarrage."
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:148
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:145
 msgid "{ce}Some non-empty teams don't have a chest."
 msgstr "{ce}Certaines équipes non vides n'ont pas de coffre."
 
 #. Message
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:212
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:209
 msgid "{green}--- GO ---"
 msgstr "{green}--- GO ---"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:233
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:230
 msgid "{red}--- The End ---"
 msgstr "{red}--- Terminé ---"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:269
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:266
 msgid "{green}Congratulations to {0} (team {1}{green}) for their victory!"
 msgstr "{green}Félicitations à {0} (équipe {1}{green}) pour leur victoire !"
 
-#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:555
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSGameManager.java:446
 msgid "{gray}{0} diamond lost."
 msgid_plural "{gray}{0} diamonds lost."
 msgstr[0] "{gray}{0} diamant perdu."
@@ -380,6 +380,70 @@ msgstr "{0}:{1}:{2}"
 #, java-format
 msgid "{0}:{1}"
 msgstr "{0}:{1}"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:263
+msgid "✯ Tool unlocked:"
+msgstr "✯ Vous avez débloqué :"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:270
+msgid ""
+"You'll obtain this tool on every respawn now. You'll no longer have to craft "
+"it."
+msgstr ""
+"Vous obtiendrez ceci à chaque réapparition ; vous n'aurez plus à le "
+"fabriquer."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:279
+msgid "What's left to unlock"
+msgstr "Ce qu'il reste à débloquer"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:280
+msgid ""
+"You can still unlock these, by crafting them one time to get them on every "
+"respawn."
+msgstr ""
+"Vous pouvez encore débloquer ceux-ci, en les fabriquant pour les ré-obtenir "
+"à chaque réapparition."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:286
+msgid "Hover here to see what's next..."
+msgstr "Survolez pour voir la suite..."
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:513
+msgid "PICKAXE"
+msgstr "PIOCHE"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:514
+msgid "AXE"
+msgstr "HACHE"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:515
+msgid "SHOVEL"
+msgstr "PELLE"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:516
+msgid "SWORD"
+msgstr "ÉPÉE"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:517
+msgid "BOW"
+msgstr "ARC"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:519
+msgid "HELMET"
+msgstr "CASQUE"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:520
+msgid "CHESTPLATE"
+msgstr "PLASTRON"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:521
+msgid "LEGGINGS"
+msgstr "JAMBIÈRES"
+
+#: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSEquipmentManager.java:522
+msgid "BOOTS"
+msgstr "BOTTES"
 
 #: src/main/java/eu/carrade/amaury/BallsOfSteel/game/BoSChestsListener.java:126
 msgid "{ce}You cannot open the chests of another team."

@@ -30,11 +30,9 @@ import fr.zcraft.zlib.tools.runners.RunTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,7 +40,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -173,7 +170,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
                     player.setBedSpawnLocation(team.getSpawnPoint(), true);
 
-                    equipPlayer(player);
+                    BallsOfSteel.get().getEquipmentManager().equipPlayer(player);
                 }
             }
 
@@ -392,112 +389,6 @@ public class BoSGameManager extends ZLibComponent implements Listener
         return winner;
     }
 
-    /**
-     * Equips the given player with iron tools.
-     * <p>
-     * Following the configuration:
-     * <pre>
-     *  - equipment.food: some food (1 stack of steak);
-     *  - equipment.blocks: 2 stack of dirt blocks;
-     *  - equipment.tools: pickaxe, axe, shovel;
-     *  - equipment.sword: sword;
-     *  - equipment.bow: infinity bow, one arrow;
-     *  - equipment.armor:
-     *     - "none": nothing;
-     *     - "weak": leather armor;
-     *     - "normal": chainmail armor;
-     *     - "strong": iron armor;
-     *     - "very_strong": diamond armor.
-     * </pre>
-     * @param player The player to equip.
-     */
-    public void equipPlayer(Player player)
-    {
-        PlayerInventory inv = player.getInventory();
-        inv.clear();
-
-        // Weapons
-        if (GameConfig.EQUIPMENT.SWORD.get())
-        {
-            inv.addItem(new ItemStack(Material.IRON_SWORD, 1));
-        }
-        if (GameConfig.EQUIPMENT.BOW.get())
-        {
-            ItemStack bow = new ItemStack(Material.BOW, 1);
-            bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
-            bow.addEnchantment(Enchantment.DURABILITY, 3);
-            inv.addItem(bow);
-
-            inv.setItem(9, new ItemStack(Material.ARROW, 1));
-        }
-
-        // Tools
-        if (GameConfig.EQUIPMENT.TOOLS.get())
-        {
-            inv.addItem(new ItemStack(Material.IRON_PICKAXE, 1));
-            inv.addItem(new ItemStack(Material.IRON_AXE, 1));
-            inv.addItem(new ItemStack(Material.IRON_SPADE, 1));
-        }
-
-        // Food & blocks
-        boolean food = GameConfig.EQUIPMENT.FOOD.get();
-        boolean blocks = GameConfig.EQUIPMENT.BLOCKS.get();
-        if (food || blocks)
-        {
-            ItemStack foodStack = new ItemStack(Material.COOKED_BEEF, 64);
-            ItemStack dirtStack = new ItemStack(Material.DIRT, 64);
-
-            if (food) inv.setItem(8, foodStack);
-
-            if (blocks)
-            {
-                inv.setItem(7, dirtStack);
-
-                if (!food) inv.setItem(8, dirtStack);
-                else inv.setItem(6, dirtStack);
-            }
-        }
-
-        // Armor
-        switch (GameConfig.EQUIPMENT.ARMOR.get())
-        {
-            case NONE:
-                break;
-
-            case WEAK:
-                inv.setHelmet(new ItemStack(Material.LEATHER_HELMET));
-                inv.setChestplate(new ItemStack(Material.LEATHER_CHESTPLATE));
-                inv.setLeggings(new ItemStack(Material.LEATHER_LEGGINGS));
-                inv.setBoots(new ItemStack(Material.LEATHER_BOOTS));
-                break;
-
-            case NORMAL:
-                inv.setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
-                inv.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-                inv.setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));
-                inv.setBoots(new ItemStack(Material.CHAINMAIL_BOOTS));
-                break;
-
-            case STRONG:
-                inv.setHelmet(new ItemStack(Material.IRON_HELMET));
-                inv.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-                inv.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-                inv.setBoots(new ItemStack(Material.IRON_BOOTS));
-                break;
-
-            case VERY_STRONG:
-                inv.setHelmet(new ItemStack(Material.DIAMOND_HELMET));
-                inv.setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
-                inv.setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
-                inv.setBoots(new ItemStack(Material.DIAMOND_BOOTS));
-                break;
-        }
-
-        inv.setHeldItemSlot(0);
-        player.updateInventory(); // Deprecated but needed
-    }
-
-
 
     /**
      * Used to:
@@ -557,6 +448,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
         }
     }
 
+
     /**
      * Used to equip the players when they respawn.
      */
@@ -569,7 +461,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
             if (team != null)
             {
                 // The player is in a team, aka a "playing player".
-                equipPlayer(ev.getPlayer());
+                BallsOfSteel.get().getEquipmentManager().equipPlayer(ev.getPlayer());
 
                 RunTask.nextTick(new Runnable() {
                     @Override
@@ -595,36 +487,4 @@ public class BoSGameManager extends ZLibComponent implements Listener
     }
 
 
-
-
-    /**
-     * The player's armor type
-     */
-    public enum PlayerArmorType
-    {
-        /**
-         * No armor
-         */
-        NONE,
-
-        /**
-         * Leather armor
-         */
-        WEAK,
-
-        /**
-         * Chainmail armor
-         */
-        NORMAL,
-
-        /**
-         * Iron armor
-         */
-        STRONG,
-
-        /**
-         * Diamond armor
-         */
-        VERY_STRONG
-    }
 }

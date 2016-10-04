@@ -1,6 +1,6 @@
 package eu.carrade.amaury.BallsOfSteel;
 
-import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
+import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
@@ -75,7 +75,11 @@ public class GameConfig extends Configuration
         public final ConfigurationItem<Boolean> TOOLS = item("tools", true);
         public final ConfigurationItem<Boolean> SWORD = item("sword", false);
         public final ConfigurationItem<Boolean> BOW = item("bow", true);
-        public final ConfigurationItem<BoSGameManager.PlayerArmorType> ARMOR = item("armor", BoSGameManager.PlayerArmorType.NONE);
+        public final ConfigurationItem<BoSEquipmentManager.PlayerArmorType> ARMOR = item("armor", BoSEquipmentManager.PlayerArmorType.NONE);
+
+        public final ConfigurationItem<Boolean> SURVIVAL_MODE = item("survivalMode", false);
+        public final ConfigurationItem<Boolean> UNLOCK_WITH_ANY_MATERIAL = item("unlockWithAnyMaterial", false);
+        public final ConfigurationItem<Boolean> CRAFT_ENCHANTED = item("craftEnchanted", true);
     }
     
     static public final ConfigurationItem<Boolean> COLORIZE_CHAT = item("colorizeChat", true);

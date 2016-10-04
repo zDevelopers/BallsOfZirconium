@@ -26,6 +26,7 @@ import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
+import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
@@ -47,8 +48,10 @@ public final class BallsOfSteel extends ZPlugin
     private BoSScoreboardManager scoreboardManager = null;
     private BoSTeamChatManager teamChatManager = null;
     private BoSGameManager gameManager = null;
+    private BoSEquipmentManager equipmentManager = null;
 
     private BarManager barManager = null;
+
 
     @Override
     public void onEnable()
@@ -67,7 +70,8 @@ public final class BallsOfSteel extends ZPlugin
         scoreboardManager = loadComponent(BoSScoreboardManager.class);
         teamsManager      = loadComponent(BoSTeamsManager.class);
         teamChatManager   = loadComponent(BoSTeamChatManager.class);
-        barManager = loadComponent(BarManager.class);
+        equipmentManager  = loadComponent(BoSEquipmentManager.class);
+        barManager        = loadComponent(BarManager.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
@@ -96,6 +100,14 @@ public final class BallsOfSteel extends ZPlugin
     }
 
     /**
+     * Returns the equipments manager.
+     */
+    public BoSEquipmentManager getEquipmentManager()
+    {
+        return equipmentManager;
+    }
+
+    /**
      * Returns the team manager.
      */
     public BoSTeamsManager getTeamsManager()
@@ -119,7 +131,9 @@ public final class BallsOfSteel extends ZPlugin
         return teamChatManager;
     }
 
-
+    /**
+     * Returns the bar manager.
+     */
     public BarManager getBarManager()
     {
         return barManager;
