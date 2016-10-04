@@ -478,13 +478,11 @@ public class BoSGameManager extends ZLibComponent implements Listener
      * Used to stop the game when the timer ends.
      */
     @EventHandler
-    public void onTimerEnds(TimerEndsEvent ev)
+    public void onTimerEnds(final TimerEndsEvent ev)
     {
         if (ev.getTimer().getName().equals(TIMER_NAME))
         {
             stop(true);
         }
     }
-
-
 }

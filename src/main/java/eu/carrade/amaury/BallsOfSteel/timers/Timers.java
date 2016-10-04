@@ -62,11 +62,13 @@ public class Timers extends ZLibComponent
     static void registerTimer(final Timer timer)
     {
         timers.add(timer);
+        timer.setRegistered(true);
     }
 
     static void unregisterTimer(final Timer timer)
     {
         timers.remove(timer);
+        timer.setRegistered(false);
     }
 
 
