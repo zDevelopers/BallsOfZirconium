@@ -1,0 +1,4 @@
+Sends a message to your team.
+
+You should use the alias /t instead, as this is only here
+to be used that way.

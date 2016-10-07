@@ -19,3 +19,286 @@ map-teams:
       color: red
       chest: 0,101,2
       spawn: -149.5,126.5,150.5,-135,-12
+
+
+
+# Below are the options to randomly generate the map. It will be generated in the above world,
+# except if the world already exists.
+# Requires WorldEdit as a dependency to work.
+# All schematics locations are relative to the plugin directory (<server>/plugins/BallsOfSteel/).
+
+generation:
+    # Set to true to enable random generation of the map.
+    enabled: true
+
+
+    map:
+        # The map seed. If empty, a random seed will be used.
+        seed:
+
+        # The map boundaries. No sphere will be generated outsite, and this will be used by the
+        # generateFully option below.
+        boundaries:
+            corner1: -150,10,-150
+            corner2: 150,200,150
+
+        # The spawn coordinates.
+        spawn: 5.5,100.5,0.5
+
+        # The map environment (can be NORMAL, NETHER or THE_END).
+        environment: THE_ENDD
+
+        # If true, the map will be generated at startup (else, use /bos generate to generate it and
+        # /bos goto to be teleported inside).
+        generateAtStartup: true
+
+        # If true, forces the whole map to be generated (if generateAtStartup is true).
+        generateFully: true
+
+        # The minimal distance between two spheres.
+        distanceBetweenSpheres: 32
+
+        # The minimal distance between a sphere and the edge of a pasted schematic.
+        distanceBetweenSpheresAndStaticBuildings: 48
+
+
+    staticBuildings:
+        - name: Spawn
+          schematic: map-zcraft/spawn.schematic
+          pasteAt: 0,100,0
+          nothingAbove: true
+          nothingUnder: false
+          postActions:
+            -
+
+        - name: Falaisie
+          schematic: map-zcraft/team-falaisie.schematic
+          pasteAt: 150.5,126.5,-149.5
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+
+        - name: Vaalonnie
+          schematic: map-zcraft/team-vaalonnie.schematic
+          pasteAt: -149.5,126.5,-149.5
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+
+        - name: Bambellonie
+          schematic: map-zcraft/team-bambellonie.schematic
+          pasteAt: 150.5,126.5,150.5
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+
+        - name: Alloria
+          schematic: map-zcraft/team-alloria.schematic
+          pasteAt: -149.5,126.5,150.5
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+
+
+    spheres:
+        - name: Wood
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 60%log:12,37%leaves:4,3%diamond_ore
+
+        - name: Mesa
+          enabled: true
+          rules:
+            - type: hsphere
+              radius: 9
+              pattern: hardened_clay
+            - type: hsphere
+              radius: 8
+              pattern: 96%stained_hardened_clay:1,4%diamond_ore
+            - type: hsphere
+              radius: 7
+              pattern: 96%stained_hardened_clay:14,4%diamond_ore
+            - type: hsphere
+              radius: 6
+              pattern: 96%stained_hardened_clay:4,4%diamond_ore
+            - type: hsphere
+              radius: 5
+              pattern: 96%stained_hardened_clay:7,4%diamond_ore
+            - type: hsphere
+              radius: 4
+              pattern: 96%stained_hardened_clay:3,4%diamond_ore
+            - type: sphere
+              radius: 3
+              pattern: 96%stained_hardened_clay:0,4%diamond_ore
+
+        - name: Overworld
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 9
+              pattern: dirt
+            - type: sphere
+              radius: 6
+              pattern: 80%stone,10%coal_ore,10%iron_ore
+            - type: sphere
+              radius: 4
+              pattern: 70%stone,10%iron_ore,5%gold_ore,3%redstone_ore,12%diamond_ore
+
+        - name: Nether
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 90%netherrack,10%quartz_ore
+            - type: sphere
+              radius: 6
+              pattern: 80%netherrack,15%quartz_ore,5%diamond_ore
+            - type: sphere
+              radius: 4
+              pattern: 70%netherrack,15%quartz_ore,10%magma,5%diamond_ore
+
+        - name: End
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 95%end_stone,5%end_brick
+            - type: sphere
+              radius: 6
+              pattern: 90%end_stone,9.5%end_brick,0.5%chest # TODO populate chests
+
+        - name: Cancer
+          enabled: true
+          rules:
+            - type: hsphere
+              radius: 9
+              pattern: glass
+            - type: sphere
+              radius: 8
+              pattern: 51%sand,45%gravel,4%diamond_ore
+
+        - name: Sponge
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 46%sponge:1,50%sponge,4%diamond_ore
+
+        - name: Aqua
+          enabled: true
+          rules:
+            - type: hsphere
+              radius: 10
+              pattern: stained_glass:11
+            - type: sphere
+              radius: 9
+              pattern: water
+            - type: sphere
+              radius: 7
+              pattern: 0.5%chest,99.5%water
+#          postActions:
+#            - type: populateChests
+#              lootTable:
+#              - item: snow_ball
+#                amount: 1-4
+#                weight: 5
+#              - item: diamond
+#                amount: 1-5
+#                weight: 10
+#              - item: flint_and_steel
+#                amount: 1
+#                weight: 1
+              # to be continued
+
+        - name: Magmatic 1
+          rules:
+            - type: hsphere
+              radius: 9
+              pattern: obsidian
+            - type: hsphere
+              radius: 8
+              pattern: 60%obsidian,40%magma
+            - type: sphere
+              radius: 7
+              pattern: 60%obsidian,35%magma,5%diamond_block
+
+        - name: Magmatic 2
+          rules:
+            - type: hsphere
+              radius: 9
+              pattern: obsidian
+            - type: hsphere
+              radius: 8
+              pattern: 65%obsidian,30%magma,5%lava
+            - type: sphere
+              radius: 7
+              pattern: 65%obsidian,24%magma,5%lava,6%diamond_block
+
+    spheres-no:  # Work in progres, disables the spheres below
+        - name: Gravity
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-gravity.schematic
+          postActions:
+            - type: flip
+              direction: random
+
+        - name: Nether Room
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-nether.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable:
+                - # todo
+            - type: randomSpawner
+              choices: magma_cube,pig_zombie,wither_skeleton
+
+        - name: Aquatic Room
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-guardians.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable:
+                - # todo
+
+        - name: Dunjeons Room
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-dungeons.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable:
+                - # todo
+            - type: randomSpawner
+              choices: spider,cave_spider,zombie,silverfish,skeleton,creeper,slime

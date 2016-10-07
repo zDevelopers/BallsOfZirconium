@@ -1,0 +1,11 @@
+Removes all items on the ground, except the diamond ones.
+
+This command was made to be able to clear the ground,
+when for some reasons a lot of items are in the wild,
+without removing precious fallen diamonds. It's
+especially useful for easily-broken spheres, such as
+snow ones.
+
+All ground items will be cleared, except diamonds,
+diamond blocks, diamond tools & weapons, diamond
+armors and diamond ores.

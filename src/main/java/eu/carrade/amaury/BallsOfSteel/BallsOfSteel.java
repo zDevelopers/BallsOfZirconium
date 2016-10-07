@@ -23,14 +23,18 @@ import eu.carrade.amaury.BallsOfSteel.commands.ChatGlobalCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.GenerateSphereCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.SpheresCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
+import eu.carrade.amaury.BallsOfSteel.dependencies.WorldEditDependency;
 import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
 import eu.carrade.amaury.BallsOfSteel.game.BarManager;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.timers.Timers;
@@ -44,6 +48,8 @@ public final class BallsOfSteel extends ZPlugin
 {
     private static BallsOfSteel instance;
 
+    private WorldEditDependency worldEditDependency = null;
+
     private BoSTeamsManager teamsManager = null;
     private BoSScoreboardManager scoreboardManager = null;
     private BoSTeamChatManager teamChatManager = null;
@@ -51,6 +57,8 @@ public final class BallsOfSteel extends ZPlugin
     private BoSEquipmentManager equipmentManager = null;
 
     private BarManager barManager = null;
+
+    private GenerationManager generationManager = null;
 
 
     @Override
@@ -60,6 +68,8 @@ public final class BallsOfSteel extends ZPlugin
 
         saveDefaultConfig();
         saveResource("map.yml", false);
+
+        worldEditDependency = loadComponent(WorldEditDependency.class);
 
         loadComponents(I18n.class, Commands.class, GameConfig.class, MapConfig.class, Timers.class);
 
@@ -72,11 +82,13 @@ public final class BallsOfSteel extends ZPlugin
         teamChatManager   = loadComponent(BoSTeamChatManager.class);
         equipmentManager  = loadComponent(BoSEquipmentManager.class);
         barManager        = loadComponent(BarManager.class);
+        generationManager = loadComponent(GenerationManager.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
                 ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
-                StartCommand.class, RestartCommand.class, TeamsCommand.class
+                StartCommand.class, RestartCommand.class, TeamsCommand.class,
+                SpheresCommand.class, GenerateSphereCommand.class
         );
 
         Commands.registerShortcut("bos", ChatTeamCommand.class, "t");
@@ -137,5 +149,15 @@ public final class BallsOfSteel extends ZPlugin
     public BarManager getBarManager()
     {
         return barManager;
+    }
+
+    public GenerationManager getGenerationManager()
+    {
+        return generationManager;
+    }
+
+    public WorldEditDependency getWorldEditDependency()
+    {
+        return worldEditDependency;
     }
 }

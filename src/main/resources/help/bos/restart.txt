@@ -1,0 +1,4 @@
+Restarts the game.
+
+Clears inventories and teleport players back to their spawns,
+then resets the game timer.

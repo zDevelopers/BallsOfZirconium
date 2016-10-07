@@ -31,16 +31,23 @@
  */
 package eu.carrade.amaury.BallsOfSteel;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
+import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
 import fr.zcraft.zlib.components.configuration.ConfigurationInstance;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
 import fr.zcraft.zlib.components.configuration.ConfigurationList;
+import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.zlib.components.configuration.ConfigurationSection;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.World;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.item;
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.list;
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.*;
 
 
 public class MapConfig extends ConfigurationInstance
@@ -49,6 +56,11 @@ public class MapConfig extends ConfigurationInstance
     {
         ConfigurationValueHandlers.registerHandlers(PitchedVector.class);
         ConfigurationValueHandlers.registerHandlers(BoSTeam.class);
+
+        ConfigurationValueHandlers.registerHandlers(MapConfig.class);
+        ConfigurationValueHandlers.registerHandlers(Generator.class);
+        ConfigurationValueHandlers.registerHandlers(PostProcessor.class);
+        ConfigurationValueHandlers.registerHandlers(GenerationProcess.class);
     }
 
     public MapConfig()
@@ -56,6 +68,44 @@ public class MapConfig extends ConfigurationInstance
         super("map.yml");
     }
 
-    public static ConfigurationItem<World> WORLD = item("world-name", World.class);
-    public static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);
+    public final static ConfigurationItem<World> WORLD = item("world-name", World.class);
+    public final static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);
+
+    public final static GenerationSection GENERATION = section("generation", GenerationSection.class);
+    public final static class GenerationSection extends ConfigurationSection
+    {
+        public final ConfigurationItem<Boolean> ENABLED = item("enabled", true);
+
+        public final MapSection MAP = section("map", MapSection.class);
+        public final static class MapSection extends ConfigurationSection
+        {
+            public final ConfigurationItem<String> SEED = item("seed", "");
+
+            public final BoundariesSection BOUNDARIES = section("boundaries", BoundariesSection.class);
+            public final static class BoundariesSection extends ConfigurationSection
+            {
+                public final ConfigurationItem<Vector> CORNER_1 = item("corner1", Vector.ZERO);
+                public final ConfigurationItem<Vector> CORNER_2 = item("corner2", Vector.ZERO);
+            }
+
+            public final ConfigurationItem<Vector> SPAWN = item("spawn", Vector.ZERO);
+            public final ConfigurationItem<World.Environment> ENVIRONMENT = item("environment", World.Environment.NORMAL);
+
+            public final ConfigurationItem<Boolean> GENERATE_AT_STARTUP = item("generateAtStartup", true);
+            public final ConfigurationItem<Boolean> GENERATE_FULLY = item("generateFully", true);
+
+            public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES = item("distanceBetweenSpheres", 32);
+            public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES_AND_STATIC_BUILDINGS = item("distanceBetweenSpheresAndStaticBuildings", 48);
+        }
+
+        //public final ConfigurationList<GenerationProcess> STATIC_BUILDINGS = list("staticBuildings", GenerationProcess.class); // TODO use right type
+        public final ConfigurationList<GenerationProcess> SPHERES = list("spheres", GenerationProcess.class);
+    }
+
+
+    @ConfigurationValueHandler
+    public static Vector handleVector(Object obj) throws ConfigurationParseException
+    {
+        return BukkitUtil.toVector(ConfigurationValueHandlers.handleValue(obj, org.bukkit.util.Vector.class));
+    }
 }

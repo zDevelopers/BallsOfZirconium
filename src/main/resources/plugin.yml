@@ -5,7 +5,7 @@ version: 0.1 §cdev§r
 author: "Amaury Carrade"
 
 softdepend:
-  - BarAPI
+  - WorldEdit
 
 awareness:
   - !@UTF8

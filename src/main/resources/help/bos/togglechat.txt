@@ -1,0 +1,5 @@
+Toggles the chat between the global chat and the locked
+team chat.
+
+You should use the alias /togglechat instead, as this is
+only here to be used that way.

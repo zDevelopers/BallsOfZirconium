@@ -62,12 +62,7 @@ public class BoSTeamsManager extends ZLibComponent
      */
     public void addTeam(ChatColor color, String name)
     {
-        if (this.getTeam(name) != null)
-        {
-            throw new IllegalArgumentException("There is already a team named " + name + " registered!");
-        }
-
-        teams.add(new BoSTeam(name, color));
+        addTeam(new BoSTeam(name, color));
     }
 
     /**
@@ -84,6 +79,7 @@ public class BoSTeamsManager extends ZLibComponent
         }
 
         teams.add(team);
+        team.register();
     }
 
     /**
@@ -105,7 +101,7 @@ public class BoSTeamsManager extends ZLibComponent
                 }
             }
 
-            team.deleteTeam();
+            team.unregister();
         }
 
         return teams.remove(team);

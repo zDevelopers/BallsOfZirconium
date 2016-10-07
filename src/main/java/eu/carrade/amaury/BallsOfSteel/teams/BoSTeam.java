@@ -20,6 +20,7 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
 import eu.carrade.amaury.BallsOfSteel.utils.StringToChatColor;
@@ -86,7 +87,10 @@ public class BoSTeam
         {
             this.displayName = name;
         }
+    }
 
+    void register()
+    {
         final Scoreboard sb = BallsOfSteel.get().getScoreboardManager().getScoreboard();
         final Team t = sb.registerNewTeam(this.internalName);
 
@@ -128,7 +132,6 @@ public class BoSTeam
      */
     public void setChest(Location chestLocation)
     {
-
         if (chestLocation == null)
         {
             chest = null;
@@ -175,7 +178,8 @@ public class BoSTeam
                 chestLocation2 = null;
             }
 
-            BallsOfSteel.get().getGameManager().updateTrackedChests();
+            if (BallsOfSteel.get().getGameManager() != null)
+                BallsOfSteel.get().getGameManager().updateTrackedChests();
         }
         else
         {
@@ -335,7 +339,7 @@ public class BoSTeam
     /**
      * Unregisters a player from the scoreboard and uncolorizes the pseudo.
      *
-     * Internal use, avoids a ConcurrentModificationException in this.deleteTeam()
+     * Internal use, avoids a ConcurrentModificationException in this.unregister()
      * (this.players is listed and emptied simultaneously, else).
      */
     private void unregisterPlayer(OfflinePlayer player)
@@ -349,7 +353,7 @@ public class BoSTeam
      *
      * The players inside the team are left without any team.
      */
-    public void deleteTeam()
+    void unregister()
     {
         // We removes the players from the team (scoreboard team too)
         for (UUID id : players)
@@ -364,7 +368,6 @@ public class BoSTeam
 
         // Then the scoreboard team is deleted.
         BallsOfSteel.get().getScoreboardManager().getScoreboard().getTeam(this.internalName).unregister();
-
     }
 
     /**
@@ -441,7 +444,7 @@ public class BoSTeam
     @ConfigurationValueHandler
     public static BoSTeam handleTeam(Map map) throws ConfigurationParseException
     {
-        final World world = BallsOfSteel.get().getGameManager().getGameWorld();
+        final World world = MapConfig.WORLD.get();
 
 
         if (!map.containsKey("name"))

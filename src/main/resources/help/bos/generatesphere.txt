@@ -1,0 +1,18 @@
+Generates a sphere (or anything defined in map.yml).
+
+Takes a sphere name: the ones in the map.yml file (in the
+spheres list, the "name" key), without spaces. If two
+spheres share their names, the first one will be taken
+(so avoid names duplicates).
+
+Without other arguments, generates the sphere where the
+player is, or fails if the sender is not a player. You
+can also provide coordinates (they may be relative,
+with ~), and world.
+
+You can add "-s" after the arguments to set your WorldEdit
+selection to the thing just created.
+
+Relative coordinates cannot be used from the console,
+and without world, the player world or the default Balls
+of Steel world are used.

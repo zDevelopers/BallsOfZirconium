@@ -192,6 +192,9 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
         gameWorld.setPVP(true);
 
+        // Chests (just to be sure)
+        updateTrackedChests();
+
         // Timer
         timer.start();
 

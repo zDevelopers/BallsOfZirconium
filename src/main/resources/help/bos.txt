@@ -1,0 +1,11 @@
+This command manages the game and, if enabled, the generation of Balls of Steel.
+about: Displays infos about the authors.
+gc: Sends a message to the whole server, when in locked team chat. You should use the alias /g instead.
+tc: Sends a message to your team. You should use the alias /t instead.
+togglechat: Toggles the chat between the global chat and the locked team chat. You can use /togglechat too.
+clearitems: Removes all items on the ground, except the diamond-based ones. Useful when a lot of them are in the ground (e.g. for snow spheres).
+spheres: Lists the spheres (or gives details about one).
+generatesphere: Generates a sphere, using the definition in map.yml.
+restart: Restarts the game.
+start: Starts the game.
+team: Manages teams.

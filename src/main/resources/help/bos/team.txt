@@ -1,0 +1,26 @@
+Manages the teams.
+
+You can use the following sub-commands.
+
+§6/bos team add <color>
+    Adds a team with the provided color.
+§6/bos team add <color> <name ...>
+    Adds a named team with the provided name and color.
+§6/bos team remove <name ...>
+    Removes a team
+§6/bos team spawn [x,y,z | x,z] <name ...>
+    Sets the spawn point of the team (location of the
+    sender or coordinates).
+§6/bos team chest [x,y,z] <name ...>
+    Sets the chest of this team (where the diamonds will
+    be stored), using the given coordinates or the block
+    the sender is looking at.
+§6/bos team join <player> <teamName ...>
+    Adds a player inside the given team. The name of the
+    team is it color, or the explicit name given.
+§6/bos team leave <player>
+    Removes a player from his team.
+§6/bos team list
+    Lists the teams and their players.
+§6/bos team reset
+    Removes all teams.
