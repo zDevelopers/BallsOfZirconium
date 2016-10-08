@@ -172,7 +172,21 @@ public class GenerationManager extends ZLibComponent implements Listener
         return generationProcessesQueue.poll();
     }
 
+    /**
+     * @return The corner of the world with the lowest coordinates
+     */
+    public Location getLowestCorner()
+    {
+        return lowestCorner;
+    }
 
+    /**
+     * @return The corner of the world with the highest coordinates
+     */
+    public Location getHighestCorner()
+    {
+        return highestCorner;
+    }
 
     /* ========== Misc ========== */
 

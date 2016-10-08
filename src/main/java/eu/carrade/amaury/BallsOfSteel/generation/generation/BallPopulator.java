@@ -57,7 +57,10 @@ public class BallPopulator extends BlockPopulator
     @Override
     public void populate(World world, Random random, Chunk chunk)
     {
-        final Location base = new Location(world, chunk.getX() * 16 + random.nextInt(16), random.nextInt(127), chunk.getZ() * 16 + random.nextInt(16));
+        final int yMin = BallsOfSteel.get().getGenerationManager().getLowestCorner().getBlockY();
+        final int yMax = BallsOfSteel.get().getGenerationManager().getHighestCorner().getBlockY();
+
+        final Location base = new Location(world, chunk.getX() * 16 + random.nextInt(16), random.nextInt(yMax - yMin) + yMin, chunk.getZ() * 16 + random.nextInt(16));
         if (!generationManager.isInsideBoundaries(base))
             return;
 
@@ -72,11 +75,11 @@ public class BallPopulator extends BlockPopulator
         for (final Vector nearChunk : region.getChunkCubes())
         {
             final ChunkSnapshot snapshot = world.getChunkAt(nearChunk.getBlockX(), nearChunk.getBlockZ()).getChunkSnapshot(false, false, false);
-            if (!snapshot.isSectionEmpty(Math.max(nearChunk.getBlockY(), 0))) // TODO wtf why is this sometimes negative?!
+            if (!snapshot.isSectionEmpty(Math.min(Math.max(nearChunk.getBlockY(), 0), 15)))
                 return;
         }
 
-        
+
         final GenerationProcess process = generationManager.getRandomGenerationProcess(random);
 
         if (generationManager.isLogged())

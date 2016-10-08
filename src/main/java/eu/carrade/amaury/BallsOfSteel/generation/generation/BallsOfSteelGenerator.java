@@ -46,19 +46,6 @@ import java.util.Random;
 
 public class BallsOfSteelGenerator extends ChunkGenerator
 {
-    private void setBlock(int x, int y, int z, byte[][] chunk, Material material)
-    {
-        if (chunk[y >> 4] == null) chunk[y >> 4] = new byte[16 * 16 * 16];
-        if (!(y <= 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0))
-            return;
-
-        try
-        {
-            chunk[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (byte) material.getId();
-        }
-        catch (Exception ignored) {}
-    }
-
     @Override
     public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
     {
