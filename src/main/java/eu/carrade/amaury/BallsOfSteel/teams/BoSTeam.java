@@ -29,6 +29,7 @@ import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -444,7 +445,8 @@ public class BoSTeam
     @ConfigurationValueHandler
     public static BoSTeam handleTeam(Map map) throws ConfigurationParseException
     {
-        final World world = MapConfig.WORLD.get();
+        World world = Bukkit.getWorld(MapConfig.WORLD.get());
+        world = world != null ? world : Bukkit.getWorlds().size() > 0 ? Bukkit.getWorlds().get(0) : null;
 
 
         if (!map.containsKey("name"))
@@ -462,15 +464,20 @@ public class BoSTeam
 
         final BoSTeam team = new BoSTeam(map.get("name").toString(), ConfigurationValueHandlers.handleValue(map.get("color").toString(), ChatColor.class));
 
-        team.setSpawnPoint(ConfigurationValueHandlers.handleValue(map.get("spawn"), PitchedVector.class).toLocation(world));
 
-        try
+        // This will only be null while checking for validity, because startup load.
+        if (world != null)
         {
-            team.setChest(ConfigurationValueHandlers.handleValue(map.get("chest"), Vector.class).toLocation(world));
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw new ConfigurationParseException("Invalid chest for the team " + team.getName() + ": " + e.getMessage(), map.get("chest").toString());
+            team.setSpawnPoint(ConfigurationValueHandlers.handleValue(map.get("spawn"), PitchedVector.class).toLocation(world));
+
+            try
+            {
+                team.setChest(ConfigurationValueHandlers.handleValue(map.get("chest"), Vector.class).toLocation(world));
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new ConfigurationParseException("Invalid chest for the team " + team.getName() + ": " + e.getMessage(), map.get("chest").toString());
+            }
         }
 
 

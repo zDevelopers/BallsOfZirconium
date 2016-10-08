@@ -23,6 +23,7 @@ import eu.carrade.amaury.BallsOfSteel.commands.ChatGlobalCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.GenerateCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.GenerateSphereCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.SpheresCommand;
@@ -35,6 +36,7 @@ import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
 import eu.carrade.amaury.BallsOfSteel.game.BarManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
+import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.timers.Timers;
@@ -42,6 +44,7 @@ import fr.zcraft.zlib.components.commands.Commands;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZLib;
 import fr.zcraft.zlib.core.ZPlugin;
+import org.bukkit.generator.ChunkGenerator;
 
 
 public final class BallsOfSteel extends ZPlugin
@@ -88,7 +91,7 @@ public final class BallsOfSteel extends ZPlugin
                 AboutCommand.class, ClearItemsCommand.class,
                 ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
                 StartCommand.class, RestartCommand.class, TeamsCommand.class,
-                SpheresCommand.class, GenerateSphereCommand.class
+                SpheresCommand.class, GenerateSphereCommand.class, GenerateCommand.class
         );
 
         Commands.registerShortcut("bos", ChatTeamCommand.class, "t");
@@ -101,6 +104,12 @@ public final class BallsOfSteel extends ZPlugin
     public static BallsOfSteel get()
     {
         return instance;
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id)
+    {
+        return new BallsOfSteelGenerator();
     }
 
     /**

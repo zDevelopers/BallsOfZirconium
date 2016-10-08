@@ -4,6 +4,8 @@ main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
 version: 0.1 §cdev§r
 author: "Amaury Carrade"
 
+load: STARTUP
+
 softdepend:
   - WorldEdit
 
@@ -14,7 +16,6 @@ awareness:
 commands:
    bos:
       description: Balls of Steel base command
-      usage: /<command> <subcommand> - see /<command> for available subcommands.
 
    t:
       description: Allows an user to send a message to his team.

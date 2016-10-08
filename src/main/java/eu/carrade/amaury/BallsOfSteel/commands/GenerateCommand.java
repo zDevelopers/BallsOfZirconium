@@ -29,45 +29,33 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation.generators;
+package eu.carrade.amaury.BallsOfSteel.commands;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
-import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
+import eu.carrade.amaury.BallsOfSteel.commands.helpers.BoSCommand;
+import eu.carrade.amaury.BallsOfSteel.generation.WorldLoader;
+import fr.zcraft.zlib.components.commands.CommandException;
+import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
+import org.bukkit.Bukkit;
 
-import java.util.Map;
 
-
-public class HsphereGenerator extends WithRadiusGenerator
+@CommandInfo (name = "generate")
+public class GenerateCommand extends BoSCommand
 {
-    public HsphereGenerator(Map parameters)
-    {
-        super(parameters);
-    }
-
-    /**
-     * Generates a thing.
-     *
-     * @return A {@link Region} containing all the changes, used after for
-     * post-processing.
-     */
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected void run() throws CommandException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
-    }
+        final String world = args.length == 0 ? MapConfig.WORLD.get() : args[0];
 
-    /**
-     * A description of the generator, with parameters values if relevant.
-     *
-     * @return the description.
-     */
-    @Override
-    public String getDescription()
-    {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        if (Bukkit.getWorld(world) != null)
+            error(I.t("Cannot generate world {0}: the world already exists.", world));
+
+        info(I.t("{gray}Creating and loading world {0}... (see console)", world));
+        WorldLoader loader = BallsOfSteel.get().getGenerationManager().createWorldAndGetLoader(world, sender);
+
+        info(I.t("{gray}Loading remaining chunks for world {0}...", world));
+        loader.start();
     }
 }

@@ -29,45 +29,56 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation.generators;
+package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
-import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
-import fr.zcraft.zlib.components.i18n.I;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 
-public class HsphereGenerator extends WithRadiusGenerator
+public class BallsOfSteelGenerator extends ChunkGenerator
 {
-    public HsphereGenerator(Map parameters)
+    private void setBlock(int x, int y, int z, byte[][] chunk, Material material)
     {
-        super(parameters);
+        if (chunk[y >> 4] == null) chunk[y >> 4] = new byte[16 * 16 * 16];
+        if (!(y <= 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0))
+            return;
+
+        try
+        {
+            chunk[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = (byte) material.getId();
+        }
+        catch (Exception ignored) {}
     }
 
-    /**
-     * Generates a thing.
-     *
-     * @return A {@link Region} containing all the changes, used after for
-     * post-processing.
-     */
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        ChunkData data = createChunkData(world);
+        data.setRegion(0, 0, 0, 16, 16, 16, Material.AIR);
+
+        return data;
     }
 
-    /**
-     * A description of the generator, with parameters values if relevant.
-     *
-     * @return the description.
-     */
     @Override
-    public String getDescription()
+    public Location getFixedSpawnLocation(World world, Random random)
     {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.SPAWN.get());
+    }
+
+    @Override
+    public List<BlockPopulator> getDefaultPopulators(World world)
+    {
+        return Arrays.<BlockPopulator>asList(
+                new BallPopulator()
+        );
     }
 }

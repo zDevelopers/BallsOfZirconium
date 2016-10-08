@@ -68,13 +68,14 @@ public class MapConfig extends ConfigurationInstance
         super("map.yml");
     }
 
-    public final static ConfigurationItem<World> WORLD = item("world-name", World.class);
+    public final static ConfigurationItem<String> WORLD = item("world-name", "world");
     public final static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);
 
     public final static GenerationSection GENERATION = section("generation", GenerationSection.class);
     public final static class GenerationSection extends ConfigurationSection
     {
         public final ConfigurationItem<Boolean> ENABLED = item("enabled", true);
+        public final ConfigurationItem<Boolean> LOGS = item("logs", true);
 
         public final MapSection MAP = section("map", MapSection.class);
         public final static class MapSection extends ConfigurationSection

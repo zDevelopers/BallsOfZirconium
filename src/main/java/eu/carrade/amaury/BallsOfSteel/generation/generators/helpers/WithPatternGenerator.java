@@ -31,11 +31,21 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators.helpers;
 
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.blocks.BlockID;
+import com.sk89q.worldedit.bukkit.BukkitCommandSender;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.extension.input.InputParseException;
+import com.sk89q.worldedit.extension.input.ParserContext;
 import com.sk89q.worldedit.function.pattern.BlockPattern;
 import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.function.pattern.Patterns;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
+import fr.zcraft.zlib.tools.PluginLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.util.Map;
 
@@ -43,18 +53,36 @@ import java.util.Map;
 public abstract class WithPatternGenerator extends Generator
 {
     protected final String patternString;
-    protected final Pattern pattern;
 
     public WithPatternGenerator(Map parameters)
     {
         super(parameters);
 
         patternString = getValue(parameters, "pattern", String.class, "stone");
-        pattern = getValue(parameters, "pattern", Pattern.class, new BlockPattern(new BaseBlock(0)));
     }
 
-    protected com.sk89q.worldedit.patterns.Pattern oldPattern()
+    protected Pattern pattern(World world)
     {
-        return Patterns.wrap(pattern);
+        final ParserContext parserContext = new ParserContext();
+
+        parserContext.setWorld(BukkitUtil.getLocalWorld(world));
+        parserContext.setActor(new BukkitCommandSender(BallsOfSteel.get().getWorldEditDependency().getWE(), Bukkit.getConsoleSender()));
+        parserContext.setExtent(null);
+        parserContext.setSession(null);
+
+        try
+        {
+            return WorldEdit.getInstance().getPatternFactory().parseFromInput(patternString, parserContext);
+        }
+        catch (InputParseException e)
+        {
+            PluginLogger.warning("Invalid pattern: {0} ({1}). Using stone instead this time.", patternString, e.getMessage());
+            return new BlockPattern(new BaseBlock(BlockID.STONE));
+        }
+    }
+
+    protected com.sk89q.worldedit.patterns.Pattern oldPattern(World world)
+    {
+        return Patterns.wrap(pattern(world));
     }
 }

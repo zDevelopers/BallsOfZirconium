@@ -31,6 +31,9 @@ generation:
     # Set to true to enable random generation of the map.
     enabled: true
 
+    # Set to true to log the map generation events into the console.
+    logs: true
+
 
     map:
         # The map seed. If empty, a random seed will be used.
@@ -40,13 +43,13 @@ generation:
         # generateFully option below.
         boundaries:
             corner1: -150,10,-150
-            corner2: 150,200,150
+            corner2: 150,256,150
 
         # The spawn coordinates.
         spawn: 5.5,100.5,0.5
 
         # The map environment (can be NORMAL, NETHER or THE_END).
-        environment: THE_ENDD
+        environment: THE_END
 
         # If true, the map will be generated at startup (else, use /bos generate to generate it and
         # /bos goto to be teleported inside).
@@ -56,7 +59,7 @@ generation:
         generateFully: true
 
         # The minimal distance between two spheres.
-        distanceBetweenSpheres: 32
+        distanceBetweenSpheres: 16
 
         # The minimal distance between a sphere and the edge of a pasted schematic.
         distanceBetweenSpheresAndStaticBuildings: 48
@@ -123,27 +126,36 @@ generation:
         - name: Mesa
           enabled: true
           rules:
-            - type: hsphere
+            - type: sphere
               radius: 9
               pattern: hardened_clay
-            - type: hsphere
+            - type: sphere
               radius: 8
               pattern: 96%stained_hardened_clay:1,4%diamond_ore
-            - type: hsphere
+            - type: sphere
               radius: 7
               pattern: 96%stained_hardened_clay:14,4%diamond_ore
-            - type: hsphere
+            - type: sphere
               radius: 6
               pattern: 96%stained_hardened_clay:4,4%diamond_ore
-            - type: hsphere
+            - type: sphere
               radius: 5
               pattern: 96%stained_hardened_clay:7,4%diamond_ore
-            - type: hsphere
+            - type: sphere
               radius: 4
               pattern: 96%stained_hardened_clay:3,4%diamond_ore
             - type: sphere
               radius: 3
               pattern: 96%stained_hardened_clay:0,4%diamond_ore
+            - type: sphere
+              radius: 2
+              pattern: 96%stained_hardened_clay:1,4%diamond_ore
+            - type: sphere
+              radius: 1
+              pattern: 96%stained_hardened_clay:14,4%diamond_ore
+            - type: sphere
+              radius: 0
+              pattern: 96%stained_hardened_clay:4,4%diamond_ore
 
         - name: Overworld
           enabled: true
@@ -184,7 +196,7 @@ generation:
         - name: Cancer
           enabled: true
           rules:
-            - type: hsphere
+            - type: sphere
               radius: 9
               pattern: glass
             - type: sphere
@@ -226,10 +238,10 @@ generation:
 
         - name: Magmatic 1
           rules:
-            - type: hsphere
+            - type: sphere
               radius: 9
               pattern: obsidian
-            - type: hsphere
+            - type: sphere
               radius: 8
               pattern: 60%obsidian,40%magma
             - type: sphere
@@ -238,10 +250,10 @@ generation:
 
         - name: Magmatic 2
           rules:
-            - type: hsphere
+            - type: sphere
               radius: 9
               pattern: obsidian
-            - type: hsphere
+            - type: sphere
               radius: 8
               pattern: 65%obsidian,30%magma,5%lava
             - type: sphere

@@ -33,22 +33,15 @@ package eu.carrade.amaury.BallsOfSteel.generation;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitCommandSender;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
-import com.sk89q.worldedit.extension.input.InputParseException;
-import com.sk89q.worldedit.extension.input.ParserContext;
-import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
-import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import fr.zcraft.zlib.tools.PluginLogger;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -133,13 +126,27 @@ public class GenerationProcess extends AbstractGenerationTool
      * Applies this generation process to the given location.
      *
      * @param location The base location for generation.
-     * @param random A source of randomness.
+     * @param random   A source of randomness.
+     *
      * @return A region containing the modified blocks.
      */
     public Region applyAt(Location location, Random random)
     {
+        return applyAt(location, random, WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(location.getWorld()), -1));
+    }
+
+    /**
+     * Applies this generation process to the given location.
+     *
+     * @param location The base location for generation.
+     * @param random   A source of randomness.
+     * @param session  An edit session to use.
+     *
+     * @return A region containing the modified blocks.
+     */
+    public Region applyAt(Location location, Random random, EditSession session)
+    {
         final List<Region> affectedRegions = new ArrayList<>();
-        final EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitUtil.getLocalWorld(location.getWorld()), Integer.MAX_VALUE);
 
         for (final Generator generator : generators)
         {
@@ -172,7 +179,6 @@ public class GenerationProcess extends AbstractGenerationTool
     }
 
 
-
     @ConfigurationValueHandler
     public static GenerationProcess handleGenerationProcess(final Map map) throws ConfigurationParseException
     {
@@ -191,25 +197,5 @@ public class GenerationProcess extends AbstractGenerationTool
         }
 
         return process;
-    }
-
-    @ConfigurationValueHandler
-    public static Pattern handleWEPattern(final Object pattern) throws ConfigurationParseException
-    {
-        try
-        {
-            final ParserContext parserContext = new ParserContext();
-
-            parserContext.setWorld(BukkitUtil.getLocalWorld(MapConfig.WORLD.get()));
-            parserContext.setActor(new BukkitCommandSender(BallsOfSteel.get().getWorldEditDependency().getWE(), Bukkit.getConsoleSender()));
-            parserContext.setExtent(null);
-            parserContext.setSession(null);
-
-            return WorldEdit.getInstance().getPatternFactory().parseFromInput(pattern.toString(), parserContext);
-        }
-        catch (InputParseException e)
-        {
-            throw new ConfigurationParseException("Invalid WorldEdit pattern: " + e.getMessage(), pattern);
-        }
     }
 }

@@ -57,7 +57,7 @@ public class SphereGenerator extends WithRadiusGenerator
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
-        session.makeSphere(baseVector(), oldPattern(), radius.getX(), radius.getY(), radius.getZ(), true);
+        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), true);
         return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
     }
 
