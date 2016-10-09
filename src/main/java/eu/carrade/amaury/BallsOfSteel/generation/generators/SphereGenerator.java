@@ -67,7 +67,7 @@ public class SphereGenerator extends WithRadiusGenerator
      * @return the description.
      */
     @Override
-    public String getDescription()
+    public String doDescription()
     {
         return I.t("Sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
     }

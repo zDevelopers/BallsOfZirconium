@@ -39,6 +39,7 @@ import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.AbstractGenerationTool;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Location;
 
@@ -89,7 +90,7 @@ public abstract class Generator extends AbstractGenerationTool
         try
         {
             this.session = session;
-            this.baseLocation = base;
+            this.baseLocation = base.add(offset.getX(), offset.getY(), offset.getZ());
             this.random = random;
 
             return doGenerate();
@@ -114,7 +115,14 @@ public abstract class Generator extends AbstractGenerationTool
      * A description of the generator, with parameters values if relevant.
      * @return the description.
      */
-    public abstract String getDescription();
+    public abstract String doDescription();
+
+    public String getDescription()
+    {
+        return (doDescription()
+                + (!offset.equals(Vector.ZERO) ? " " + I.t("{gray}(offset: {0})", offset) : "")
+                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
+    }
 
 
     /**

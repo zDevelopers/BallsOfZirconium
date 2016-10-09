@@ -130,7 +130,7 @@ public class GenerationProcess extends AbstractGenerationTool
      *
      * @return A region containing the modified blocks.
      */
-    public Region applyAt(Location location, Random random)
+    public Region applyAt(final Location location, final Random random)
     {
         return applyAt(location, random, WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(location.getWorld()), -1));
     }
@@ -144,7 +144,7 @@ public class GenerationProcess extends AbstractGenerationTool
      *
      * @return A region containing the modified blocks.
      */
-    public Region applyAt(Location location, Random random, EditSession session)
+    public Region applyAt(final Location location, final Random random, final EditSession session)
     {
         final List<Region> affectedRegions = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class GenerationProcess extends AbstractGenerationTool
         {
             try
             {
-                final Region affected = generator.generate(session, location, random);
+                final Region affected = generator.generate(session, location.clone(), random);
                 if (affected != null) affectedRegions.add(affected);
             }
             catch (final Exception e)

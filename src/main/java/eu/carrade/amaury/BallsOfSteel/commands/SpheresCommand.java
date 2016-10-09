@@ -91,7 +91,7 @@ public class SpheresCommand extends SpheresRelatedCommand
 
         generationProcesses.addAll(BallsOfSteel.get().getGenerationManager().getGenerationProcesses());
 
-        info(I.tn("{bold}{darkgreen}{0}{bold}{green} sphere registered.", "{bold}{darkgreen}{0}{bold}{green} spheres registered.", generationProcesses.size()));
+        info(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered.", "{bold}{darkgreen}{0}{bold}{green} spheres registered.", generationProcesses.size()));
         for (GenerationProcess process : generationProcesses)
         {
             send(new RawText("- ")

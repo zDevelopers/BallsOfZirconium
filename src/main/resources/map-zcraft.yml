@@ -123,6 +123,20 @@ generation:
               radius: 8
               pattern: 60%log:12,37%leaves:4,3%diamond_ore
 
+        - name: Death Star
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 12
+              pattern: 90%coal_block,10%obsidian
+            - type: sphere
+              radius: 10
+              pattern: 90%coal_block,6%obsidian,4%diamond_ore
+            - type: sphere
+              radius: 10
+              offset: -10,10,-10
+              pattern: air
+
         - name: Mesa
           enabled: true
           rules:
