@@ -184,7 +184,7 @@ public class BoSTeam
         }
         else
         {
-            throw new IllegalArgumentException("The block at " + chestLocation + "is not a chest.");
+            throw new IllegalArgumentException("The block at " + chestLocation + " is not a chest.");
         }
     }
 

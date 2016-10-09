@@ -182,6 +182,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
                     player.setBedSpawnLocation(team.getSpawnPoint(), true);
 
+                    BallsOfSteel.get().getScoreboardManager().setScoreboardForPlayer(player);
                     BallsOfSteel.get().getEquipmentManager().equipPlayer(player);
                 }
             }

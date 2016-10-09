@@ -28,6 +28,7 @@ import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -49,9 +50,14 @@ public class BoSScoreboardManager extends ZLibComponent
     protected void onEnable()
     {
         this.sidebarTitle = GameConfig.GAME_NAME.get();
+
+        // The scoreboard manager is only available when at least a world is loaded.
+        // If it's not the case, the scoreboard will be created when possible (see below).
+        if (Bukkit.getWorlds().size() > 0)
+            sb = Bukkit.getScoreboardManager().getNewScoreboard();
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onWorldLoad(WorldLoadEvent ev)
     {
         // The scoreboard manager is only available when at least a world is loaded
@@ -167,7 +173,8 @@ public class BoSScoreboardManager extends ZLibComponent
      */
     public void setScoreboardForPlayer(Player p)
     {
-        p.setScoreboard(sb);
+        if (sb != null)
+            p.setScoreboard(sb);
     }
 
     /**
