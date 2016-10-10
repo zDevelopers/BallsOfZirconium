@@ -59,23 +59,23 @@ generation:
         generateFully: true
 
         # The minimal distance between two spheres.
-        distanceBetweenSpheres: 16
+        distanceBetweenSpheres: 12
 
         # The minimal distance between a sphere and the edge of a pasted schematic.
-        distanceBetweenSpheresAndStaticBuildings: 48
+        distanceBetweenSpheresAndStaticBuildings: 16
 
 
     staticBuildings:
         - name: Spawn
           schematic: map-zcraft/spawn.schematic
-          pasteAt: 0,100,0
+          pasteAt: 0,107,0
           nothingAbove: true
           nothingUnder: false
           postActions:
             -
 
         - name: Falaisie
-          schematic: map-zcraft/team-falaisie.schematic
+          schematic: map-zcraft/team-spawn.schematic
           pasteAt: 150.5,126.5,-149.5
           nothingAbove: true
           nothingUnder: true
@@ -83,9 +83,15 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replace
+              from: wool
+              to: wool:blue
+            - type: replace
+              from: carpet
+              to: carpet:blue
 
         - name: Vaalonnie
-          schematic: map-zcraft/team-vaalonnie.schematic
+          schematic: map-zcraft/team-spawn.schematic
           pasteAt: -149.5,126.5,-149.5
           nothingAbove: true
           nothingUnder: true
@@ -93,9 +99,15 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replace
+              from: wool
+              to: wool:lightgreen
+            - type: replace
+              from: carpet
+              to: carpet:lightgreen
 
         - name: Bambellonie
-          schematic: map-zcraft/team-bambellonie.schematic
+          schematic: map-zcraft/team-spawn.schematic
           pasteAt: 150.5,126.5,150.5
           nothingAbove: true
           nothingUnder: true
@@ -103,9 +115,15 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replace
+              from: wool
+              to: wool:yellow
+            - type: replace
+              from: carpet
+              to: carpet:yellow
 
         - name: Alloria
-          schematic: map-zcraft/team-alloria.schematic
+          schematic: map-zcraft/team-spawn.schematic
           pasteAt: -149.5,126.5,150.5
           nothingAbove: true
           nothingUnder: true
@@ -113,6 +131,12 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replace
+              from: wool
+              to: wool:red
+            - type: replace
+              from: carpet
+              to: carpet:red
 
 
     spheres:

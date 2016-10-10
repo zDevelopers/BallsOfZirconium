@@ -25,10 +25,12 @@ import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.zlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -37,7 +39,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.text.DecimalFormat;
 
 
-public class BoSScoreboardManager extends ZLibComponent
+public class BoSScoreboardManager extends ZLibComponent implements Listener
 {
     private Scoreboard sb = null;
     private Objective sidebar = null;
@@ -60,8 +62,14 @@ public class BoSScoreboardManager extends ZLibComponent
     @EventHandler (priority = EventPriority.LOWEST)
     public void onWorldLoad(WorldLoadEvent ev)
     {
-        // The scoreboard manager is only available when at least a world is loaded
-        if (sb == null) sb = Bukkit.getScoreboardManager().getNewScoreboard();
+        RunTask.nextTick(new Runnable() {
+            @Override
+            public void run()
+            {
+                // The scoreboard manager is only available when at least a world is loaded
+                if (sb == null) sb = Bukkit.getScoreboardManager().getNewScoreboard();
+            }
+        });
     }
 
     @Override

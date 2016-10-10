@@ -38,6 +38,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
@@ -161,6 +162,9 @@ public class GenerationProcess extends AbstractGenerationTool
             }
         }
 
+        // Ensures all is wrote before the post-processors are run
+        session.flushQueue();
+
         final Region globallyAffectedRegion = new RegionIntersection(affectedRegions);
 
         for (final PostProcessor processor : postProcessors)
@@ -171,7 +175,7 @@ public class GenerationProcess extends AbstractGenerationTool
             }
             catch (final Exception e)
             {
-                PluginLogger.error("Exception occurred while executing post-processor {0}", e, processor.getClass().getName());
+                PluginLogger.error("Exception occurred while executing post-processor {0} on generation process {1}", e, processor.getClass().getName(), name);
             }
         }
 

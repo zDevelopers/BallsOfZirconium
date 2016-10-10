@@ -71,7 +71,16 @@ public class BoSTeamsManager extends ZLibComponent implements Listener
         // at startup.
         // There is probably a more elegant way.
         if (!teamsImported && ev.getWorld().getName().equals(MapConfig.WORLD.get()))
-            importTeamsFromConfig();
+        {
+            RunTask.later(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    importTeamsFromConfig();
+                }
+            }, 5);
+        }
     }
 
 

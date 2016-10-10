@@ -35,11 +35,13 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.GeometryUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -57,38 +59,56 @@ public class BallPopulator extends BlockPopulator
     @Override
     public void populate(World world, Random random, Chunk chunk)
     {
-        final int yMin = BallsOfSteel.get().getGenerationManager().getLowestCorner().getBlockY();
-        final int yMax = BallsOfSteel.get().getGenerationManager().getHighestCorner().getBlockY();
+        final long time = System.currentTimeMillis();
 
-        final Location base = new Location(world, chunk.getX() * 16 + random.nextInt(16), random.nextInt(yMax - yMin) + yMin, chunk.getZ() * 16 + random.nextInt(16));
-        if (!generationManager.isInsideBoundaries(base))
+        final GenerationManager generationManager = BallsOfSteel.get().getGenerationManager();
+
+        final int yMin = generationManager.getLowestCorner().getBlockY();
+        final int yMax = generationManager.getHighestCorner().getBlockY();
+
+        final Location base = new Location(world, (chunk.getX() << 4) + random.nextInt(16), random.nextInt(yMax - yMin) + yMin, (chunk.getZ() << 4) + random.nextInt(16));
+        if (!this.generationManager.isInsideBoundaries(base))
             return;
 
-        final Integer distance = MapConfig.GENERATION.MAP.DISTANCE_BETWEEN_SPHERES.get();
-        final EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world), -1);
-        final EllipsoidRegion region = new EllipsoidRegion((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world), BukkitUtil.toVector(base), new Vector(distance, distance, distance));
+        final Vector baseVector = BukkitUtil.toVector(base);
+        final com.sk89q.worldedit.world.World worldEditWorld = BukkitUtil.getLocalWorld(world);
 
+        final Integer spheresFreeDistance = MapConfig.GENERATION.MAP.DISTANCE_BETWEEN_SPHERES.get();
+        final Integer buildingsFreeDistance = MapConfig.GENERATION.MAP.DISTANCE_BETWEEN_SPHERES_AND_STATIC_BUILDINGS.get();
+
+        final EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(worldEditWorld, -1);
+
+        final EllipsoidRegion noSpheresRegion = new EllipsoidRegion(worldEditWorld, baseVector, new Vector(spheresFreeDistance, spheresFreeDistance, spheresFreeDistance));
+        final EllipsoidRegion noBuildingsRegion = new EllipsoidRegion(worldEditWorld, baseVector, new Vector(buildingsFreeDistance, buildingsFreeDistance, buildingsFreeDistance));
+
+        session.enableQueue();
         session.setFastMode(false);
 
 
         // We check if any sphere is too close
-        for (final Vector nearChunk : region.getChunkCubes())
+        for (final Vector nearChunk : noSpheresRegion.getChunkCubes())
         {
             final ChunkSnapshot snapshot = world.getChunkAt(nearChunk.getBlockX(), nearChunk.getBlockZ()).getChunkSnapshot(false, false, false);
             if (!snapshot.isSectionEmpty(Math.min(Math.max(nearChunk.getBlockY(), 0), 15)))
                 return;
         }
 
+        // We also check if this position is correct regarding the static buildings private zones
+        for (CuboidRegion privateBuildingRegion : generationManager.getBuildingsPrivateRegions())
+            if (GeometryUtils.intersects(privateBuildingRegion, noBuildingsRegion))
+                return;
 
-        final GenerationProcess process = generationManager.getRandomGenerationProcess(random);
 
-        if (generationManager.isLogged())
-            PluginLogger.info("Generating sphere {0} at {1}", process.getName(), base.toVector());
+        final GenerationProcess process = this.generationManager.getRandomGenerationProcess(random);
 
         process.applyAt(base, random, session);
 
         // Ensures all the blocks are wrote, as the populator checks for other spheres existence to
         // generate (or not).
         session.flushQueue();
+
+
+        if (this.generationManager.isLogged())
+            PluginLogger.info("Sphere {0} generated at {1} in {2} ms", process.getName(), base.toVector(), System.currentTimeMillis() - time);
     }
 }

@@ -29,34 +29,44 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation.generators.helpers;
+package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
-import com.sk89q.worldedit.function.pattern.Pattern;
-import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import org.bukkit.World;
+import fr.zcraft.zlib.components.i18n.I;
 
 import java.util.Map;
+import java.util.Random;
 
 
-public abstract class WithPatternGenerator extends Generator
+public class ReplacePostProcessor extends PostProcessor
 {
-    protected final String patternString;
+    private final String fromMask;
+    private final String toPattern;
 
-    public WithPatternGenerator(Map parameters)
+    public ReplacePostProcessor(Map parameters)
     {
         super(parameters);
 
-        patternString = getValue(parameters, "pattern", String.class, "stone");
+        fromMask = getValue(parameters, "from", String.class, null);
+        toPattern   = getValue(parameters, "to",   String.class, null);
     }
 
-    protected Pattern pattern(World world)
+    @Override
+    protected void doProcess(EditSession session, Region region, Random random) throws MaxChangedBlocksException
     {
-        return WorldEditUtils.parsePattern(world, patternString);
+        if (fromMask == null || toPattern == null) return;
+        final Mask mask = WorldEditUtils.parseMask(session.getWorld(), fromMask, session);
+
+        session.replaceBlocks(region, mask, WorldEditUtils.parsePatternLegacy(session.getWorld(), toPattern));
     }
 
-    protected com.sk89q.worldedit.patterns.Pattern oldPattern(World world)
+    @Override
+    public String doDescription()
     {
-        return WorldEditUtils.parsePatternLegacy(world, patternString);
+        return I.t("Replacement {gray}(from '{0}' to '{1}')", fromMask, toPattern);
     }
 }

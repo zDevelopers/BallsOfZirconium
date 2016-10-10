@@ -34,6 +34,7 @@ package eu.carrade.amaury.BallsOfSteel;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
@@ -61,6 +62,7 @@ public class MapConfig extends ConfigurationInstance
         ConfigurationValueHandlers.registerHandlers(Generator.class);
         ConfigurationValueHandlers.registerHandlers(PostProcessor.class);
         ConfigurationValueHandlers.registerHandlers(GenerationProcess.class);
+        ConfigurationValueHandlers.registerHandlers(StaticBuilding.class);
     }
 
     public MapConfig()
@@ -99,7 +101,7 @@ public class MapConfig extends ConfigurationInstance
             public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES_AND_STATIC_BUILDINGS = item("distanceBetweenSpheresAndStaticBuildings", 48);
         }
 
-        //public final ConfigurationList<GenerationProcess> STATIC_BUILDINGS = list("staticBuildings", GenerationProcess.class); // TODO use right type
+        public final ConfigurationList<StaticBuilding> STATIC_BUILDINGS = list("staticBuildings", StaticBuilding.class);
         public final ConfigurationList<GenerationProcess> SPHERES = list("spheres", GenerationProcess.class);
     }
 

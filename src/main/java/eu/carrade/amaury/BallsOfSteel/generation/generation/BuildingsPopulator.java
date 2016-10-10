@@ -31,42 +31,57 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
-import eu.carrade.amaury.BallsOfSteel.MapConfig;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
+import eu.carrade.amaury.BallsOfSteel.generation.StaticBuilding;
+import fr.zcraft.zlib.tools.PluginLogger;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.generator.ChunkGenerator;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 
-public class BallsOfSteelGenerator extends ChunkGenerator
+public class BuildingsPopulator extends BlockPopulator
 {
-    @Override
-    public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
-    {
-        ChunkData data = createChunkData(world);
-        data.setRegion(0, 0, 0, 16, 16, 16, Material.AIR);
-
-        return data;
-    }
+    private final GenerationManager generationManager = BallsOfSteel.get().getGenerationManager();
 
     @Override
-    public Location getFixedSpawnLocation(World world, Random random)
+    public void populate(World world, Random random, Chunk chunk)
     {
-        return BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.SPAWN.get()).add(0.5, 0.5, 0.5);
-    }
-
-    @Override
-    public List<BlockPopulator> getDefaultPopulators(World world)
-    {
-        return Arrays.asList(
-                new BallPopulator(),
-                new BuildingsPopulator()
+        final Region chunkRegion = new CuboidRegion(
+                new Vector(chunk.getX() << 4, 0, chunk.getZ() << 4),
+                new Vector((chunk.getX() << 4) + 15, 256, (chunk.getZ() << 4) + 15)
         );
+
+        EditSession session = null;
+
+        for (final StaticBuilding building : generationManager.getBuildings())
+        {
+            if (chunkRegion.contains(building.getPasteLocation()))
+            {
+                if (session == null)
+                {
+                    session = WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world), -1);
+                    session.setFastMode(false);
+                }
+
+                final long time = System.currentTimeMillis();
+
+                building.build(session, random);
+
+                if (generationManager.isLogged())
+                    PluginLogger.info("Build {0} generated at {1} in {2} ms", building.getName(), building.getPasteLocation(), System.currentTimeMillis() - time);
+            }
+        }
+
+        if (session != null)
+            session.flushQueue();
     }
 }

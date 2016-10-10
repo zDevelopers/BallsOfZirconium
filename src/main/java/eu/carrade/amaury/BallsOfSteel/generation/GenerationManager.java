@@ -33,9 +33,11 @@ package eu.carrade.amaury.BallsOfSteel.generation;
 
 import com.sk89q.worldedit.Vector2D;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldLoader;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.reflection.Reflection;
@@ -77,6 +79,9 @@ public class GenerationManager extends ZLibComponent implements Listener
     private final Set<GenerationProcess> generationProcesses = new HashSet<>();
     private final Queue<GenerationProcess> generationProcessesQueue = new ArrayDeque<>();
 
+    private final Set<StaticBuilding> buildings = new HashSet<>();
+    private final Set<CuboidRegion> buildingsRegions = new HashSet<>();
+
     private boolean logs;
 
     private Location lowestCorner;
@@ -108,10 +113,20 @@ public class GenerationManager extends ZLibComponent implements Listener
 
         // Loading generation processes & static buildings
         final List<GenerationProcess> spheres = MapConfig.GENERATION.SPHERES.get();
+        final List<StaticBuilding> staticBuildings = MapConfig.GENERATION.STATIC_BUILDINGS.get();
+
         if (spheres.size() == 0)
-            PluginLogger.error("No sphere defined in config, you may have an error somewhere.");
+            PluginLogger.warning("No sphere loaded from config, you may have an error somewhere.");
+        if (staticBuildings.size() == 0)
+            PluginLogger.warning("No static building loaded from config, you may have an error somewhere.");
 
         generationProcesses.addAll(spheres);
+        buildings.addAll(staticBuildings);
+
+        recalculatePrivateBuildingRegions();
+
+        for (StaticBuilding building : buildings)
+            PluginLogger.info("- Building {0} at {1}: {2}", building.getName(), building.getPasteLocation(), building.getSchematicFile().getAbsolutePath());
 
 
         // Loading map boundaries
@@ -173,6 +188,34 @@ public class GenerationManager extends ZLibComponent implements Listener
     }
 
     /**
+     * @return All registered static buildings.
+     */
+    public Set<StaticBuilding> getBuildings()
+    {
+        return buildings;
+    }
+
+    /**
+     * @return A region where nothing should be built—except static buildings.
+     */
+    public Set<CuboidRegion> getBuildingsPrivateRegions()
+    {
+        return buildingsRegions;
+    }
+
+    /**
+     * Recalculates the private regions of the static buildings, where nothing should be
+     * generated.
+     */
+    private void recalculatePrivateBuildingRegions()
+    {
+        buildingsRegions.clear();
+
+        for (final StaticBuilding building : buildings)
+            buildingsRegions.add(CuboidRegion.makeCuboid(building.getPrivateRegion()));
+    }
+
+    /**
      * @return The corner of the world with the lowest coordinates
      */
     public Location getLowestCorner()
@@ -187,6 +230,8 @@ public class GenerationManager extends ZLibComponent implements Listener
     {
         return highestCorner;
     }
+
+
 
     /* ========== Misc ========== */
 
@@ -256,11 +301,11 @@ public class GenerationManager extends ZLibComponent implements Listener
                 .generateStructures(true)
                 .createWorld();
 
+        world.setSpawnFlags(false, false);
+        world.setGameRuleValue("doMobSpawning", "false");
+
         if (world.getEnvironment() == World.Environment.THE_END)
         {
-            world.setSpawnFlags(false, false);
-            world.setGameRuleValue("doMobSpawning", "false");
-
             patchWorldAgainstDragon(world);
         }
 

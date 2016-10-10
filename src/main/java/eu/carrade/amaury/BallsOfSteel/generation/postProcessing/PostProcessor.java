@@ -32,12 +32,15 @@
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.AbstractGenerationTool;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Map;
 import java.util.Random;
@@ -84,24 +87,42 @@ public abstract class PostProcessor extends AbstractGenerationTool
     {
         if (!enabled || random.nextFloat() >= probability) return;
 
-        // This processing is only applied to a sub region
-        if (!subRegionPos1.equals(Vector.ZERO) || !subRegionPos2.equals(Vector.ZERO))
+        try
         {
-            final Vector subRealPos1 = region.getMinimumPoint().add(subRegionPos1);
-            final Vector subRealPos2 = region.getMinimumPoint().add(subRegionPos2);
+            // This processing is only applied to a sub region
+            if (subRegionPos1 != null || subRegionPos2 != null)
+            {
+                final Vector subRealPos1 = region.getMinimumPoint().add(subRegionPos1 != null ? subRegionPos1 : Vector.ZERO);
+                final Vector subRealPos2 = region.getMinimumPoint().add(subRegionPos2 != null ? subRegionPos2 : Vector.ZERO);
 
-            final Region subRegion = new CuboidRegion(
-                    region.getWorld(),
-                    Vector.getMaximum(region.getMinimumPoint(), Vector.getMinimum(subRealPos1, subRealPos2)),
-                    Vector.getMinimum(region.getMinimumPoint(), Vector.getMaximum(subRealPos1, subRealPos2))
-            );
+                final Region subRegion = new CuboidRegion(
+                        region.getWorld(),
+                        Vector.getMaximum(region.getMinimumPoint(), Vector.getMinimum(subRealPos1, subRealPos2)),
+                        Vector.getMinimum(region.getMinimumPoint(), Vector.getMaximum(subRealPos1, subRealPos2))
+                );
 
-            doProcess(session, subRegion, random);
+                doProcess(session, subRegion, random);
+            }
+            else
+            {
+                doProcess(session, region, random);
+            }
         }
-        else
+        catch (MaxChangedBlocksException e)
         {
-            doProcess(session, region, random);
+            PluginLogger.error("Cannot apply the {0} post-processor: too many blocks changed.", e, getClass().getSimpleName());
         }
+    }
+
+    /**
+     * A description of the post-processor, with parameters values if relevant.
+     * @return the description.
+     */
+    public String getDescription()
+    {
+        return (doDescription()
+                + (subRegionPos1 != null || subRegionPos2 != null ? " " + I.t("{gray}(restricted to {0}, {1})", subRegionPos1 != null ? subRegionPos1 : Vector.ZERO, subRegionPos2 != null ? subRegionPos2 : Vector.ZERO) : "")
+                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
     }
 
     /**
@@ -114,13 +135,13 @@ public abstract class PostProcessor extends AbstractGenerationTool
      *                so the generated thing is constant for the same world
      *                seed.
      */
-    protected abstract void doProcess(EditSession session, Region region, Random random);
+    protected abstract void doProcess(EditSession session, Region region, Random random) throws MaxChangedBlocksException;
 
     /**
      * A description of the post-processor, with parameters values if relevant.
      * @return the description.
      */
-    public abstract String getDescription();
+    public abstract String doDescription();
 
 
 

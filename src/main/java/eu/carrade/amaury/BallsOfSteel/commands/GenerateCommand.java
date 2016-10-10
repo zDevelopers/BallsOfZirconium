@@ -34,7 +34,7 @@ package eu.carrade.amaury.BallsOfSteel.commands;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.BoSCommand;
-import eu.carrade.amaury.BallsOfSteel.generation.WorldLoader;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldLoader;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
