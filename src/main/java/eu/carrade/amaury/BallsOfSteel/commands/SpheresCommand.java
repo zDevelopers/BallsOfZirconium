@@ -40,7 +40,10 @@ import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.components.rawtext.RawText;
+import fr.zcraft.zlib.tools.commands.PaginatedTextView;
+import fr.zcraft.zlib.tools.text.RawMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Comparator;
@@ -60,7 +63,14 @@ public class SpheresCommand extends SpheresRelatedCommand
 
         if(sender instanceof Player) sender.sendMessage("");
 
+        int page = -1;
         if (args.length > 0)
+        {
+            try { page = Integer.valueOf(args[0]); }
+            catch (NumberFormatException ignored) {} // not a page, instead a sphere
+        }
+
+        if (args.length > 0 && page == -1)
         {
             final GenerationProcess process = getGenerationProcessParameter(0);
             info(I.t("{green}{bold}Sphere: {darkgreen}{bold}{0}", process.getName()));
@@ -91,10 +101,35 @@ public class SpheresCommand extends SpheresRelatedCommand
 
         generationProcesses.addAll(BallsOfSteel.get().getGenerationManager().getGenerationProcesses());
 
-        info(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered.", "{bold}{darkgreen}{0}{bold}{green} spheres registered.", generationProcesses.size()));
-        for (GenerationProcess process : generationProcesses)
+
+        new SpheresPagination()
+                .setData(generationProcesses.toArray(new GenerationProcess[generationProcesses.size()]))
+                .setCurrentPage(page)
+                .display(sender);
+    }
+
+    @Override
+    protected List<String> complete() throws CommandException
+    {
+        if (args.length == 1)
+            return getMatchingGenerationProcesses(args[0]);
+
+        return null;
+    }
+
+    private class SpheresPagination extends PaginatedTextView<GenerationProcess>
+    {
+        @Override
+        protected void displayHeader(CommandSender receiver)
         {
-            send(new RawText("- ")
+            receiver.sendMessage(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered.", "{darkgreen}{bold}{0}{green}{bold} spheres registered.", data().length));
+        }
+
+        @Override
+        protected void displayItem(CommandSender receiver, GenerationProcess process)
+        {
+            RawMessage.send(receiver,
+                    new RawText("- ")
                             .color(ChatColor.GRAY)
                         .then(process.getName())
                             .color(process.isEnabled() ? ChatColor.DARK_GREEN : ChatColor.RED)
@@ -108,14 +143,11 @@ public class SpheresCommand extends SpheresRelatedCommand
                     .build()
             );
         }
-    }
 
-    @Override
-    protected List<String> complete() throws CommandException
-    {
-        if (args.length == 1)
-            return getMatchingGenerationProcesses(args[0]);
-
-        return null;
+        @Override
+        protected String getCommandToPage(int page)
+        {
+            return build(String.valueOf(page));
+        }
     }
 }
