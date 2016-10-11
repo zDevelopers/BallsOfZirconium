@@ -59,7 +59,9 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.registry.WorldData;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import fr.zcraft.zlib.tools.PluginLogger;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -70,6 +72,76 @@ import java.io.IOException;
 public final class WorldEditUtils
 {
     private WorldEditUtils() {}
+
+
+
+    /* ========== Edit sessions ========== */
+
+
+    /**
+     * Creates a new edit session.
+     *
+     * @param world The world this session will be used into.
+     * @return A new session.
+     */
+    public static EditSession newEditSession(World world)
+    {
+        final EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1);
+        editSession.enableQueue();
+
+        return editSession;
+    }
+
+    /**
+     * Creates a new edit session.
+     *
+     * @param world The world this session will be used into.
+     * @return A new session.
+     */
+    public static EditSession newEditSession(org.bukkit.World world)
+    {
+        return newEditSession(BukkitUtil.getLocalWorld(world));
+    }
+
+    /**
+     * Creates a new edit session.
+     *
+     * @param world The world this session will be used into.
+     * @param player The player using this session. Can be {@code null}; in this case this fallbacks to {@link #newEditSession(World)}.
+     *
+     * @return A new session.
+     */
+    public static EditSession newEditSession(World world, Player player)
+    {
+        Validate.isTrue(world != null || player != null, "Either world or player must be not null");
+
+        if (player == null) return newEditSession(world);
+        else                return BallsOfSteel.get().getWorldEditDependency().getWE().createEditSession(player);
+    }
+
+    /**
+     * Creates a new edit session.
+     *
+     * @param world The world this session will be used into.
+     * @param player The player using this session. Can be {@code null}; in this case this fallbacks to {@link #newEditSession(org.bukkit.World)}.
+     *
+     * @return A new session.
+     */
+    public static EditSession newEditSession(org.bukkit.World world, Player player)
+    {
+        return newEditSession(BukkitUtil.getLocalWorld(world), player);
+    }
+
+    /**
+     * Creates a new edit session.
+     *
+     * @param player The player using this session.
+     * @return A new session.
+     */
+    public static EditSession newEditSession(Player player)
+    {
+        return newEditSession((World) null, player);
+    }
 
 
 

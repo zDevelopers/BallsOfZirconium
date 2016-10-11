@@ -32,13 +32,12 @@
 package eu.carrade.amaury.BallsOfSteel.generation;
 
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
@@ -133,7 +132,7 @@ public class GenerationProcess extends AbstractGenerationTool
      */
     public Region applyAt(final Location location, final Random random)
     {
-        return applyAt(location, random, WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(location.getWorld()), -1));
+        return applyAt(location, random, WorldEditUtils.newEditSession(location.getWorld()));
     }
 
     /**

@@ -33,7 +33,6 @@ package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
@@ -42,6 +41,7 @@ import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.GeometryUtils;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -72,9 +72,8 @@ public class BallPopulator extends BlockPopulator
         final int spheresInThisChunk = random.nextInt((int) Math.floor(((double) (yMax - yMin)) / ((double) spheresFreeDistance * 3))) + 1;
 
         final com.sk89q.worldedit.world.World worldEditWorld = BukkitUtil.getLocalWorld(world);
-        final EditSession session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(worldEditWorld, -1);
+        final EditSession session = WorldEditUtils.newEditSession(worldEditWorld);
 
-        session.enableQueue();
         session.setFastMode(false);
 
         spheresLoop:

@@ -39,6 +39,7 @@ import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
@@ -108,8 +109,10 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
 
             baseLocation = new Location(world, x, y, z);
         }
+
         final long time = System.currentTimeMillis();
-        final Region region = generator.applyAt(baseLocation, new Random());
+        final Region region = generator.applyAt(baseLocation, new Random(), WorldEditUtils.newEditSession(baseLocation.getWorld(), sender instanceof Player ? (Player) sender : null));
+
         info(I.t("{gray}{0} generated in {1} ms. {2}", generator.getName(), System.currentTimeMillis() - time, selectAfter ? I.t("WorldEdit selection updated.") : ""));
 
         if (selectAfter && sender instanceof Player)

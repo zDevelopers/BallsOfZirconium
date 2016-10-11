@@ -33,13 +33,12 @@ package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.StaticBuilding;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -68,7 +67,7 @@ public class BuildingsPopulator extends BlockPopulator
             {
                 if (session == null)
                 {
-                    session = WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world), -1);
+                    session = WorldEditUtils.newEditSession(world);
                     session.setFastMode(false);
                 }
 
