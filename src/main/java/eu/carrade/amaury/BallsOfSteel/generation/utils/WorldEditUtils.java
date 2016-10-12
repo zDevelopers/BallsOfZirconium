@@ -206,7 +206,6 @@ public final class WorldEditUtils
      */
     public static Region pasteClipboard(EditSession session, Clipboard clipboard, Vector at, boolean ignoreAirBlocks) throws MaxChangedBlocksException
     {
-
         final WorldData worldData = session.getWorld().getWorldData();
         final ClipboardHolder holder = new ClipboardHolder(clipboard, worldData);
 

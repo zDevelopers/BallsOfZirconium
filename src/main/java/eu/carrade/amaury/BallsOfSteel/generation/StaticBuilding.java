@@ -35,8 +35,6 @@ package eu.carrade.amaury.BallsOfSteel.generation;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
@@ -112,7 +110,7 @@ public class StaticBuilding extends AbstractGenerationTool
 
     public boolean build(final World world, final Random random)
     {
-        return build(WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world), -1), random);
+        return build(WorldEditUtils.newEditSession(world), random);
     }
 
     public boolean build(final EditSession session, final Random random)

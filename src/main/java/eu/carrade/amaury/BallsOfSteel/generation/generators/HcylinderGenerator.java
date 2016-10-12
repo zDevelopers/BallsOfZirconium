@@ -32,17 +32,20 @@
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.Vector2D;
+import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
 import fr.zcraft.zlib.components.i18n.I;
 
 import java.util.Map;
 
 
-public class HsphereGenerator extends WithRadiusGenerator
+public class HcylinderGenerator extends WithRadiusGenerator
 {
-    public HsphereGenerator(Map parameters)
+    public HcylinderGenerator(Map parameters)
     {
         super(parameters);
     }
@@ -50,13 +53,23 @@ public class HsphereGenerator extends WithRadiusGenerator
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        session.makeCylinder(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getZ(), radius.getBlockY() * 2, false);
+
+        final CylinderRegion region = new CylinderRegion(
+                baseVector(), new Vector2D(radius.getX() + 1, radius.getZ() + 1),
+                baseVector().getBlockY() - radius.getBlockY() - 4,
+                baseVector().getBlockY() + radius.getBlockY() + 4
+        );
+
+        try { region.shift(new Vector(0, 2, 0)); }
+        catch (RegionOperationException ignored) {}
+
+        return region;
     }
 
     @Override
     public String doDescription()
     {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return I.t("Hollow cylinder {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
     }
 }

@@ -32,7 +32,7 @@
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
 import fr.zcraft.zlib.components.i18n.I;
@@ -40,9 +40,9 @@ import fr.zcraft.zlib.components.i18n.I;
 import java.util.Map;
 
 
-public class HsphereGenerator extends WithRadiusGenerator
+public class WallsGenerator extends WithRadiusGenerator
 {
-    public HsphereGenerator(Map parameters)
+    public WallsGenerator(Map parameters)
     {
         super(parameters);
     }
@@ -50,13 +50,18 @@ public class HsphereGenerator extends WithRadiusGenerator
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        Region region = new CuboidRegion(
+                baseVector().subtract(radius.getX() / 2, radius.getY() / 2, radius.getZ() / 2),
+                baseVector().add(radius.getX() / 2, radius.getY() / 2, radius.getZ() / 2)
+        );
+
+        session.makeWalls(region, oldPattern(baseLocation.getWorld()));
+        return region;
     }
 
     @Override
     public String doDescription()
     {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return I.t("Walls {gray}(size {0}, pattern '{1}')", radius, patternString);
     }
 }

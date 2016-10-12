@@ -48,12 +48,6 @@ public class SphereGenerator extends WithRadiusGenerator
         super(parameters);
     }
 
-    /**
-     * Generates a thing.
-     *
-     * @return A {@link Region} containing all the changes, used after for
-     * post-processing.
-     */
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
@@ -61,11 +55,6 @@ public class SphereGenerator extends WithRadiusGenerator
         return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
     }
 
-    /**
-     * A description of the generator, with parameters values if relevant.
-     *
-     * @return the description.
-     */
     @Override
     public String doDescription()
     {

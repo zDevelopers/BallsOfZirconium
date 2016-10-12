@@ -32,31 +32,35 @@
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Map;
 
 
-public class HsphereGenerator extends WithRadiusGenerator
+public class HpyramidGenerator extends WithRadiusGenerator
 {
-    public HsphereGenerator(Map parameters)
+    public HpyramidGenerator(Map parameters)
     {
         super(parameters);
+
+        if (!simpleRadius)
+            PluginLogger.warning("You declared an hollow pyramid with a thee-dimensional radius {0}, but we don't support this. Only the first coordinate will be used.", radius);
     }
 
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        session.makePyramid(baseVector(), oldPattern(baseLocation.getWorld()), radius.getBlockX(), false);
+        return new CuboidRegion(baseVector().subtract(radius), baseVector().add(radius));
     }
 
     @Override
     public String doDescription()
     {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return I.t("Hollow pyramid {gray}(radius {0}, pattern '{1}')", radius.getX(), patternString);
     }
 }

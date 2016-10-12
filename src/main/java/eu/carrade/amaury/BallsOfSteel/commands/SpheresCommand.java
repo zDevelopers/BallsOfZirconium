@@ -41,8 +41,10 @@ import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.components.rawtext.RawText;
 import fr.zcraft.zlib.tools.commands.PaginatedTextView;
+import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import fr.zcraft.zlib.tools.text.RawMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -61,7 +63,7 @@ public class SpheresCommand extends SpheresRelatedCommand
         if (!BallsOfSteel.get().getGenerationManager().isEnabled())
             error(I.t("Cannot use generation-related tools: generation disabled (either it's disabled in map.yml or WorldEdit is missing)."));
 
-        if(sender instanceof Player) sender.sendMessage("");
+        if (sender instanceof Player) sender.sendMessage("");
 
         int page = -1;
         if (args.length > 0)
@@ -122,7 +124,17 @@ public class SpheresCommand extends SpheresRelatedCommand
         @Override
         protected void displayHeader(CommandSender receiver)
         {
-            receiver.sendMessage(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered.", "{darkgreen}{bold}{0}{green}{bold} spheres registered.", data().length));
+            int availableSpheres = data().length;
+            int enabledSpheres = 0;
+
+            for (final GenerationProcess process : data())
+                if (process.isEnabled())
+                    enabledSpheres++;
+
+            if (enabledSpheres == availableSpheres)
+                receiver.sendMessage(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered.", "{darkgreen}{bold}{0}{green}{bold} spheres registered.", availableSpheres));
+            else
+                receiver.sendMessage(I.tn("{darkgreen}{bold}{0}{green}{bold} sphere registered. {green}{1} enabled.", "{darkgreen}{bold}{0}{green}{bold} spheres registered. {green}{1} enabled.", availableSpheres, availableSpheres, enabledSpheres));
         }
 
         @Override
@@ -130,17 +142,22 @@ public class SpheresCommand extends SpheresRelatedCommand
         {
             RawMessage.send(receiver,
                     new RawText("- ")
-                            .color(ChatColor.GRAY)
-                        .then(process.getName())
-                            .color(process.isEnabled() ? ChatColor.DARK_GREEN : ChatColor.RED)
-                            .hover(new RawText(I.t("Details about {0}", process.getName())))
-                            .command(SpheresCommand.class, process.getName().replace(" ", ""))
-                        .then(" (").color(ChatColor.GRAY)
-                        .then(I.tn("{0} generator", "{0} generators", process.getGenerators().size())).color(ChatColor.GRAY)
-                        .then(", ").color(ChatColor.GRAY)
-                        .then(I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size())).color(ChatColor.GRAY)
-                        .then(")").color(ChatColor.GRAY)
-                    .build()
+                                .color(ChatColor.GRAY)
+                            .then(process.getName())
+                                .color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
+                                .hover(new ItemStackBuilder(Material.POTATO_ITEM)
+                                            .title(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED, process.getName())
+                                            .loreLine(ChatColor.GRAY, I.tn("{0} generator", "{0} generators", process.getGenerators().size()))
+                                            .loreLine(ChatColor.GRAY, I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size()))
+                                            .loreLine()
+                                            .loreLine(I.t("{gray}» {white}Click{gray} for details"))
+                                        .item()
+                                )
+                                .command(SpheresCommand.class, process.getName().replace(" ", ""))
+                            .then(" (").color(ChatColor.WHITE)
+                            .then(I.tn("{0} processor", "{0} processors", process.getGenerators().size() + process.getPostProcessors().size())).color(ChatColor.WHITE)
+                            .then(")").color(ChatColor.WHITE)
+                        .build()
             );
         }
 

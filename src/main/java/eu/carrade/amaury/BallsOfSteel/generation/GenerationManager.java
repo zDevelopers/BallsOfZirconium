@@ -43,10 +43,12 @@ import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.reflection.Reflection;
 import fr.zcraft.zlib.tools.runners.RunAsyncTask;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -125,9 +127,6 @@ public class GenerationManager extends ZLibComponent implements Listener
 
         recalculatePrivateBuildingRegions();
 
-        for (StaticBuilding building : buildings)
-            PluginLogger.info("- Building {0} at {1}: {2}", building.getName(), building.getPasteLocation(), building.getSchematicFile().getAbsolutePath());
-
 
         // Loading map boundaries
         World world = BallsOfSteel.get().getGameManager().getGameWorld();
@@ -178,7 +177,11 @@ public class GenerationManager extends ZLibComponent implements Listener
     {
         if (generationProcessesQueue.isEmpty())
         {
-            List<GenerationProcess> generationProcessesList = new ArrayList<>(generationProcesses);
+            final List<GenerationProcess> generationProcessesList = new ArrayList<>();
+            for (final GenerationProcess generationProcess : generationProcesses)
+                if (generationProcess.isEnabled())
+                    generationProcessesList.add(generationProcess);
+
             Collections.shuffle(generationProcessesList, random);
 
             generationProcessesQueue.addAll(generationProcessesList);
@@ -334,8 +337,10 @@ public class GenerationManager extends ZLibComponent implements Listener
         final Vector2D corner2 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get().toVector2D();
 
         // We also load the chunks near the border to avoid load when players are close to it.
+        // If the player logged out we switch to the console to display the logs.
         return new WorldLoader(
-                createWorld(name), logsReceiver,
+                createWorld(name),
+                logsReceiver instanceof Player && !((Player) logsReceiver).isOnline() ? Bukkit.getConsoleSender() : logsReceiver,
                 Vector2D.getMinimum(corner1, corner2).subtract(32, 32),
                 Vector2D.getMaximum(corner1, corner2).add(32, 32)
         );

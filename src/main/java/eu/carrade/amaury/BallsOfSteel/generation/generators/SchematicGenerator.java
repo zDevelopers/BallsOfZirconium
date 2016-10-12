@@ -32,31 +32,67 @@
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.PluginLogger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 
-public class HsphereGenerator extends WithRadiusGenerator
+public class SchematicGenerator extends Generator
 {
-    public HsphereGenerator(Map parameters)
+    private final File schematicFile;
+    private final Clipboard schematic;
+
+    private final boolean skipAir;
+
+
+    public SchematicGenerator(Map parameters)
     {
         super(parameters);
+
+
+        skipAir = getValue(parameters, "skipAir", boolean.class, false);
+
+        final String schematicPath = getValue(parameters, "schematic", String.class, null);
+        if (schematicPath == null)
+        {
+            schematicFile = null;
+            schematic = null;
+            return;
+        }
+
+        schematicFile = new File(BallsOfSteel.get().getDataFolder(), schematicPath);
+        Clipboard clipboard;
+
+        try
+        {
+            clipboard = WorldEditUtils.loadSchematic(schematicFile);
+        }
+        catch (IOException e)
+        {
+            PluginLogger.error("Unable to load schematic at {0}, will not be pasted", e, schematicFile.getAbsolutePath());
+            clipboard = null;
+        }
+
+        schematic = clipboard;
     }
 
     @Override
     protected Region doGenerate() throws MaxChangedBlocksException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        if (schematic == null) return null;
+        return WorldEditUtils.pasteClipboard(session, schematic, baseVector(), skipAir);
     }
 
     @Override
     public String doDescription()
     {
-        return I.t("Hollow sphere {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return I.t("Schematic {gray}(file {0}, skip air: {1})", schematicFile.getPath(), skipAir);
     }
 }
