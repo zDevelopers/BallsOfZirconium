@@ -42,14 +42,18 @@ import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extension.input.InputParseException;
 import com.sk89q.worldedit.extension.input.ParserContext;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.Masks;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.pattern.BlockPattern;
 import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.function.pattern.Patterns;
+import com.sk89q.worldedit.math.transform.Transform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
@@ -197,17 +201,16 @@ public final class WorldEditUtils
      * Pastes a clipboard at the given location.
      *
      * @param session         The edit session we should paste into.
-     * @param clipboard       The clipboard to paste.
-     * @param at              The paste location/
+     * @param holder          The clipboard holder to use to paste.
+     * @param at              The paste location.
      * @param ignoreAirBlocks {@code true} to paste only non-air blocks.
      *
      * @return A region containing the pasted clipboard
      * @throws MaxChangedBlocksException If too many blocks are changed.
      */
-    public static Region pasteClipboard(EditSession session, Clipboard clipboard, Vector at, boolean ignoreAirBlocks) throws MaxChangedBlocksException
+    public static Region pasteClipboard(EditSession session, ClipboardHolder holder, Vector at, boolean ignoreAirBlocks) throws MaxChangedBlocksException
     {
         final WorldData worldData = session.getWorld().getWorldData();
-        final ClipboardHolder holder = new ClipboardHolder(clipboard, worldData);
 
         Operations.completeLegacy(holder
                         .createPaste(session, worldData)
@@ -217,6 +220,22 @@ public final class WorldEditUtils
         );
 
         return getRegionForClipboardPastedAt(holder, at);
+    }
+
+    /**
+     * Pastes a clipboard at the given location.
+     *
+     * @param session         The edit session we should paste into.
+     * @param clipboard       The clipboard to paste.
+     * @param at              The paste location/
+     * @param ignoreAirBlocks {@code true} to paste only non-air blocks.
+     *
+     * @return A region containing the pasted clipboard
+     * @throws MaxChangedBlocksException If too many blocks are changed.
+     */
+    public static Region pasteClipboard(EditSession session, Clipboard clipboard, Vector at, boolean ignoreAirBlocks) throws MaxChangedBlocksException
+    {
+        return pasteClipboard(session, new ClipboardHolder(clipboard, session.getWorld().getWorldData()), at, ignoreAirBlocks);
     }
 
 
@@ -252,6 +271,59 @@ public final class WorldEditUtils
         final Vector max = realTo.add(holder.getTransform().apply(clipboardRegion.getMaximumPoint().subtract(clipboardRegion.getMinimumPoint())));
 
         return new CuboidRegion(Vector.getMinimum(realTo, max).subtract(1, 1, 1), Vector.getMaximum(realTo, max).add(1, 1, 1));
+    }
+
+
+
+    /* ========== WorldEdit regions manipulations ========== */
+
+
+    /**
+     * Applies a transformation to a region, in-place.
+     *
+     * The region is copied into a buffer, the transformation is applied to it.
+     * Then the old blocks are removed and the buffer applied instead.
+     *
+     * @param session The edit session in which the transformation is applied.
+     * @param region The region to be transformed.
+     * @param transform The transformation to apply.
+     *
+     * @throws MaxChangedBlocksException If too many blocks are changed.
+     */
+    public static void applyTransform(final EditSession session, final Region region, final Transform transform) throws MaxChangedBlocksException
+    {
+        applyTransform(session, region, transform, region.getCenter());
+    }
+
+    /**
+     * Applies a transformation to a region, in-place.
+     *
+     * The region is copied into a buffer, the transformation is applied to it.
+     * Then the old blocks are removed and the buffer applied instead.
+     *
+     * @param session The edit session in which the transformation is applied.
+     * @param region The region to be transformed.
+     * @param transform The transformation to apply.
+     * @param origin The origin of the transformation.
+     *
+     * @throws MaxChangedBlocksException If too many blocks are changed.
+     */
+    public static void applyTransform(final EditSession session, final Region region, final Transform transform, final Vector origin) throws MaxChangedBlocksException
+    {
+        final BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
+        clipboard.setOrigin(origin);
+
+        final ForwardExtentCopy copy = new ForwardExtentCopy(session, region, clipboard, region.getMinimumPoint());
+        Operations.completeLegacy(copy);
+
+        final ClipboardHolder holder = new ClipboardHolder(clipboard, new BukkitWorld(null).getWorldData());
+        holder.setTransform(transform);
+
+        session.replaceBlocks(region, Masks.negate(new BlockMask(session, new BaseBlock(BlockID.AIR))), Patterns.wrap(new BlockPattern(new BaseBlock(BlockID.AIR))));
+        session.flushQueue();
+
+        pasteClipboard(session, holder, origin, true);
+        session.flushQueue();
     }
 
 

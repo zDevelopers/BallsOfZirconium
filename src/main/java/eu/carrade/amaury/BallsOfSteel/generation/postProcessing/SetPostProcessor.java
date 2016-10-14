@@ -38,34 +38,28 @@ import fr.zcraft.zlib.components.i18n.I;
 import java.util.Map;
 
 
-public class ReplacePostProcessor extends PostProcessor
+public class SetPostProcessor extends PostProcessor
 {
-    private final String fromMask;
-    private final String toPattern;
+    private final String pattern;
 
-    public ReplacePostProcessor(Map parameters)
+    public SetPostProcessor(Map parameters)
     {
         super(parameters);
 
-        fromMask = getValue(parameters, "from", String.class, null);
-        toPattern   = getValue(parameters, "to",   String.class, null);
+        pattern = getValue(parameters, "pattern", String.class, null);
     }
 
     @Override
     protected void doProcess() throws MaxChangedBlocksException
     {
-        if (fromMask == null || toPattern == null) return;
+        if (pattern == null) return;
 
-        session.replaceBlocks(
-                region,
-                WorldEditUtils.parseMask(session.getWorld(), fromMask, session),
-                WorldEditUtils.parsePatternLegacy(session.getWorld(), toPattern)
-        );
+        session.setBlocks(region, WorldEditUtils.parsePatternLegacy(region.getWorld(), pattern));
     }
 
     @Override
     public String doDescription()
     {
-        return I.t("Replacement {gray}(from '{0}' to '{1}')", fromMask, toPattern);
+        return I.t("Blocks set {gray}(to '{0}')", pattern);
     }
 }

@@ -57,6 +57,22 @@ public abstract class PostProcessor extends AbstractGenerationTool
     private final Vector subRegionPos1;
     private final Vector subRegionPos2;
 
+    /**
+     * If WorldEdit is used, changes must be made in this edit session.
+     */
+    protected EditSession session = null;
+
+    /**
+     * The region where the changes should be applied.
+     */
+    protected Region region = null;
+
+    /**
+     * A random numbers generator; it should be used as possible
+     * so the generated thing is constant for the same world seed.
+     */
+    protected Random random = null;
+
 
     public PostProcessor(final Map parameters)
     {
@@ -89,24 +105,27 @@ public abstract class PostProcessor extends AbstractGenerationTool
 
         try
         {
-            // This processing is only applied to a sub region
+            this.session = session;
+            this.random = random;
+
+            // If this processing is only applied to a sub region...
             if (subRegionPos1 != null || subRegionPos2 != null)
             {
                 final Vector subRealPos1 = region.getMinimumPoint().add(subRegionPos1 != null ? subRegionPos1 : Vector.ZERO);
                 final Vector subRealPos2 = region.getMinimumPoint().add(subRegionPos2 != null ? subRegionPos2 : Vector.ZERO);
 
-                final Region subRegion = new CuboidRegion(
+                this.region = new CuboidRegion(
                         region.getWorld(),
                         Vector.getMaximum(region.getMinimumPoint(), Vector.getMinimum(subRealPos1, subRealPos2)),
                         Vector.getMinimum(region.getMinimumPoint(), Vector.getMaximum(subRealPos1, subRealPos2))
                 );
-
-                doProcess(session, subRegion, random);
             }
             else
             {
-                doProcess(session, region, random);
+                this.region = region;
             }
+
+            doProcess();
         }
         catch (MaxChangedBlocksException e)
         {
@@ -127,15 +146,8 @@ public abstract class PostProcessor extends AbstractGenerationTool
 
     /**
      * Applies a post-processing to a region.
-     *
-     * @param session If WorldEdit is used, changes should be made in this edit
-     *                session.
-     * @param region  The region where the post-processing should be applied.
-     * @param random  A random numbers generator; it should be used as possible
-     *                so the generated thing is constant for the same world
-     *                seed.
      */
-    protected abstract void doProcess(EditSession session, Region region, Random random) throws MaxChangedBlocksException;
+    protected abstract void doProcess() throws MaxChangedBlocksException;
 
     /**
      * A description of the post-processor, with parameters values if relevant.

@@ -89,6 +89,8 @@ generation:
             - type: replace
               from: carpet
               to: carpet:blue
+            - type: flip
+              direction: west
 
         - name: Vaalonnie
           schematic: map-zcraft/team-spawn.schematic
@@ -121,6 +123,10 @@ generation:
             - type: replace
               from: carpet
               to: carpet:yellow
+            - type: flip
+              direction: north
+            - type: flip
+              direction: west
 
         - name: Alloria
           schematic: map-zcraft/team-spawn.schematic
@@ -137,6 +143,8 @@ generation:
             - type: replace
               from: carpet
               to: carpet:red
+            - type: flip
+              direction: north
 
 
     spheres:
@@ -556,6 +564,9 @@ generation:
               radius: 10
               offset: -10,10,-10
               pattern: air
+          postActions:
+            - type: rotate
+              angleY: random
 
         - name: Mesa
           enabled: true
