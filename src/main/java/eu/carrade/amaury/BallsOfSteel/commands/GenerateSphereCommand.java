@@ -111,7 +111,7 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         }
 
         final long time = System.currentTimeMillis();
-        final Region region = generator.applyAt(baseLocation, new Random(), WorldEditUtils.newEditSession(baseLocation.getWorld(), sender instanceof Player ? (Player) sender : null));
+        final Region region = generator.applyAt(baseLocation, new Random(), WorldEditUtils.newEditSession(baseLocation.getWorld(), /*sender instanceof Player ? (Player) sender :*/ null));
 
         info(I.t("{gray}{0} generated in {1} ms. {2}", generator.getName(), System.currentTimeMillis() - time, selectAfter ? I.t("WorldEdit selection updated.") : ""));
 

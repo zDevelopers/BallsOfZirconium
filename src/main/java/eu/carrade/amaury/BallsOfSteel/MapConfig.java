@@ -48,6 +48,8 @@ import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.World;
 
+import java.io.File;
+
 import static fr.zcraft.zlib.components.configuration.ConfigurationItem.*;
 
 
@@ -63,12 +65,22 @@ public class MapConfig extends ConfigurationInstance
         ConfigurationValueHandlers.registerHandlers(PostProcessor.class);
         ConfigurationValueHandlers.registerHandlers(GenerationProcess.class);
         ConfigurationValueHandlers.registerHandlers(StaticBuilding.class);
+
+        final File mapConfigDirectory = new File(BallsOfSteel.get().getDataFolder(), GameConfig.MAP_CONFIG.get());
+
+        MAP_CONFIG_DIRECTORY = mapConfigDirectory;
+        MAP_SCHEMATICS_DIRECTORY = new File(mapConfigDirectory, "schematics");
+        MAP_LOOT_TABLES_DIRECTORY = new File(mapConfigDirectory, "loot_tables");
     }
 
     public MapConfig()
     {
-        super("map.yml");
+        super(GameConfig.MAP_CONFIG.get() + "/map.yml");
     }
+
+    public final static File MAP_CONFIG_DIRECTORY;
+    public final static File MAP_SCHEMATICS_DIRECTORY;
+    public final static File MAP_LOOT_TABLES_DIRECTORY;
 
     public final static ConfigurationItem<String> WORLD = item("world-name", "world");
     public final static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);

@@ -38,7 +38,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
-import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
@@ -130,7 +130,7 @@ public class StaticBuilding extends AbstractGenerationTool
                 }
                 catch (final Exception e)
                 {
-                    PluginLogger.error("Exception occurred while executing post-processor {0}", e, processor.getClass().getName());
+                    PluginLogger.error("Exception occurred while executing post-processor {0} for static building {1}", e, processor.getClass().getName(), name);
                 }
             }
 
@@ -138,7 +138,7 @@ public class StaticBuilding extends AbstractGenerationTool
         }
         catch (final MaxChangedBlocksException e)
         {
-            PluginLogger.error("Cannot build static building: too many blocks changed.", e);
+            PluginLogger.error("Cannot build static building {0}: too many blocks changed.", e, name);
             return false;
         }
     }
@@ -226,7 +226,7 @@ public class StaticBuilding extends AbstractGenerationTool
         if (schematicPath == null || pasteLocation == null)
             throw new ConfigurationParseException("Both schematic and pasteAt are required", map);
 
-        File schematicFile = new File(BallsOfSteel.get().getDataFolder(), schematicPath);
+        File schematicFile = new File(MapConfig.MAP_SCHEMATICS_DIRECTORY, schematicPath);
         StaticBuilding building;
         try
         {

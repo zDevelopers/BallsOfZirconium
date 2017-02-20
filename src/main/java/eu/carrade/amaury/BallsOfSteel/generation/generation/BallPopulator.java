@@ -122,11 +122,6 @@ public class BallPopulator extends BlockPopulator
             process.applyAt(base, random, session);
 
 
-            // Ensures all the blocks are wrote, as the populator checks for other spheres existence to
-            // generate (or not).
-            session.flushQueue();
-
-
             if (this.generationManager.isLogged())
             {
                 PluginLogger.info("Sphere {0} generated at {1} in {2} ms", process.getName(), base.toVector(), System.currentTimeMillis() - time);

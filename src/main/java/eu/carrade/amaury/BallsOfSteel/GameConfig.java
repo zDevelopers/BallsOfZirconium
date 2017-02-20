@@ -29,6 +29,8 @@ public class GameConfig extends Configuration
     static public final ConfigurationItem<String> GAME_NAME = item("gameName", "Balls of Steel");
     static public final ConfigurationItem<String> DURATION = item("duration", "59:59");
 
+    static public final ConfigurationItem<String> MAP_CONFIG = item("map_config", "default");
+
     static public final BarSection BAR = section("bar", BarSection.class);
     static public class BarSection extends ConfigurationSection
     {

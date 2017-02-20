@@ -34,7 +34,7 @@ package eu.carrade.amaury.BallsOfSteel.generation.generators;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
@@ -56,7 +56,6 @@ public class SchematicGenerator extends Generator
     {
         super(parameters);
 
-
         skipAir = getValue(parameters, "skipAir", boolean.class, false);
 
         final String schematicPath = getValue(parameters, "schematic", String.class, null);
@@ -67,7 +66,7 @@ public class SchematicGenerator extends Generator
             return;
         }
 
-        schematicFile = new File(BallsOfSteel.get().getDataFolder(), schematicPath);
+        schematicFile = new File(MapConfig.MAP_SCHEMATICS_DIRECTORY, schematicPath);
         Clipboard clipboard;
 
         try

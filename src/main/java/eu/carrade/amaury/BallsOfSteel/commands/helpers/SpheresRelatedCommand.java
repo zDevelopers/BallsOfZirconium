@@ -53,6 +53,7 @@ public abstract class SpheresRelatedCommand extends BoSCommand
             names.add(process.getName().replace(" ", ""));
         }
 
+        Collections.sort(names);
         return names;
     }
 
@@ -78,8 +79,6 @@ public abstract class SpheresRelatedCommand extends BoSCommand
 
     public List<String> getMatchingGenerationProcesses(final String prefix)
     {
-        final List<String> generatorsNamesWithoutSpaces = getGeneratorsNamesWithoutSpaces();
-        Collections.sort(generatorsNamesWithoutSpaces);
-        return getMatchingSubset(generatorsNamesWithoutSpaces, prefix);
+        return getMatchingSubset(getGeneratorsNamesWithoutSpaces(), prefix);
     }
 }

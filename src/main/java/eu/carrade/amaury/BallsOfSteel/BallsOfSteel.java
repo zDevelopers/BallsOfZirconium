@@ -70,7 +70,7 @@ public final class BallsOfSteel extends ZPlugin
         instance = this;
 
         saveDefaultConfig();
-        saveResource("map.yml", false);
+        // TODO save default map config folder to plugin directory
 
         worldEditDependency = loadComponent(WorldEditDependency.class);
 

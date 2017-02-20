@@ -49,6 +49,13 @@ bar:
     # 6 minutes left).
     closeToEndPercentage: 0.167
 
+
+
+# The name of the folder containing the map generation rules.
+map_config: "default"
+
+
+
 start:
     sound:
         name: NONE

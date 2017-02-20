@@ -36,7 +36,6 @@ import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.util.Direction;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Map;
 
@@ -58,10 +57,7 @@ public class FlipPostProcessor extends PostProcessor
         final Direction weDirection = getDirection(direction);
         if (weDirection == null) return;
 
-        final AffineTransform transform = new AffineTransform().scale(weDirection.toVector().positive().multiply(-2).add(1, 1, 1));
-        WorldEditUtils.applyTransform(session, region, transform, region.getMinimumPoint());
-
-        PluginLogger.info("Flip, direction {0}, transformation {1}", weDirection, transform);
+        WorldEditUtils.applyTransform(session, region, new AffineTransform().scale(weDirection.toVector().positive().multiply(-2).add(1, 1, 1)));
     }
 
     @Override

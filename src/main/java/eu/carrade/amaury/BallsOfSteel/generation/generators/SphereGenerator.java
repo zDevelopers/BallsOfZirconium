@@ -40,7 +40,6 @@ import fr.zcraft.zlib.components.i18n.I;
 import java.util.Map;
 
 
-@SuppressWarnings ("unused")
 public class SphereGenerator extends WithRadiusGenerator
 {
     public SphereGenerator(final Map parameters)

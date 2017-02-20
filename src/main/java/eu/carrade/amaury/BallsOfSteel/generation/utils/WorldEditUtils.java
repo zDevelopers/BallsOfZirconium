@@ -60,7 +60,6 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.session.request.Request;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.registry.WorldData;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.apache.commons.lang.Validate;
@@ -210,10 +209,8 @@ public final class WorldEditUtils
      */
     public static Region pasteClipboard(EditSession session, ClipboardHolder holder, Vector at, boolean ignoreAirBlocks) throws MaxChangedBlocksException
     {
-        final WorldData worldData = session.getWorld().getWorldData();
-
         Operations.completeLegacy(holder
-                        .createPaste(session, worldData)
+                        .createPaste(session, session.getWorld().getWorldData())
                         .to(at)
                         .ignoreAirBlocks(ignoreAirBlocks)
                         .build()
@@ -313,16 +310,16 @@ public final class WorldEditUtils
         final BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
         clipboard.setOrigin(origin);
 
-        final ForwardExtentCopy copy = new ForwardExtentCopy(session, region, clipboard, region.getMinimumPoint());
-        Operations.completeLegacy(copy);
+        final ForwardExtentCopy copy = new ForwardExtentCopy(session, region, clipboard, Vector.ZERO);
+        copy.setRemovingEntities(true);
+        copy.setTransform(transform);
 
-        final ClipboardHolder holder = new ClipboardHolder(clipboard, new BukkitWorld(null).getWorldData());
-        holder.setTransform(transform);
+        Operations.completeLegacy(copy);
 
         session.replaceBlocks(region, Masks.negate(new BlockMask(session, new BaseBlock(BlockID.AIR))), Patterns.wrap(new BlockPattern(new BaseBlock(BlockID.AIR))));
         session.flushQueue();
 
-        pasteClipboard(session, holder, origin, true);
+        pasteClipboard(session, clipboard, origin, true);
         session.flushQueue();
     }
 

@@ -1,3 +1,7 @@
+## This is a config file for a specific map. It's an example based on As2Pik's map published on AceGames.
+## You can found other map files in this project's repository, at https://github.com/AmauryCarrade/BallsOfSteel/tree/master/src/main/resources .
+
+
 # Specify here the world where the game will take place.
 world-name: world_the_end
 
@@ -67,7 +71,7 @@ generation:
 
     staticBuildings:
         - name: Spawn
-          schematic: map-zcraft/spawn.schematic
+          schematic: spawn.schematic
           pasteAt: 0,107,0
           nothingAbove: true
           nothingUnder: false
@@ -75,8 +79,8 @@ generation:
             -
 
         - name: Falaisie
-          schematic: map-zcraft/team-spawn.schematic
-          pasteAt: 150.5,126.5,-149.5
+          schematic: team-spawn.schematic
+          pasteAt: 149,126.5,-149
           nothingAbove: true
           nothingUnder: true
           postActions:
@@ -93,8 +97,8 @@ generation:
               direction: west
 
         - name: Vaalonnie
-          schematic: map-zcraft/team-spawn.schematic
-          pasteAt: -149.5,126.5,-149.5
+          schematic: team-spawn.schematic
+          pasteAt: -149,126.5,-149
           nothingAbove: true
           nothingUnder: true
           postActions:
@@ -109,8 +113,8 @@ generation:
               to: carpet:lightgreen
 
         - name: Bambellonie
-          schematic: map-zcraft/team-spawn.schematic
-          pasteAt: 150.5,126.5,150.5
+          schematic: team-spawn.schematic
+          pasteAt: 149,126.5,149
           nothingAbove: true
           nothingUnder: true
           postActions:
@@ -129,8 +133,8 @@ generation:
               direction: west
 
         - name: Alloria
-          schematic: map-zcraft/team-spawn.schematic
-          pasteAt: -149.5,126.5,150.5
+          schematic: team-spawn.schematic
+          pasteAt: -149,126.5,149
           nothingAbove: true
           nothingUnder: true
           postActions:
@@ -148,6 +152,22 @@ generation:
 
 
     spheres:
+        - name: Test Spawn
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: team-spawn.schematic
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replace
+              from: wool
+              to: wool:red
+            - type: replace
+              from: carpet
+              to: carpet:red
+
         # Basic spheres   -------------------------------
 
         - name: Log Oak
@@ -660,19 +680,9 @@ generation:
             - type: sphere
               radius: 7
               pattern: 0.5%chest,99.5%water
-#          postActions:
-#            - type: populateChests
-#              lootTable:
-#              - item: snow_ball
-#                amount: 1-4
-#                weight: 5
-#              - item: diamond
-#                amount: 1-5
-#                weight: 10
-#              - item: flint_and_steel
-#                amount: 1
-#                weight: 1
-              # to be continued
+          postActions:
+            - type: populateChests
+              lootTable: spheres/aqua
 
         - name: Magmatic 1
           rules:
@@ -724,8 +734,7 @@ generation:
             - type: rotate
               angle: random
             - type: populateChests
-              lootTable:
-                - # todo
+              lootTable: natural/nether  # todo
             - type: randomSpawner
               choices: magma_cube,pig_zombie,wither_skeleton
 
@@ -740,8 +749,7 @@ generation:
             - type: rotate
               angle: random
             - type: populateChests
-              lootTable:
-                - # todo
+              lootTable: natural/guardians  # todo
 
         - name: Dunjeons Room
           rules:
@@ -753,7 +761,6 @@ generation:
             - type: rotate
               angle: random
             - type: populateChests
-              lootTable:
-                - # todo
+              lootTable: structures/dunjeon  # todo
             - type: randomSpawner
               choices: spider,cave_spider,zombie,silverfish,skeleton,creeper,slime
