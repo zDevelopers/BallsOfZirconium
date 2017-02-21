@@ -170,7 +170,6 @@ public class GenerationProcess extends AbstractGenerationTool
         {
             try
             {
-                PluginLogger.info("Executing post-processor {0} for process {1}", processor.getClass().getSimpleName(), name);
                 processor.process(session, globallyAffectedRegion, random);
             }
             catch (final Exception e)

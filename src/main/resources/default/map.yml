@@ -71,7 +71,7 @@ generation:
 
     staticBuildings:
         - name: Spawn
-          schematic: spawn.schematic
+          schematic: buildings/spawn.schematic
           pasteAt: 0,107,0
           nothingAbove: true
           nothingUnder: false
@@ -79,7 +79,7 @@ generation:
             -
 
         - name: Falaisie
-          schematic: team-spawn.schematic
+          schematic: buildings/team-spawn.schematic
           pasteAt: 149,126.5,-149
           nothingAbove: true
           nothingUnder: true
@@ -97,7 +97,7 @@ generation:
               direction: west
 
         - name: Vaalonnie
-          schematic: team-spawn.schematic
+          schematic: buildings/team-spawn.schematic
           pasteAt: -149,126.5,-149
           nothingAbove: true
           nothingUnder: true
@@ -113,7 +113,7 @@ generation:
               to: carpet:lightgreen
 
         - name: Bambellonie
-          schematic: team-spawn.schematic
+          schematic: buildings/team-spawn.schematic
           pasteAt: 149,126.5,149
           nothingAbove: true
           nothingUnder: true
@@ -133,7 +133,7 @@ generation:
               direction: west
 
         - name: Alloria
-          schematic: team-spawn.schematic
+          schematic: buildings/team-spawn.schematic
           pasteAt: -149,126.5,149
           nothingAbove: true
           nothingUnder: true
@@ -153,10 +153,10 @@ generation:
 
     spheres:
         - name: Test Spawn
-          enabled: true
+          enabled: false
           rules:
             - type: schematic
-              schematic: team-spawn.schematic
+              schematic: buildings/team-spawn.schematic
           postActions:
             - type: replace
               from: stone
@@ -682,7 +682,7 @@ generation:
               pattern: 0.5%chest,99.5%water
           postActions:
             - type: populateChests
-              lootTable: spheres/aqua
+              loot_table: spheres/aqua
 
         - name: Magmatic 1
           rules:
@@ -709,8 +709,18 @@ generation:
               pattern: 65%obsidian,24%magma,5%lava,6%diamond_block
 
 
+        # Built spheres   -------------------
 
-        # Complex generated spheres   -------------------
+        - name: Nether Room
+          rules:
+            - type: schematic
+              schematic: rooms/room-nether-fortress.schematic
+          postActions:
+            - type: populateChests
+              loot_table: minecraft:chests/nether_bridge  # todo custom table
+            #- type: randomSpawner
+            #  choices: magma_cube,pig_zombie,wither_skeleton
+
 
 
     spheres-no:  # Work in progres, disables the spheres below

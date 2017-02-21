@@ -82,8 +82,8 @@ public abstract class PostProcessor extends AbstractGenerationTool
         final Map regionParameters = getValue(parameters, "region", Map.class, null);
         if (regionParameters != null)
         {
-            subRegionPos1 = getValue(regionParameters, "subPos1", Vector.class, Vector.ZERO);
-            subRegionPos2 = getValue(regionParameters, "subPos2", Vector.class, Vector.ZERO);
+            subRegionPos1 = getValue(regionParameters, "sub_pos_1", Vector.class, Vector.ZERO);
+            subRegionPos2 = getValue(regionParameters, "sub_pos_2", Vector.class, Vector.ZERO);
         }
         else subRegionPos1 = subRegionPos2 = null;
     }

@@ -32,7 +32,7 @@ La classe est trouvée à partir du nom, en tentant de charger :
 - le nom brut comme nom complet de classe (afin de pouvoir utiliser d'éventuels générateurs externes).
 
 
- 
+ 
 
 
 - **Paramètres communs à tous les générateurs**  
@@ -101,16 +101,18 @@ La classe est trouvée à partir du nom, en tentant de charger :
 - le nom brut comme nom complet de classe (afin de pouvoir utiliser d'éventuels générateurs externes).
 
 
- 
+ 
 
 
 - **Paramètres communs à tous les traitements**  
   Ces paramètres peuvent être ajoutés à tous les traitements ci-dessous.
 	- `enabled` : booléen (signification évidente).
-	- `region` : limite la région affectée par ce traitement.
-		- `onlyAbove` : x (concerne uniquement les blocs au dessus de l'altitude donnée, relative au bas de la sélection)
-		- `onlyBelow`, `onlyEastOf`, `onlyWestOf`, `onlyNorthOf`, `onlySouthOf` (peuvent être combinés).
-		- Coordonnées relatives au plus petit point de la sélection (le coin aux coordonénes les plus basses) (`Region.getMinimumPoint()` techniquement)
+	- `region` : limite la région affectée par ce traitement à un cuboïde ayant les coordonnées précisées aux coins.
+	    - Les coordonnées sont spécifiées dans les sous-clefs `sub_pos_1` et `sub_pos_2`.
+	    - Les coordonnées doivent être relatives au plus petit point de la sélection (le coin aux coordonnées les plus basses) (`Region.getMinimumPoint()` techniquement). Ainsi pour couvrir un petit cube dans le coin aux plus petites coordonnées, il faut passer `0,0,0` et par exemple `3,3,3` respectivement.
+	    - Les coordonnées ne doivent ainsi pas être négatives.
+	    - Quelque soit la taille de la boîte précisée ici, elle sera limitée à la taille de la structure générée.
+	    - Si non précisé, le traitement sera effectué sur l'intégralité de la zone.
 	- `probability` : nombre entre 0 et 1. Si fourni, le traitement sera appliqué suivant cette probabilité.
 
 - **`replace`**  
@@ -132,9 +134,9 @@ La classe est trouvée à partir du nom, en tentant de charger :
 
 - **`populateChests`**  
   Peuple les coffres d'éléments, aléatoirement. Cette règle va peupler les conteneurs trouvés dans la zone d'application (sauf si explicitement désactivé pour certains conteneurs). Minecraft ne le supportant pas, le remplissage basé sur des _loot tables_ de coffres d'entités (mules, lamas...) n'est actuellement pas supporté. Ceci pourrait évoluer dans le futur.
-	- `onlyEmpty` : booléen. Ne remplie que les coffres vides si actif. Sinon, vide tous les coffres et applique la règle de génération fournie.
+	- `only_empty` : booléen. Ne remplie que les coffres vides si actif. Sinon, vide tous les coffres et applique la règle de génération fournie.
 	- `chests` : booléen. Si `false`, les coffres simples de la sélection ne seront pas impactés. Par défaut `true`.
-	- `trappedChests` : booléen. Si `false`, les coffres piégés de la sélection ne seront pas impactés. Par défaut `true`.
+	- `trapped_chests` : booléen. Si `false`, les coffres piégés de la sélection ne seront pas impactés. Par défaut `true`.
 	- `shulker_boxes` : booléen. Si `false`, les boîtes de Shulker de la sélection ne seront pas impactés. Par défaut `true`.
 	- `hoppers` : booléen. Si `false`, les entonnoirs de la sélection ne seront pas impactés. Par défaut `true`.
 	- `dispensers` : booléen. Si `false`, les distributeurs de la sélection ne seront pas impactés. Par défaut `true`.
@@ -142,7 +144,10 @@ La classe est trouvée à partir du nom, en tentant de charger :
 	- `furnaces` : booléen. Si `false`, les fours de la sélection ne seront pas impactés. Par défaut `true`.
 	- `storage_minecarts` : booléen. Si `false`, les minecarts avec coffre de la sélection ne seront pas impactés. Par défaut `true`.
 	- `hopper_minecarts` : booléen. Si `false`, les minecarts avec entonnoir de la sélection ne seront pas impactés. Par défaut `true`.
-	- `lootTable` : référence à une _loot table_ valide, sans l'extension `.json`. La table est cherchée dans le sous-dossier `loot_tables` du dossier de la définition de la carte (voir introduction). Lors de l'application de ce traitement, la table sera copiée dans le dossier du monde sous l'espace de noms `bos` et sera référencée dans les données NBT des coffres trouvés. Si une _loot table_ existe déjà avec le même nom dans le même espace de noms, elle sera écrasée. Référez-vous à la documentation des _loot tables_ de Minecraft pour savoir quoi mettre dans le fichier JSON.
+	- `lootTable` : référence à une _loot table_ valide, sans l'extension `.json`. Référez-vous à la documentation des _loot tables_ de Minecraft pour savoir quoi mettre dans le fichier JSON.
+	    - Si la table ne contient pas d'espace de nom (pas de `:`), elle est cherchée dans le sous-dossier `loot_tables` du dossier de la définition de la carte (voir introduction). Lors de l'application de ce traitement, la table sera copiée dans le dossier du monde sous l'espace de noms `bos` et sera référencée dans les données NBT des coffres trouvés. Si une _loot table_ existe déjà avec le même nom dans le même espace de noms, elle sera écrasée.
+	    - Si la référence de la table contient un espace de nom (par exemple `minecraft:chests/nether_bridge`), alors elle sera utilisée directement sans aucune copie.
+	    - Note : en cas d'utilisation de `/bos generatesphere` pour générer une sphère dans un monde existant, si la table n'a pas été ajoutée au monde avant le dernier redémarrage et si elle est dans un sous-dossier (ne me demandez pas pourquoi), alors Minecraft ne la reconnaîtrera pas et les coffres resteront vide à l'ouverture. C'est en réalité un faux problème car il suffit de redémarrer (sans avoir ouvert les coffres !) le serveur une fois pour que les coffres soient remplis. Ce problème n'existe pas lors de la génération d'une nouvelle carte.
 
 - **`randomSpawner`**  
   Remplace tous les spawners de la sélection par des spawners d'un certain type.

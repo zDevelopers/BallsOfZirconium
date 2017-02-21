@@ -48,7 +48,7 @@ public class ReplacePostProcessor extends PostProcessor
         super(parameters);
 
         fromMask = getValue(parameters, "from", String.class, null);
-        toPattern   = getValue(parameters, "to",   String.class, null);
+        toPattern = getValue(parameters, "to",   String.class, null);
     }
 
     @Override
