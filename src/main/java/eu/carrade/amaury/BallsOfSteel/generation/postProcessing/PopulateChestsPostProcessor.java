@@ -141,7 +141,8 @@ public class PopulateChestsPostProcessor extends PostProcessor
 
         // The functions applying the NBT changes
 
-        final RegionFunction updateLootNBTForBlocks = new RegionFunction() {
+        final RegionFunction updateLootNBTForBlocks = new RegionFunction()
+        {
             @Override
             public boolean apply(Vector position) throws WorldEditException
             {
@@ -154,7 +155,8 @@ public class PopulateChestsPostProcessor extends PostProcessor
             }
         };
 
-        final EntityFunction updateLootNBTForEntities = new EntityFunction() {
+        final EntityFunction updateLootNBTForEntities = new EntityFunction()
+        {
             @Override
             public boolean apply(Entity entity) throws WorldEditException
             {

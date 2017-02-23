@@ -87,6 +87,9 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
             - type: replace
               from: wool
               to: wool:blue
@@ -105,6 +108,9 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
             - type: replace
               from: wool
               to: wool:lightgreen
@@ -121,6 +127,9 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
             - type: replace
               from: wool
               to: wool:yellow
@@ -141,6 +150,9 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
             - type: replace
               from: wool
               to: wool:red
@@ -161,6 +173,9 @@ generation:
             - type: replace
               from: stone
               to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
             - type: replace
               from: wool
               to: wool:red

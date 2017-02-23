@@ -132,6 +132,8 @@ public class StaticBuilding extends AbstractGenerationTool
                 {
                     PluginLogger.error("Exception occurred while executing post-processor {0} for static building {1}", e, processor.getClass().getName(), name);
                 }
+
+                session.flushQueue();
             }
 
             return true;

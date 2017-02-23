@@ -40,8 +40,8 @@ import java.util.Map;
 
 public class ReplacePostProcessor extends PostProcessor
 {
-    private final String fromMask;
-    private final String toPattern;
+    protected final String fromMask;
+    protected final String toPattern;
 
     public ReplacePostProcessor(Map parameters)
     {

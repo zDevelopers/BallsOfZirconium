@@ -176,9 +176,10 @@ public class GenerationProcess extends AbstractGenerationTool
             {
                 PluginLogger.error("Exception occurred while executing post-processor {0} on generation process {1}", e, processor.getClass().getName(), name);
             }
+
+            session.flushQueue();
         }
 
-        session.flushQueue();
         return globallyAffectedRegion;
     }
 
