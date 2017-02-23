@@ -120,6 +120,11 @@ La classe est trouvée à partir du nom, en tentant de charger :
 	- `from` : bloc(s) replacés
 	- `to` : bloc(s) nouveaux
 
+- **`replaceVisibleBlocks`**  
+  Remplace les blocs visibles (ayant au moins un bloc transparent accolé).
+	- `from` : bloc(s) replacés s'ils sont visibles
+	- `to` : bloc(s) remplaçant les blocs visibles correspondant au `from`
+
 - **`set`**  
   Modifie tous les blocs de la sélection.
 	- `block`: bloc(s) à mettre
