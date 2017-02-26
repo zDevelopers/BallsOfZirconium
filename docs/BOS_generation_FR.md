@@ -138,7 +138,8 @@ La classe est trouvée à partir du nom, en tentant de charger :
 	- `angle` : l'angle de rotation (`0`, `90`, `180`, `270`), ou `random` pour en sélectionner un aléatoirement.
 
 - **`populateChests`**  
-  Peuple les coffres d'éléments, aléatoirement. Cette règle va peupler les conteneurs trouvés dans la zone d'application (sauf si explicitement désactivé pour certains conteneurs). Minecraft ne le supportant pas, le remplissage basé sur des _loot tables_ de coffres d'entités (mules, lamas...) n'est actuellement pas supporté. Ceci pourrait évoluer dans le futur.
+  Peuple les coffres d'éléments, aléatoirement. Cette règle va peupler les conteneurs trouvés dans la zone d'application (sauf si explicitement désactivé pour certains conteneurs). Minecraft ne le supportant pas, le remplissage basé sur des _loot tables_ de coffres d'entités (mules, lamas...) n'est actuellement pas supporté. Ceci pourrait évoluer dans le futur.  
+  Note : certains conteneurs qui le devraient (et qui sont listés ci-dessous) [ne supportent pas les _loot tables_ suite à un bug](https://bugs.mojang.com/browse/MC-93486).
 	- `only_empty` : booléen. Ne remplie que les coffres vides si actif. Sinon, vide tous les coffres et applique la règle de génération fournie.
 	- `chests` : booléen. Si `false`, les coffres simples de la sélection ne seront pas impactés. Par défaut `true`.
 	- `trapped_chests` : booléen. Si `false`, les coffres piégés de la sélection ne seront pas impactés. Par défaut `true`.
@@ -149,7 +150,7 @@ La classe est trouvée à partir du nom, en tentant de charger :
 	- `furnaces` : booléen. Si `false`, les fours de la sélection ne seront pas impactés. Par défaut `true`.
 	- `storage_minecarts` : booléen. Si `false`, les minecarts avec coffre de la sélection ne seront pas impactés. Par défaut `true`.
 	- `hopper_minecarts` : booléen. Si `false`, les minecarts avec entonnoir de la sélection ne seront pas impactés. Par défaut `true`.
-	- `lootTable` : référence à une _loot table_ valide, sans l'extension `.json`. Référez-vous à la documentation des _loot tables_ de Minecraft pour savoir quoi mettre dans le fichier JSON.
+	- `loot_table` : référence à une _loot table_ valide, sans l'extension `.json`. Référez-vous à la documentation des _loot tables_ de Minecraft pour savoir quoi mettre dans le fichier JSON.
 	    - Si la table ne contient pas d'espace de nom (pas de `:`), elle est cherchée dans le sous-dossier `loot_tables` du dossier de la définition de la carte (voir introduction). Lors de l'application de ce traitement, la table sera copiée dans le dossier du monde sous l'espace de noms `bos` et sera référencée dans les données NBT des coffres trouvés. Si une _loot table_ existe déjà avec le même nom dans le même espace de noms, elle sera écrasée.
 	    - Si la référence de la table contient un espace de nom (par exemple `minecraft:chests/nether_bridge`), alors elle sera utilisée directement sans aucune copie.
 	    - Note : en cas d'utilisation de `/bos generatesphere` pour générer une sphère dans un monde existant, si la table n'a pas été ajoutée au monde avant le dernier redémarrage et si elle est dans un sous-dossier (ne me demandez pas pourquoi), alors Minecraft ne la reconnaîtrera pas et les coffres resteront vide à l'ouverture. C'est en réalité un faux problème car il suffit de redémarrer (sans avoir ouvert les coffres !) le serveur une fois pour que les coffres soient remplis. Ce problème n'existe pas lors de la génération d'une nouvelle carte.

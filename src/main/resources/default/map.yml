@@ -98,6 +98,17 @@ generation:
               to: carpet:blue
             - type: flip
               direction: west
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
 
         - name: Vaalonnie
           schematic: buildings/team-spawn.schematic
@@ -117,6 +128,17 @@ generation:
             - type: replace
               from: carpet
               to: carpet:lightgreen
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
 
         - name: Bambellonie
           schematic: buildings/team-spawn.schematic
@@ -140,6 +162,17 @@ generation:
               direction: north
             - type: flip
               direction: west
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
 
         - name: Alloria
           schematic: buildings/team-spawn.schematic
@@ -161,6 +194,17 @@ generation:
               to: carpet:red
             - type: flip
               direction: north
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
 
 
     spheres:
@@ -182,6 +226,17 @@ generation:
             - type: replace
               from: carpet
               to: carpet:red
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
 
         # Basic spheres   -------------------------------
 
@@ -671,7 +726,10 @@ generation:
               pattern: 95%end_stone,5%end_brick
             - type: sphere
               radius: 6
-              pattern: 90%end_stone,9%end_brick,1%chest # TODO populate chests (2-3 diamonds per chest)
+              pattern: 90%end_stone,9%end_brick,1%chest
+          postActions:
+            - type: populateChests
+              loot_table: spheres/end
 
         - name: Cancer
           enabled: true
