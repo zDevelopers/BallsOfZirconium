@@ -791,8 +791,14 @@ generation:
           postActions:
             - type: populateChests
               loot_table: minecraft:chests/nether_bridge  # todo custom table
-            #- type: randomSpawner
-            #  choices: magma_cube,pig_zombie,wither_skeleton
+            - type: randomSpawner
+              entities:
+                - magma_cube
+                - zombie_pigman
+                - wither_skeleton
+              spawn_range: 30
+              max_nearby_entities: 8
+              required_player_range: 20
 
 
 

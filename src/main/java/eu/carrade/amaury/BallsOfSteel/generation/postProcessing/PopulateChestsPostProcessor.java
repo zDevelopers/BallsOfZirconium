@@ -147,10 +147,8 @@ public class PopulateChestsPostProcessor extends PostProcessor
             public boolean apply(Vector position) throws WorldEditException
             {
                 final BaseBlock block = session.getBlock(position);
-                PluginLogger.info("Populating block with ID={0} at {1}", block.getId(), position);
                 final CompoundTag nbt = block.hasNbtData() ? block.getNbtData() : new CompoundTag(new HashMap<String, Tag>());
                 block.setNbtData(nbt.createBuilder().putString("LootTable", lootTable).build());
-                PluginLogger.info("NBT: {0}", block.getNbtData());
 
                 session.setBlock(position, block);
                 return true;
@@ -217,10 +215,7 @@ public class PopulateChestsPostProcessor extends PostProcessor
         if (droppers)      masks.add("dropper");
         if (furnaces)      masks.add("furnace,lit_furnace");
 
-        PluginLogger.info("Populating: {0}", StringUtils.join(masks, ","));
-
         final Mask blocksMask = WorldEditUtils.parseMask(session.getWorld(), StringUtils.join(masks, ","), session);
-
 
         final RegionVisitor blocksVisitor = new RegionVisitor(region, new RegionMaskingFilter(blocksMask, updateLootNBTForBlocks));
         final EntityVisitor entitiesVisitor = new EntityVisitor(session.getEntities(region).iterator(), updateLootNBTForEntities);
