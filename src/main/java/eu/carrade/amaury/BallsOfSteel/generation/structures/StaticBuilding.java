@@ -29,18 +29,19 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation;
+package eu.carrade.amaury.BallsOfSteel.generation.structures;
 
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
@@ -61,10 +62,8 @@ import java.util.Random;
 /**
  * Represents a static building generated at a given exact location to serve a specific purpose.
  */
-public class StaticBuilding extends AbstractGenerationTool
+public class StaticBuilding extends Structure
 {
-    private final String name;
-
     private final Vector pasteLocation;
 
     private final File schematicFile;
@@ -88,7 +87,9 @@ public class StaticBuilding extends AbstractGenerationTool
      */
     public StaticBuilding(final String name, final Vector pasteLocation, final boolean nothingUnder, final boolean nothingAbove, final File schematicFile) throws IOException
     {
-        this.name = name;
+        setName(name);
+        setEnabled(true);
+
         this.pasteLocation = pasteLocation;
 
         this.schematicFile = schematicFile;
@@ -135,6 +136,8 @@ public class StaticBuilding extends AbstractGenerationTool
 
                 session.flushQueue();
             }
+
+            GenerationMetadata.saveStructure(this, ((BukkitWorld) session.getWorld()).getWorld(), region);
 
             return true;
         }

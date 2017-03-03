@@ -37,6 +37,9 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldLoader;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.PluginLogger;
@@ -78,8 +81,8 @@ public class GenerationManager extends ZLibComponent implements Listener
 {
     private final static String MANAGED_WORLDS_FILENAME = "managed_worlds.dat";
 
-    private final Set<GenerationProcess> generationProcesses = new HashSet<>();
-    private final Queue<GenerationProcess> generationProcessesQueue = new ArrayDeque<>();
+    private final Set<GeneratedSphere> spheres = new HashSet<>();
+    private final Queue<GeneratedSphere> spheresQueue = new ArrayDeque<>();
 
     private final Set<StaticBuilding> buildings = new HashSet<>();
     private final Set<CuboidRegion> buildingsRegions = new HashSet<>();
@@ -114,22 +117,22 @@ public class GenerationManager extends ZLibComponent implements Listener
 
 
         // Loading generation processes & static buildings
-        final List<GenerationProcess> spheres = MapConfig.GENERATION.SPHERES.get();
+        final List<GeneratedSphere> generatedSpheres = MapConfig.GENERATION.SPHERES.get();
         final List<StaticBuilding> staticBuildings = MapConfig.GENERATION.STATIC_BUILDINGS.get();
 
-        if (spheres.size() == 0)
+        if (generatedSpheres.size() == 0)
             PluginLogger.warning("No sphere loaded from config, you may have an error somewhere.");
         if (staticBuildings.size() == 0)
             PluginLogger.warning("No static building loaded from config, you may have an error somewhere.");
 
-        generationProcesses.addAll(spheres);
+        spheres.addAll(generatedSpheres);
         buildings.addAll(staticBuildings);
 
         recalculatePrivateBuildingRegions();
 
 
         // Loading map boundaries
-        World world = BallsOfSteel.get().getGameManager().getGameWorld();
+        final World world = BallsOfSteel.get().getGameManager().getGameWorld();
 
         final Location corner1 = BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_1.get());
         final Location corner2 = BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get());
@@ -163,9 +166,9 @@ public class GenerationManager extends ZLibComponent implements Listener
     /**
      * @return All registered generation processes.
      */
-    public Set<GenerationProcess> getGenerationProcesses()
+    public Set<GeneratedSphere> getSpheres()
     {
-        return Collections.unmodifiableSet(generationProcesses);
+        return Collections.unmodifiableSet(spheres);
     }
 
     /**
@@ -173,21 +176,22 @@ public class GenerationManager extends ZLibComponent implements Listener
      *
      * @return A random generation process.
      */
-    public GenerationProcess getRandomGenerationProcess(final Random random)
+    public GeneratedSphere getRandomSphere(final Random random)
     {
-        if (generationProcessesQueue.isEmpty())
+        if (spheresQueue.isEmpty())
         {
-            final List<GenerationProcess> generationProcessesList = new ArrayList<>();
-            for (final GenerationProcess generationProcess : generationProcesses)
-                if (generationProcess.isEnabled())
-                    generationProcessesList.add(generationProcess);
+            final List<GeneratedSphere> generationProcessesList = new ArrayList<>();
+
+            for (final GeneratedSphere sphere : spheres)
+                if (sphere.isEnabled())
+                    generationProcessesList.add(sphere);
 
             Collections.shuffle(generationProcessesList, random);
 
-            generationProcessesQueue.addAll(generationProcessesList);
+            spheresQueue.addAll(generationProcessesList);
         }
 
-        return generationProcessesQueue.poll();
+        return spheresQueue.poll();
     }
 
     /**
@@ -217,6 +221,55 @@ public class GenerationManager extends ZLibComponent implements Listener
         for (final StaticBuilding building : buildings)
             buildingsRegions.add(CuboidRegion.makeCuboid(building.getPrivateRegion()));
     }
+
+
+    /**
+     * Lookups for a structure with that name in the given set.
+     *
+     * @param name The name, tested case-insensitively and ignoring spaces.
+     * @param structures A set containing structures.
+     *
+     * @return The structure found, or {@code null} if not found.
+     */
+    private Structure getStructureFromName(final String name, final Set<? extends Structure> structures)
+    {
+        final String nameWithoutSpaces = name.replace(" ", "");
+
+        for (Structure structure : structures)
+        {
+            if (structure.getName().replace(" ", "").equalsIgnoreCase(nameWithoutSpaces))
+            {
+                return structure;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Lookups for a sphere with that name in the given set.
+     *
+     * @param name The name, tested case-insensitively and ignoring spaces.
+     *
+     * @return The sphere found, or {@code null} if not found.
+     */
+    public GeneratedSphere getSphere(final String name)
+    {
+        return (GeneratedSphere) getStructureFromName(name, spheres);
+    }
+
+    /**
+     * Lookups for a building with that name in the given set.
+     *
+     * @param name The name, tested case-insensitively and ignoring spaces.
+     *
+     * @return The building found, or {@code null} if not found.
+     */
+    public StaticBuilding getBuilding(final String name)
+    {
+        return (StaticBuilding) getStructureFromName(name, spheres);
+    }
+
 
     /**
      * @return The corner of the world with the lowest coordinates

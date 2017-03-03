@@ -29,14 +29,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation;
+package eu.carrade.amaury.BallsOfSteel.generation.structures;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
@@ -55,40 +55,22 @@ import java.util.Random;
 /**
  * Represents a generation process to be applied by a populator somewhere.
  */
-public class GenerationProcess extends AbstractGenerationTool
+public class GeneratedSphere extends Structure
 {
-    private final String name;
-    private boolean enabled;
 
     private final List<Generator> generators = new ArrayList<>();
     private final List<PostProcessor> postProcessors = new ArrayList<>();
 
 
-    public GenerationProcess(final String name)
+    public GeneratedSphere(final String name)
     {
         this(name, true);
     }
 
-    public GenerationProcess(final String name, final boolean enabled)
+    public GeneratedSphere(final String name, final boolean enabled)
     {
-        this.name = name;
-        this.enabled = enabled;
-    }
-
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    public void setEnabled(final boolean enabled)
-    {
-        this.enabled = enabled;
+        setName(name);
+        setEnabled(enabled);
     }
 
     public void addGenerator(final Generator generator)
@@ -180,17 +162,19 @@ public class GenerationProcess extends AbstractGenerationTool
             session.flushQueue();
         }
 
+        GenerationMetadata.saveStructure(this, location.getWorld(), globallyAffectedRegion);
+
         return globallyAffectedRegion;
     }
 
 
     @ConfigurationValueHandler
-    public static GenerationProcess handleGenerationProcess(final Map map) throws ConfigurationParseException
+    public static GeneratedSphere handleGeneratedSphere(final Map map) throws ConfigurationParseException
     {
         final String name = getValue(map, "name", String.class, "Unnamed generation process");
         final boolean enabled = getValue(map, "enabled", boolean.class, true);
 
-        final GenerationProcess process = new GenerationProcess(name, enabled);
+        final GeneratedSphere process = new GeneratedSphere(name, enabled);
 
         if (map.containsKey("rules"))
         {

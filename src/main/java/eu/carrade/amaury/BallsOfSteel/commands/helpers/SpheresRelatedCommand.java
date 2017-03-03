@@ -32,7 +32,7 @@
 package eu.carrade.amaury.BallsOfSteel.commands.helpers;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.i18n.I;
 import org.apache.commons.lang.StringUtils;
@@ -44,11 +44,11 @@ import java.util.List;
 
 public abstract class SpheresRelatedCommand extends BoSCommand
 {
-    protected List<String> getGeneratorsNamesWithoutSpaces()
+    protected List<String> getSphereNamesWithoutSpaces()
     {
-        List<String> names = new LinkedList<>();
+        final List<String> names = new LinkedList<>();
 
-        for (GenerationProcess process : BallsOfSteel.get().getGenerationManager().getGenerationProcesses())
+        for (final GeneratedSphere process : BallsOfSteel.get().getGenerationManager().getSpheres())
         {
             names.add(process.getName().replace(" ", ""));
         }
@@ -57,12 +57,12 @@ public abstract class SpheresRelatedCommand extends BoSCommand
         return names;
     }
 
-    public GenerationProcess getGenerationProcessParameter(final int index) throws CommandException
+    public GeneratedSphere getGeneratedSphereParameter(final int index) throws CommandException
     {
         final String name = args[index].trim();
 
-        GenerationProcess generator = null;
-        for (GenerationProcess process : BallsOfSteel.get().getGenerationManager().getGenerationProcesses())
+        GeneratedSphere generator = null;
+        for (GeneratedSphere process : BallsOfSteel.get().getGenerationManager().getSpheres())
         {
             if (process.getName().replace(" ", "").equalsIgnoreCase(name))
             {
@@ -72,13 +72,13 @@ public abstract class SpheresRelatedCommand extends BoSCommand
         }
 
         if (generator == null)
-            throwInvalidArgument(I.t("No generator found under the name {0}. Available generators: {1}.", name, StringUtils.join(getGeneratorsNamesWithoutSpaces(), ", ")));
+            throwInvalidArgument(I.t("No generator found under the name {0}. Available generators: {1}.", name, StringUtils.join(getSphereNamesWithoutSpaces(), ", ")));
 
         return generator;
     }
 
-    public List<String> getMatchingGenerationProcesses(final String prefix)
+    public List<String> getMatchingSphere(final String prefix)
     {
-        return getMatchingSubset(getGeneratorsNamesWithoutSpaces(), prefix);
+        return getMatchingSubset(getSphereNamesWithoutSpaces(), prefix);
     }
 }

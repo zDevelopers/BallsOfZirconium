@@ -33,8 +33,8 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
-import eu.carrade.amaury.BallsOfSteel.generation.StaticBuilding;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
@@ -63,7 +63,7 @@ public class MapConfig extends ConfigurationInstance
         ConfigurationValueHandlers.registerHandlers(MapConfig.class);
         ConfigurationValueHandlers.registerHandlers(Generator.class);
         ConfigurationValueHandlers.registerHandlers(PostProcessor.class);
-        ConfigurationValueHandlers.registerHandlers(GenerationProcess.class);
+        ConfigurationValueHandlers.registerHandlers(GeneratedSphere.class);
         ConfigurationValueHandlers.registerHandlers(StaticBuilding.class);
 
         final File mapConfigDirectory = new File(BallsOfSteel.get().getDataFolder(), GameConfig.MAP_CONFIG.get());
@@ -114,7 +114,7 @@ public class MapConfig extends ConfigurationInstance
         }
 
         public final ConfigurationList<StaticBuilding> STATIC_BUILDINGS = list("staticBuildings", StaticBuilding.class);
-        public final ConfigurationList<GenerationProcess> SPHERES = list("spheres", GenerationProcess.class);
+        public final ConfigurationList<GeneratedSphere> SPHERES = list("spheres", GeneratedSphere.class);
     }
 
 

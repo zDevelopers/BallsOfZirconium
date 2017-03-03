@@ -37,7 +37,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
-import eu.carrade.amaury.BallsOfSteel.generation.StaticBuilding;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Chunk;

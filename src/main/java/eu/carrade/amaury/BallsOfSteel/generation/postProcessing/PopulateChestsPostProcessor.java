@@ -50,6 +50,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.visitor.EntityVisitor;
 import com.sk89q.worldedit.function.visitor.RegionVisitor;
 import com.sk89q.worldedit.util.Location;
+import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
@@ -66,9 +67,9 @@ import java.util.Map;
 
 public class PopulateChestsPostProcessor extends PostProcessor
 {
-    private final static String LOOT_TABLES_NAMESPACE = "bos";
+    private final static String LOOT_TABLES_NAMESPACE = BallsOfSteel.BOS_NAMESPACE;
 
-    private final boolean onlyEmpty;
+    private final boolean onlyEmpty;  // TODO Implement onlyEmpty option in chests populator
     private final boolean chests;
     private final boolean trappedChests;
     private final boolean shulkerBoxes;

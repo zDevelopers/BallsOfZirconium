@@ -38,8 +38,8 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.GeometryUtils;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
@@ -118,7 +118,7 @@ public class BallPopulator extends BlockPopulator
 
 
             // Generation
-            final GenerationProcess process = this.generationManager.getRandomGenerationProcess(random);
+            final GeneratedSphere process = this.generationManager.getRandomSphere(random);
             process.applyAt(base, random, session);
 
 

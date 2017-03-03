@@ -38,7 +38,7 @@ import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
@@ -72,7 +72,7 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         if (args.length < 1)
             throwInvalidArgument(I.t("Sphere name required."));
 
-        final GenerationProcess generator = getGenerationProcessParameter(0);
+        final GeneratedSphere generator = getGeneratedSphereParameter(0);
         final Location baseLocation;
 
         if (args.length == 1)
@@ -137,7 +137,7 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         // Generators names
         if (args.length == 1)
         {
-            return getMatchingGenerationProcesses(args[0]);
+            return getMatchingSphere(args[0]);
         }
 
         // Worlds

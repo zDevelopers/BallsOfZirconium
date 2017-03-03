@@ -33,7 +33,7 @@ package eu.carrade.amaury.BallsOfSteel.commands;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationProcess;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import fr.zcraft.zlib.components.commands.CommandException;
@@ -74,7 +74,7 @@ public class SpheresCommand extends SpheresRelatedCommand
 
         if (args.length > 0 && page == -1)
         {
-            final GenerationProcess process = getGenerationProcessParameter(0);
+            final GeneratedSphere process = getGeneratedSphereParameter(0);
             info(I.t("{green}{bold}Sphere: {darkgreen}{bold}{0}", process.getName()));
 
             info(I.tn("{darkgreen}{0} generator", "{darkgreen}{0} generators", process.getGenerators().size()));
@@ -92,20 +92,20 @@ public class SpheresCommand extends SpheresRelatedCommand
             return;
         }
 
-        final Set<GenerationProcess> generationProcesses = new TreeSet<>(new Comparator<GenerationProcess>()
+        final Set<GeneratedSphere> spheres = new TreeSet<>(new Comparator<GeneratedSphere>()
         {
             @Override
-            public int compare(GenerationProcess process1, GenerationProcess process2)
+            public int compare(GeneratedSphere process1, GeneratedSphere process2)
             {
                 return process1.getName().compareTo(process2.getName());
             }
         });
 
-        generationProcesses.addAll(BallsOfSteel.get().getGenerationManager().getGenerationProcesses());
+        spheres.addAll(BallsOfSteel.get().getGenerationManager().getSpheres());
 
 
         new SpheresPagination()
-                .setData(generationProcesses.toArray(new GenerationProcess[generationProcesses.size()]))
+                .setData(spheres.toArray(new GeneratedSphere[spheres.size()]))
                 .setCurrentPage(page)
                 .display(sender);
     }
@@ -114,12 +114,12 @@ public class SpheresCommand extends SpheresRelatedCommand
     protected List<String> complete() throws CommandException
     {
         if (args.length == 1)
-            return getMatchingGenerationProcesses(args[0]);
+            return getMatchingSphere(args[0]);
 
         return null;
     }
 
-    private class SpheresPagination extends PaginatedTextView<GenerationProcess>
+    private class SpheresPagination extends PaginatedTextView<GeneratedSphere>
     {
         @Override
         protected void displayHeader(CommandSender receiver)
@@ -127,7 +127,7 @@ public class SpheresCommand extends SpheresRelatedCommand
             int availableSpheres = data().length;
             int enabledSpheres = 0;
 
-            for (final GenerationProcess process : data())
+            for (final GeneratedSphere process : data())
                 if (process.isEnabled())
                     enabledSpheres++;
 
@@ -138,7 +138,7 @@ public class SpheresCommand extends SpheresRelatedCommand
         }
 
         @Override
-        protected void displayItem(CommandSender receiver, GenerationProcess process)
+        protected void displayItem(CommandSender receiver, GeneratedSphere process)
         {
             RawMessage.send(receiver,
                     new RawText("- ")

@@ -36,6 +36,7 @@ import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
 import eu.carrade.amaury.BallsOfSteel.game.BarManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
@@ -49,6 +50,12 @@ import org.bukkit.generator.ChunkGenerator;
 
 public final class BallsOfSteel extends ZPlugin
 {
+    /**
+     * A namespace to be used when needed.
+     */
+    public static final String BOS_NAMESPACE = "balls_of_steel";
+
+
     private static BallsOfSteel instance;
 
     private WorldEditDependency worldEditDependency = null;
@@ -86,6 +93,9 @@ public final class BallsOfSteel extends ZPlugin
         equipmentManager  = loadComponent(BoSEquipmentManager.class);
         barManager        = loadComponent(BarManager.class);
         generationManager = loadComponent(GenerationManager.class);
+
+        if (generationManager.isEnabled())
+            loadComponents(GenerationMetadata.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
