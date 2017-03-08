@@ -57,7 +57,6 @@ import java.util.Random;
  */
 public class GeneratedSphere extends Structure
 {
-
     private final List<Generator> generators = new ArrayList<>();
     private final List<PostProcessor> postProcessors = new ArrayList<>();
 
@@ -171,20 +170,20 @@ public class GeneratedSphere extends Structure
     @ConfigurationValueHandler
     public static GeneratedSphere handleGeneratedSphere(final Map map) throws ConfigurationParseException
     {
-        final String name = getValue(map, "name", String.class, "Unnamed generation process");
+        final String name = getValue(map, "name", String.class, "Unnamed sphere");
         final boolean enabled = getValue(map, "enabled", boolean.class, true);
 
-        final GeneratedSphere process = new GeneratedSphere(name, enabled);
+        final GeneratedSphere sphere = new GeneratedSphere(name, enabled);
 
         if (map.containsKey("rules"))
         {
-            process.addGenerators(ConfigurationValueHandlers.handleListValue(map.get("rules"), Generator.class));
+            sphere.addGenerators(ConfigurationValueHandlers.handleListValue(map.get("rules"), Generator.class));
         }
         if (map.containsKey("postActions"))
         {
-            process.addPostProcessors(ConfigurationValueHandlers.handleListValue(map.get("postActions"), PostProcessor.class));
+            sphere.addPostProcessors(ConfigurationValueHandlers.handleListValue(map.get("postActions"), PostProcessor.class));
         }
 
-        return process;
+        return sphere;
     }
 }

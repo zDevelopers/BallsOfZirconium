@@ -52,9 +52,9 @@ public abstract class Structure extends AbstractGenerationTool
         return name;
     }
 
-    protected String setName(String name)
+    protected void setName(String name)
     {
-        return name;
+        this.name = name;
     }
 
     public boolean isEnabled()
