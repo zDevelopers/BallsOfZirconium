@@ -1,0 +1,14 @@
+Generates a world.
+
+This command will create a new world using either
+the world name defined in the configuration, or
+the name given as argument, if specified.
+
+The world will be fully pre-loaded. Please note
+that the initial load may be very painful for
+the server, and you may (in fact, will probably)
+be disconnected due to server ping timeout.
+
+Metadata about the world generation will be put
+into the world folder, in the following file:
+§7<world>/data/balls_of_steel/metadata.json§r.

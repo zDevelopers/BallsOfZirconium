@@ -44,19 +44,21 @@ import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.tools.FileUtils;
 import fr.zcraft.zlib.components.worker.Worker;
 import fr.zcraft.zlib.components.worker.WorkerAttributes;
 import fr.zcraft.zlib.components.worker.WorkerCallback;
 import fr.zcraft.zlib.components.worker.WorkerRunnable;
 import fr.zcraft.zlib.tools.Callback;
+import fr.zcraft.zlib.tools.FileUtils;
 import fr.zcraft.zlib.tools.PluginLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -74,13 +76,16 @@ public class GenerationMetadata extends Worker
     private static final String TYPE_UNKNOWN = "unknown";
 
     private static Gson GSON = new Gson();
-    private static Map<World, Map<Structure, Region>> worldMetadata = new ConcurrentHashMap<>();
+    private static Map<World, Map<Region, Structure>> worldMetadata = new ConcurrentHashMap<>();
 
 
     @Override
     public void onEnable()
     {
         super.onEnable();
+
+        for (World world : Bukkit.getWorlds())
+            loadGenerationMetadata(world, null);
     }
 
     /**
@@ -99,6 +104,19 @@ public class GenerationMetadata extends Worker
     }
 
     /**
+     * Registers an empty set of metadata for the given world, not trying to
+     * load anything, assuming there is no data already saved.
+     *
+     * <p>Use with caution, as this can erase existing metadata!</p>
+     *
+     * @param world The world.
+     */
+    public static void unsafeCreateEmptyGenerationMetadata(final World world)
+    {
+        worldMetadata.put(world, new HashMap<Region, Structure>());
+    }
+
+    /**
      * Loads the metadata from the JSON dump for the given world.
      *
      * <p>Metadata are only loaded once. They will be queued for load, not
@@ -108,7 +126,7 @@ public class GenerationMetadata extends Worker
      * @param callback A callback to be executed when the metadata are loaded
      *                 and registered in {@link #worldMetadata}.
      */
-    private static void loadGenerationMetadata(final World world, final Callback<Void> callback)
+    public static void loadGenerationMetadata(final World world, final Callback<Void> callback)
     {
         // If already loaded, skip
         if (hasMetadataForWorld(world))
@@ -117,10 +135,10 @@ public class GenerationMetadata extends Worker
             return;
         }
 
-        submitQuery(new WorkerRunnable<Map<Structure, Region>>()
+        submitQuery(new WorkerRunnable<Map<Region, Structure>>()
         {
             @Override
-            public Map<Structure, Region> run() throws Throwable
+            public Map<Region, Structure> run() throws Throwable
             {
                 final File metadataFile = getGenerationMetadataFile(world);
                 final String rawJSONMetadata = FileUtils.readFile(metadataFile).trim();
@@ -129,7 +147,7 @@ public class GenerationMetadata extends Worker
                 if (rawJSONMetadata.isEmpty()) return null;
 
                 final JsonObject metadata = GSON.fromJson(rawJSONMetadata, JsonObject.class);
-                final Map<Structure, Region> worldStructures = new HashMap<>();
+                final Map<Region, Structure> worldStructures = new HashMap<>();
 
                 final JsonArray structures = metadata.getAsJsonArray("structures");
 
@@ -164,11 +182,11 @@ public class GenerationMetadata extends Worker
                             final Vector highestCorner = ConfigurationValueHandlers.handleValue(jsonStructure.get("highestCorner").getAsString(), Vector.class);
 
                             worldStructures.put(
-                                    structure,
                                     new CuboidRegion(
                                             (com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(world),
                                             BukkitUtil.toVector(lowestCorner), BukkitUtil.toVector(highestCorner)
-                                    )
+                                    ),
+                                    structure
                             );
                         }
                         catch (ConfigurationParseException | NullPointerException | IllegalStateException e)
@@ -180,12 +198,12 @@ public class GenerationMetadata extends Worker
 
                 return worldStructures;
             }
-        }, new WorkerCallback<Map<Structure, Region>>()
+        }, new WorkerCallback<Map<Region, Structure>>()
         {
             @Override
-            public void finished(final Map<Structure, Region> worldData)
+            public void finished(final Map<Region, Structure> worldData)
             {
-                if (worldData != null) worldMetadata.put(world, worldData);
+                worldMetadata.put(world, worldData != null ? worldData : new HashMap<Region, Structure>());
                 if (callback != null) callback.call(null);
             }
 
@@ -194,7 +212,7 @@ public class GenerationMetadata extends Worker
             {
                 PluginLogger.error("Unable to load Balls of Steel metadata for world {0}: malformed JSON metadata", e, world.getName());
 
-                worldMetadata.put(world, new HashMap<Structure, Region>());
+                worldMetadata.put(world, new HashMap<Region, Structure>());
                 if (callback != null) callback.call(null);
             }
         });
@@ -203,8 +221,8 @@ public class GenerationMetadata extends Worker
     /**
      * Saves the loaded metadata as a JSON dump in the given world.
      *
-     * <p>If no metadata are saved at all for this world (i.e. the world was never loaded),
-     * the callback is called with {@code false}.</p>
+     * <p>If no metadata are saved at all for this world (i.e. the world was
+     * never loaded), the callback is called with {@code false}.</p>
      *
      * @param world    The world.
      * @param callback A callback to be executed when the metadata are saved
@@ -226,19 +244,17 @@ public class GenerationMetadata extends Worker
                 final File metadataFile = getGenerationMetadataFile(world);
                 metadataFile.getParentFile().mkdirs();
 
-                if (!metadataFile.canWrite()) return false;
-
                 final JsonArray jsonStructures = new JsonArray();
 
-                for (final Map.Entry<Structure, Region> structure : worldMetadata.get(world).entrySet())
+                for (final Map.Entry<Region, Structure> structure : worldMetadata.get(world).entrySet())
                 {
                     final JsonObject jsonStructure = new JsonObject();
 
-                    final com.sk89q.worldedit.Vector low = structure.getValue().getMinimumPoint();
-                    final com.sk89q.worldedit.Vector high = structure.getValue().getMinimumPoint();
+                    final com.sk89q.worldedit.Vector low = structure.getKey().getMinimumPoint();
+                    final com.sk89q.worldedit.Vector high = structure.getKey().getMaximumPoint();
 
-                    jsonStructure.addProperty("name", structure.getKey().getName());
-                    jsonStructure.addProperty("type", structure instanceof StaticBuilding ? TYPE_BUILDING : (structure instanceof GeneratedSphere ? TYPE_SPHERE : TYPE_UNKNOWN));
+                    jsonStructure.addProperty("name", structure.getValue().getName());
+                    jsonStructure.addProperty("type", structure.getValue() instanceof StaticBuilding ? TYPE_BUILDING : (structure.getValue() instanceof GeneratedSphere ? TYPE_SPHERE : TYPE_UNKNOWN));
                     jsonStructure.addProperty("lowestCorner", low.getBlockX() + "," + low.getBlockY() + "," + low.getBlockZ());
                     jsonStructure.addProperty("highestCorner", high.getBlockX() + "," + high.getBlockY() + "," + high.getBlockZ());
 
@@ -252,17 +268,21 @@ public class GenerationMetadata extends Worker
 
                 return true;
             }
-        }, new WorkerCallback<Boolean>() {
+        }, new WorkerCallback<Boolean>()
+        {
             @Override
             public void finished(Boolean success)
             {
+                if (!success)
+                    PluginLogger.error("Unable to save world metadata for {0}, is the file {1} writable?", world.getName(), getGenerationMetadataFile(world));
+
                 if (callback != null) callback.call(success);
             }
 
             @Override
             public void errored(Throwable e)
             {
-                PluginLogger.info("Unable to save world metadata for {0}", e, world.getName());
+                PluginLogger.error("Unable to save world metadata for {0}, is the file {1} writable?", e, world.getName(), getGenerationMetadataFile(world));
                 if (callback != null) callback.call(false);
             }
         });
@@ -282,7 +302,7 @@ public class GenerationMetadata extends Worker
             @Override
             public void call(Void nothing)
             {
-                worldMetadata.get(world).put(structure, region);
+                worldMetadata.get(world).put(region, structure);
                 saveGenerationMetadata(world, null);
             }
         };
@@ -300,15 +320,15 @@ public class GenerationMetadata extends Worker
      */
     public static boolean forgetStructureAt(final Location location)
     {
-        final Structure structure = getStructureAt(location);
-        if (structure == null) return false;
+        final Region region = getRegionForStructureAt(location);
+        if (region == null) return false;
 
         Callback<Void> removeFunction = new Callback<Void>()
         {
             @Override
             public void call(Void nothing)
             {
-                worldMetadata.get(location.getWorld()).remove(structure);
+                worldMetadata.get(location.getWorld()).remove(region);
                 saveGenerationMetadata(location.getWorld(), null);
             }
         };
@@ -341,9 +361,35 @@ public class GenerationMetadata extends Worker
      */
     public static Structure getStructureAt(final Location location)
     {
-        for (final Map.Entry<Structure, Region> structure : worldMetadata.get(location.getWorld()).entrySet())
+        if (!hasMetadataForWorld(location.getWorld())) return null;
+
+        for (final Map.Entry<Region, Structure> structure : worldMetadata.get(location.getWorld()).entrySet())
         {
-            if (structure.getValue().contains(BukkitUtil.toVector(location)))
+            if (structure.getKey().contains(BukkitUtil.toVector(location)))
+            {
+                return structure.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the structure located at the given location, according to the
+     * loaded world metadata.
+     *
+     * @param location The location to check.
+     *
+     * @return The {@link Structure}, or {@code null} if no structure was found
+     * at this place.
+     */
+    public static Region getRegionForStructureAt(final Location location)
+    {
+        if (!hasMetadataForWorld(location.getWorld())) return null;
+
+        for (final Map.Entry<Region, Structure> structure : worldMetadata.get(location.getWorld()).entrySet())
+        {
+            if (structure.getKey().contains(BukkitUtil.toVector(location)))
             {
                 return structure.getKey();
             }
@@ -371,6 +417,9 @@ public class GenerationMetadata extends Worker
         final Map<World, Map<String, Location>> locationBuckets = new HashMap<>();
         for (final Map.Entry<String, Location> location : locations.entrySet())
         {
+            // If there is no metadata for this world, we don't create a bucket.
+            if (!hasMetadataForWorld(location.getValue().getWorld())) continue;
+
             if (!locationBuckets.containsKey(location.getValue().getWorld()))
                 locationBuckets.put(location.getValue().getWorld(), new HashMap<String, Location>());
 
@@ -386,13 +435,13 @@ public class GenerationMetadata extends Worker
 
         for (final Map.Entry<World, Map<String, Location>> bucket : locationBuckets.entrySet())
         {
-            for (final Map.Entry<Structure, Region> structure : worldMetadata.get(bucket.getKey()).entrySet())
+            for (final Map.Entry<Region, Structure> structure : worldMetadata.get(bucket.getKey()).entrySet())
             {
                 for (final Map.Entry<String, Location> location : bucket.getValue().entrySet())
                 {
-                    if (structure.getValue().contains(BukkitUtil.toVector(location.getValue())))
+                    if (structure.getKey().contains(BukkitUtil.toVector(location.getValue())))
                     {
-                        structures.put(location.getKey(), structure.getKey());
+                        structures.put(location.getKey(), structure.getValue());
                     }
                 }
             }
@@ -400,7 +449,6 @@ public class GenerationMetadata extends Worker
 
         return structures;
     }
-
 
 
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -413,5 +461,21 @@ public class GenerationMetadata extends Worker
     public void onPlayerChangedWorld(PlayerChangedWorldEvent ev)
     {
         loadGenerationMetadata(ev.getPlayer().getWorld(), null);
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onWorldUnload(WorldUnloadEvent ev)
+    {
+        saveGenerationMetadata(ev.getWorld(), null);
+    }
+
+    @Override
+    public void onDisable()
+    {
+        super.onDisable();
+
+        for (World world : Bukkit.getWorlds())
+            if (hasMetadataForWorld(world))
+                saveGenerationMetadata(world, null);
     }
 }

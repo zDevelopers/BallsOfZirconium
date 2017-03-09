@@ -23,6 +23,7 @@ import eu.carrade.amaury.BallsOfSteel.commands.ChatGlobalCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.CurrentStructureCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.GenerateCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.GenerateSphereCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
@@ -30,11 +31,11 @@ import eu.carrade.amaury.BallsOfSteel.commands.SpheresCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
 import eu.carrade.amaury.BallsOfSteel.dependencies.WorldEditDependency;
+import eu.carrade.amaury.BallsOfSteel.game.BarManager;
+import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
-import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
-import eu.carrade.amaury.BallsOfSteel.game.BarManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
@@ -94,14 +95,14 @@ public final class BallsOfSteel extends ZPlugin
         barManager        = loadComponent(BarManager.class);
         generationManager = loadComponent(GenerationManager.class);
 
-        if (generationManager.isEnabled())
-            loadComponents(GenerationMetadata.class);
+        loadComponents(GenerationMetadata.class);
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
                 ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
                 StartCommand.class, RestartCommand.class, TeamsCommand.class,
-                SpheresCommand.class, GenerateSphereCommand.class, GenerateCommand.class
+                SpheresCommand.class, GenerateSphereCommand.class, GenerateCommand.class,
+                CurrentStructureCommand.class
         );
 
         Commands.registerShortcut("bos", ChatTeamCommand.class, "t");

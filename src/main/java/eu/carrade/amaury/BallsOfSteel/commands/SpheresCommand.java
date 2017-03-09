@@ -107,6 +107,7 @@ public class SpheresCommand extends SpheresRelatedCommand
         new SpheresPagination()
                 .setData(spheres.toArray(new GeneratedSphere[spheres.size()]))
                 .setCurrentPage(page)
+                .setItemsPerPage(PaginatedTextView.DEFAULT_LINES_IN_EXPANDED_CHAT_VIEW - 2)
                 .display(sender);
     }
 

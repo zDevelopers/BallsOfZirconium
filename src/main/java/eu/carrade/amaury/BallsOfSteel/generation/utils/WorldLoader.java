@@ -100,7 +100,7 @@ public class WorldLoader extends BukkitRunnable
     {
         for (int i = 0; i < CHUNKS_PER_RUN; i++)
         {
-            world.getChunkAt(world.getBlockAt(current.getBlockX(), 64, current.getBlockX())).load(true);
+            world.loadChunk(current.getBlockX() >> 4, current.getBlockX() >> 4);
             chunksProcessed++;
 
             int percentage = Math.min((int) (100 * ((double) chunksProcessed) / ((double) chunksToProcess)), 100);
@@ -121,6 +121,7 @@ public class WorldLoader extends BukkitRunnable
             if (current.getX() > max.getX())
             {
                 cancel();
+                world.setKeepSpawnInMemory(true); // Ensures the spawn is kept in memory now.
 
                 if (logsReceiver != null)
                     logsReceiver.sendMessage(I.t("{gray}World {0} fully loaded.", world.getName()));

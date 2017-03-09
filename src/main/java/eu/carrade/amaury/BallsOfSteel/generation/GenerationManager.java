@@ -53,8 +53,10 @@ import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
 import java.io.BufferedReader;
@@ -95,6 +97,8 @@ public class GenerationManager extends ZLibComponent implements Listener
     private File managedWorldsListFile = null;
     private final Set<World> managedWorlds = new HashSet<>();
     private final Set<String> managedWorldsNames = new HashSet<>();
+
+    private final Set<String> currentlyLoadingWorldsNames = new HashSet<>();
 
 
     @Override
@@ -267,7 +271,7 @@ public class GenerationManager extends ZLibComponent implements Listener
      */
     public StaticBuilding getBuilding(final String name)
     {
-        return (StaticBuilding) getStructureFromName(name, spheres);
+        return (StaticBuilding) getStructureFromName(name, buildings);
     }
 
 
@@ -349,16 +353,18 @@ public class GenerationManager extends ZLibComponent implements Listener
      * @return A new world, or a reference to an existing world if it already
      * exists.
      */
-    public World createWorld(final String name)
+    protected World createWorld(final String name)
     {
+        currentlyLoadingWorldsNames.add(name);
+
         final World world = new WorldCreator(name)
                 .environment(MapConfig.GENERATION.MAP.ENVIRONMENT.get())
                 .generator(new BallsOfSteelGenerator())
                 .generateStructures(true)
                 .createWorld();
 
-        world.setSpawnFlags(false, false);
-        world.setGameRuleValue("doMobSpawning", "false");
+        world.setSpawnFlags(MapConfig.GENERATION.MAP.ALLOW_MONSTERS.get(), MapConfig.GENERATION.MAP.ALLOW_ANIMALS.get());
+        world.setGameRuleValue("doMobSpawning", MapConfig.GENERATION.MAP.ALLOW_MONSTERS.get().toString());
 
         if (world.getEnvironment() == World.Environment.THE_END)
         {
@@ -375,7 +381,7 @@ public class GenerationManager extends ZLibComponent implements Listener
      * configured {@link WorldLoader} ready to be used.
      *
      * If the world already exists, it's generator and some options will be
-     * updated.
+     * updated. If not, the world's preload will be disabled.
      *
      * @param name         A world name.
      * @param logsReceiver A receiver for the generation logs (progress...). Can
@@ -405,7 +411,7 @@ public class GenerationManager extends ZLibComponent implements Listener
      * used.
      *
      * If the world already exists, it's generator and some options will be
-     * updated.
+     * updated. If not, the world's preload will be disabled.
      *
      * @param logsReceiver A receiver for the generation logs (progress...). Can
      *                     be {@code null}.
@@ -432,6 +438,14 @@ public class GenerationManager extends ZLibComponent implements Listener
     public WorldLoader createWorldAndGetLoader()
     {
         return createWorldAndGetLoader(MapConfig.WORLD.get(), null);
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onWorldInit(final WorldInitEvent ev)
+    {
+        if (!currentlyLoadingWorldsNames.contains(ev.getWorld().getName())) return;
+
+        GenerationMetadata.unsafeCreateEmptyGenerationMetadata(ev.getWorld());
     }
 
 

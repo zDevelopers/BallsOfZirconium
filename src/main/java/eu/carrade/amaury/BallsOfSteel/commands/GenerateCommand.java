@@ -41,7 +41,7 @@ import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 
 
-@CommandInfo (name = "generate")
+@CommandInfo (name = "generate", usageParameters = "[world name]")
 public class GenerateCommand extends BoSCommand
 {
     @Override

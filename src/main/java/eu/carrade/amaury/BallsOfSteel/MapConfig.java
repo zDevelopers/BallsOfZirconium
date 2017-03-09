@@ -109,6 +109,9 @@ public class MapConfig extends ConfigurationInstance
             public final ConfigurationItem<Boolean> GENERATE_AT_STARTUP = item("generateAtStartup", true);
             public final ConfigurationItem<Boolean> GENERATE_FULLY = item("generateFully", true);
 
+            public final ConfigurationItem<Boolean> ALLOW_ANIMALS = item("allowAnimals", false);
+            public final ConfigurationItem<Boolean> ALLOW_MONSTERS = item("allowMonsters", false);
+
             public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES = item("distanceBetweenSpheres", 32);
             public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES_AND_STATIC_BUILDINGS = item("distanceBetweenSpheresAndStaticBuildings", 48);
         }
