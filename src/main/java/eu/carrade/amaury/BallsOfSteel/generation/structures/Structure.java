@@ -44,17 +44,29 @@ import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
  */
 public abstract class Structure extends AbstractGenerationTool
 {
-    protected String name;
     protected boolean enabled;
+
+    protected String name;
+    protected String displayName = null;
 
     public String getName()
     {
         return name;
     }
 
+    public String getDisplayName()
+    {
+        return displayName != null ? displayName : name;
+    }
+
     protected void setName(String name)
     {
         this.name = name;
+    }
+
+    protected void setDisplayName(String name)
+    {
+        this.displayName = name;
     }
 
     public boolean isEnabled()

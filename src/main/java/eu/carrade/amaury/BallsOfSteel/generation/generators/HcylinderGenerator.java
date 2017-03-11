@@ -40,6 +40,8 @@ import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
 import fr.zcraft.zlib.components.i18n.I;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -68,8 +70,17 @@ public class HcylinderGenerator extends WithRadiusGenerator
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Hollow cylinder {gray}(radius {0}, pattern '{1}')", simpleRadius ? radius.getX() : radius, patternString);
+        return I.t("Hollow cylinder");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("Radius: {0}", simpleRadius ? radius.getX() : radius),
+                I.t("Pattern: {0}", patternString)
+        );
     }
 }

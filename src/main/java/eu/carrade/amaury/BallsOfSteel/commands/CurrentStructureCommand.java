@@ -48,7 +48,7 @@ import fr.zcraft.zlib.components.i18n.I;
 import java.util.List;
 
 
-@CommandInfo (name = "currentStructure")
+@CommandInfo (name = "currentStructure", usageParameters = "[select|forget]")
 public class CurrentStructureCommand extends Command
 {
     @Override
@@ -133,6 +133,8 @@ public class CurrentStructureCommand extends Command
             // Required to update the selection display if the player is using WE:CUI.
             // If it's not, the command is harmless and without output anyway.
             playerSender().performCommand("we cui");
+
+            info(I.t("WorldEdit selection updated."));
         }
     }
 

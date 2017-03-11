@@ -42,6 +42,7 @@ import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
+import fr.zcraft.zlib.components.commands.WithFlags;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -53,7 +54,8 @@ import java.util.List;
 import java.util.Random;
 
 
-@CommandInfo (name = "generatesphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-s]")
+@CommandInfo (name = "generatesphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-su]")
+@WithFlags ({"s", "u"})
 public class GenerateSphereCommand extends SpheresRelatedCommand
 {
     @Override

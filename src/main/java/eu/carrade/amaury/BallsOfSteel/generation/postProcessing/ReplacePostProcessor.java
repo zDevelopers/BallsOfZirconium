@@ -35,6 +35,8 @@ import com.sk89q.worldedit.MaxChangedBlocksException;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -64,8 +66,17 @@ public class ReplacePostProcessor extends PostProcessor
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Replacement {gray}(from '{0}' to '{1}')", fromMask, toPattern);
+        return I.t("Replacement");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("From: {0}", fromMask),
+                I.t("To: {0}", toPattern)
+        );
     }
 }

@@ -234,8 +234,15 @@ public class PopulateChestsPostProcessor extends PostProcessor
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
+        return I.t("Containers population");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        final List<String> settings = new ArrayList<>(2);
         final List<String> excluded = new ArrayList<>(7);
 
         if (!chests)        excluded.add("chests");
@@ -246,7 +253,9 @@ public class PopulateChestsPostProcessor extends PostProcessor
         if (!droppers)      excluded.add("droppers");
         if (!furnaces)      excluded.add("furnaces");
 
-        return I.t("Containers population {gray}(loot table: '{0}')", lootTable)
-                + (excluded.size() > 0 ? I.t("{gray}(excluding: {0})", StringUtils.join(excluded, ", ")) : "");
+        settings.add(I.t("Loot table: {0}", lootTableFilename != null ? lootTableFilename : (lootTable != null ? lootTable : I.tc("loot_tables_settings_desc", "none"))));
+        if (excluded.size() > 0) settings.add(I.t("Excluding: {0}", StringUtils.join(excluded, ", ")));
+
+        return settings;
     }
 }

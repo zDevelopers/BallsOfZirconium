@@ -37,6 +37,8 @@ import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -104,16 +106,22 @@ public class RotatePostProcessor extends PostProcessor
 
         WorldEditUtils.applyTransform(session, region, transform);
 
-        PluginLogger.info("Applied {0} - angleY {2} - transform {1}", doDescription(), transform, realAngle);
+        PluginLogger.info("Applied {0} - angleY {2} - transform {1}", doName(), transform, realAngle);
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Rotation {gray}(angles: X = {0}°, Y = {1}°, Z = {2}°)",
-                angleX == null ? I.t("<random>") : angleX,
-                angleY == null ? I.t("<random>") : angleY,
-                angleZ == null ? I.t("<random>") : angleZ
+        return I.t("Rotation");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("X angle: {0}°", angleX == null ? I.t("<random>") : angleX),
+                I.t("Y angle: {0}°", angleY == null ? I.t("<random>") : angleY),
+                I.t("Z angle: {0}°", angleZ == null ? I.t("<random>") : angleZ)
         );
     }
 }

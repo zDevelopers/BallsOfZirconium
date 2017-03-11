@@ -36,12 +36,14 @@ import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StructureSubProcessor;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -49,7 +51,7 @@ import java.util.Random;
 /**
  * A post-processor. This will work on a previously-generated region and apply some filters, replacements, things on it.
  */
-public abstract class PostProcessor extends AbstractGenerationTool
+public abstract class PostProcessor extends StructureSubProcessor
 {
     private final boolean enabled;
     private final float probability;
@@ -134,15 +136,28 @@ public abstract class PostProcessor extends AbstractGenerationTool
     }
 
     /**
-     * A description of the post-processor, with parameters values if relevant.
-     * @return the description.
+     * A name for the post-processor.
+     *
+     * @return The name.
      */
-    public String getDescription()
+    public String getName()
     {
-        return (doDescription()
-                + (subRegionPos1 != null || subRegionPos2 != null ? " " + I.t("{gray}(restricted to {0}, {1})", subRegionPos1 != null ? subRegionPos1 : Vector.ZERO, subRegionPos2 != null ? subRegionPos2 : Vector.ZERO) : "")
-                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
+        return doName().trim();
     }
+
+    /**
+     * @return A list describing each setting of the post-processor.
+     */
+    public List<String> getSettingsDescription()
+    {
+        final List<String> settingsDescription = new ArrayList<>(doSettingsDescription());
+
+        if (subRegionPos1 != null || subRegionPos2 != null) settingsDescription.add(I.t("Restricted to {0}, {1}", subRegionPos1 != null ? subRegionPos1 : Vector.ZERO, subRegionPos2 != null ? subRegionPos2 : Vector.ZERO));
+        if (probability < 1) settingsDescription.add(I.t("Probability: {0}", probability));
+
+        return settingsDescription;
+    }
+
 
     /**
      * Applies a post-processing to a region.
@@ -150,11 +165,15 @@ public abstract class PostProcessor extends AbstractGenerationTool
     protected abstract void doProcess() throws MaxChangedBlocksException;
 
     /**
-     * A description of the post-processor, with parameters values if relevant.
-     * @return the description.
+     * A name for the post-processor.
+     * @return The name.
      */
-    public abstract String doDescription();
+    public abstract String doName();
 
+    /**
+     * @return A list describing each setting of the structure.
+     */
+    public abstract List<String> doSettingsDescription();
 
 
     @ConfigurationValueHandler

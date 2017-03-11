@@ -47,7 +47,9 @@ import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,8 +124,17 @@ public class ReplaceVisibleBlocksPostProcessor extends ReplacePostProcessor
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Visible blocks replacement {gray}(from '{0}' to '{1}')", fromMask, toPattern);
+        return I.t("Visible blocks replacement");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("From: {0}", fromMask),
+                I.t("To: {0}", toPattern)
+        );
     }
 }

@@ -151,20 +151,28 @@ public class RandomSpawnerPostProcessor extends PostProcessor
     }
 
     @Override
-    public String doDescription()
+    public String doName()
+    {
+        return I.t("Spawners randomization");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
     {
         final List<String> entitiesNames = new ArrayList<>(spawnerEntityTypes.size());
+        final List<String> settings = new ArrayList<>(7);
+
         for (final EntityType type : spawnerEntityTypes) entitiesNames.add(type.getName());
 
-        final List<String> settings = new ArrayList<>(6);
-        if (spawnCount != null) settings.add("spawn_count=" + spawnCount);
-        if (spawnRange != null) settings.add("spawn_range=" + spawnRange);
-        if (minSpawnDelay != null) settings.add("min_spawn_delay=" + minSpawnDelay);
-        if (maxSpawnDelay != null) settings.add("max_spawn_delay=" + maxSpawnDelay);
-        if (maxNearbyEntities != null) settings.add("max_nearby_entities=" + maxNearbyEntities);
-        if (requiredPlayerRange != null) settings.add("required_player_range=" + requiredPlayerRange);
+        settings.add(I.t("Entities: {0}", StringUtils.join(entitiesNames, ", ")));
 
-        return I.t("Spawners randomization {gray}(entities: {0})", StringUtils.join(entitiesNames, ", "))
-                + (!settings.isEmpty() ? " " + I.t("{gray}(settings: {0})", StringUtils.join(settings, ", ")) : "");
+        if (spawnCount != null) settings.add(I.t("Spawn count: {0}", spawnCount));
+        if (spawnRange != null) settings.add(I.t("Spawn range: {0} blocks", spawnRange));
+        if (minSpawnDelay != null) settings.add(I.t("Minimum spawn delay: {0} seconds", minSpawnDelay));
+        if (maxSpawnDelay != null) settings.add(I.t("Maximum spawn delay: {0} seconds", maxSpawnDelay));
+        if (maxNearbyEntities != null) settings.add(I.t("Max nearby entities: {0}", maxNearbyEntities));
+        if (requiredPlayerRange != null) settings.add(I.t("Required player range: {0} blocks", requiredPlayerRange));
+
+        return settings;
     }
 }

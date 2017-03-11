@@ -41,11 +41,14 @@ import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 public class SchematicGenerator extends Generator
 {
+    private final String schematicRelativePath;
     private final File schematicFile;
     private final Clipboard schematic;
 
@@ -58,15 +61,15 @@ public class SchematicGenerator extends Generator
 
         skipAir = getValue(parameters, "skipAir", boolean.class, false);
 
-        final String schematicPath = getValue(parameters, "schematic", String.class, null);
-        if (schematicPath == null)
+        schematicRelativePath = getValue(parameters, "schematic", String.class, null);
+        if (schematicRelativePath == null)
         {
             schematicFile = null;
             schematic = null;
             return;
         }
 
-        schematicFile = new File(MapConfig.MAP_SCHEMATICS_DIRECTORY, schematicPath);
+        schematicFile = new File(MapConfig.MAP_SCHEMATICS_DIRECTORY, schematicRelativePath);
         Clipboard clipboard;
 
         try
@@ -90,8 +93,17 @@ public class SchematicGenerator extends Generator
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Schematic {gray}(file {0}, skip air: {1})", schematicFile.getPath(), skipAir);
+        return I.t("Schematic");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("File: {0}", schematicRelativePath != null ? schematicRelativePath : I.tc("schematics_settings_desc", "none")),
+                I.t("Skipping air: {0}", skipAir ? I.t("yes") : I.t("no"))
+        );
     }
 }

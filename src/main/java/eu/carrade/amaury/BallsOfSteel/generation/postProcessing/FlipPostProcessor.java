@@ -37,6 +37,8 @@ import com.sk89q.worldedit.util.Direction;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.zlib.components.i18n.I;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 
@@ -61,9 +63,17 @@ public class FlipPostProcessor extends PostProcessor
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Flip {gray}(direction '{0}')", direction.toString().toLowerCase().replace('_', ' '));
+        return I.t("Flip");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Collections.singletonList(
+                I.t("Direction: {0}", direction.toString().toLowerCase().replace('_', ' '))
+        );
     }
 
     /**

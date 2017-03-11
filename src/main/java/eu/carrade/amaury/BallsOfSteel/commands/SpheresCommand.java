@@ -34,21 +34,21 @@ package eu.carrade.amaury.BallsOfSteel.commands;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
-import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
-import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StructureSubProcessor;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.components.rawtext.RawText;
+import fr.zcraft.zlib.components.rawtext.RawTextPart;
 import fr.zcraft.zlib.tools.commands.PaginatedTextView;
-import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import fr.zcraft.zlib.tools.text.RawMessage;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -74,21 +74,7 @@ public class SpheresCommand extends SpheresRelatedCommand
 
         if (args.length > 0 && page == -1)
         {
-            final GeneratedSphere process = getGeneratedSphereParameter(0);
-            info(I.t("{green}{bold}Sphere: {darkgreen}{bold}{0}", process.getName()));
-
-            info(I.tn("{darkgreen}{0} generator", "{darkgreen}{0} generators", process.getGenerators().size()));
-            for (Generator generator : process.getGenerators())
-            {
-                info(I.t("{gray}- {reset}{0}", generator.getDescription()));
-            }
-
-            info(I.tn("{darkgreen}{0} post-processor", "{darkgreen}{0} post-processors", process.getPostProcessors().size()));
-            for (PostProcessor postProcessor : process.getPostProcessors())
-            {
-                info(I.t("{gray}- {reset}{0}", postProcessor.getDescription()));
-            }
-
+            displaySphere(getGeneratedSphereParameter(0));
             return;
         }
 
@@ -120,6 +106,64 @@ public class SpheresCommand extends SpheresRelatedCommand
         return null;
     }
 
+    private void displaySphere(GeneratedSphere sphere)
+    {
+        info(I.t("{green}{bold}{0} Sphere", sphere.getName()) + (!sphere.isEnabled() ? " " + I.t("{gray}(disabled)") : ""));
+
+        displayStructureSubProcessor(
+                new RawText().then(I.tn("{0} generator", "{0} generators", sphere.getGenerators().size())).color(ChatColor.WHITE).style(ChatColor.BOLD),
+                sphere.getGenerators()
+        );
+
+        displayStructureSubProcessor(
+                new RawText().then(I.tn("{0} post-processor", "{0} post-processors", sphere.getPostProcessors().size())).color(ChatColor.WHITE).style(ChatColor.BOLD),
+                sphere.getPostProcessors()
+        );
+
+        if (sender instanceof Player)
+            info(I.t("Hover the generators and post-processors for details."));
+    }
+
+    private void displayStructureSubProcessor(RawTextPart base, List<? extends StructureSubProcessor> processors)
+    {
+        if (sender instanceof Player)
+        {
+            RawTextPart line = base == null ? new RawText() : base;
+            line.then(processors.size() > 0 ? "\n» " : "").color(ChatColor.GRAY);
+
+            for (final Iterator<? extends StructureSubProcessor> iterator = processors.iterator(); iterator.hasNext(); )
+            {
+                final StructureSubProcessor processor = iterator.next();
+
+                line.then(processor.getName())
+                        .color(ChatColor.WHITE)
+                        .hover(new RawText()
+                                .then(processor.getName() + "\n").color(ChatColor.WHITE)
+                                .then(processor.getIdentifier() + "\n\n").color(ChatColor.DARK_GRAY)
+                                .then(StringUtils.join(processor.getSettingsDescription(), "\n" + ChatColor.GRAY)).color(ChatColor.GRAY)
+                        );
+
+                if (iterator.hasNext())
+                    line.then(", ").color(ChatColor.WHITE);
+            }
+
+            line.then(".").color(ChatColor.WHITE);
+            send(line.build());
+        }
+        else
+        {
+            send(base.build());
+
+            for (final StructureSubProcessor processor : processors)
+            {
+                info(ChatColor.GRAY + "- "
+                        + ChatColor.WHITE + processor.getName()
+                        + ChatColor.GRAY + " (" + StringUtils.join(processor.getSettingsDescription(), " - ") + ")"
+                );
+            }
+        }
+    }
+
     private class SpheresPagination extends PaginatedTextView<GeneratedSphere>
     {
         @Override
@@ -143,22 +187,21 @@ public class SpheresCommand extends SpheresRelatedCommand
         {
             RawMessage.send(receiver,
                     new RawText("- ")
-                                .color(ChatColor.GRAY)
+                            .color(ChatColor.GRAY)
                             .then(process.getName())
-                                .color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
-                                .hover(new ItemStackBuilder(Material.POTATO_ITEM)
-                                            .title(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED, process.getName())
-                                            .loreLine(ChatColor.GRAY, I.tn("{0} generator", "{0} generators", process.getGenerators().size()))
-                                            .loreLine(ChatColor.GRAY, I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size()))
-                                            .loreLine()
-                                            .loreLine(I.t("{gray}» {white}Click{gray} for details"))
-                                        .item()
-                                )
-                                .command(SpheresCommand.class, process.getName().replace(" ", ""))
+                            .color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
+                            .hover(new RawText()
+                                    .then(process.getName()).color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
+                                    .then(!process.isEnabled() ? " " + I.t("{gray}(disabled)") : "").then("\n")
+                                    .then(I.tn("{0} generator", "{0} generators", process.getGenerators().size())).color(ChatColor.GRAY).then("\n")
+                                    .then(I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size())).color(ChatColor.GRAY).then("\n\n")
+                                    .then(I.t("{gray}» {white}Click{gray} for details"))
+                            )
+                            .command(SpheresCommand.class, process.getName().replace(" ", ""))
                             .then(" (").color(ChatColor.WHITE)
                             .then(I.tn("{0} processor", "{0} processors", process.getGenerators().size() + process.getPostProcessors().size())).color(ChatColor.WHITE)
                             .then(")").color(ChatColor.WHITE)
-                        .build()
+                            .build()
             );
         }
 

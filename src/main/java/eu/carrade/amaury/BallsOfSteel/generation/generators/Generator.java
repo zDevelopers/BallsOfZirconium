@@ -36,13 +36,15 @@ import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StructureSubProcessor;
 import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -50,7 +52,7 @@ import java.util.Random;
 /**
  * A generator, used to generate a shape, paste a schematic...
  */
-public abstract class Generator extends AbstractGenerationTool
+public abstract class Generator extends StructureSubProcessor
 {
     protected final boolean enabled;
     protected final float probability;
@@ -103,16 +105,27 @@ public abstract class Generator extends AbstractGenerationTool
     }
 
     /**
-     * A description of the generator, with parameters values if relevant.
-     * @return the description.
+     * A name for the generator.
+     *
+     * @return The name.
      */
-    public String getDescription()
+    public String getName()
     {
-        return (doDescription()
-                + (!offset.equals(Vector.ZERO) ? " " + I.t("{gray}(offset: {0})", offset) : "")
-                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
+        return doName().trim();
     }
 
+    /**
+     * @return A list describing each setting of the generator.
+     */
+    public List<String> getSettingsDescription()
+    {
+        final List<String> settingsDescription = new ArrayList<>(doSettingsDescription());
+
+        if (!offset.equals(Vector.ZERO)) settingsDescription.add(I.t("Offset: {0}", offset));
+        if (probability < 1) settingsDescription.add(I.t("Probability: {0}", probability));
+
+        return settingsDescription;
+    }
 
 
     /**
@@ -123,13 +136,16 @@ public abstract class Generator extends AbstractGenerationTool
      */
     protected abstract Region doGenerate() throws MaxChangedBlocksException;
 
+    /**
+     * A name for the generator.
+     * @return The name.
+     */
+    public abstract String doName();
 
     /**
-     * A description of the generator, with parameters values if relevant.
-     * @return the description.
+     * @return A list describing each setting of the generator.
      */
-    public abstract String doDescription();
-
+    public abstract List<String> doSettingsDescription();
 
 
     /**
@@ -147,7 +163,6 @@ public abstract class Generator extends AbstractGenerationTool
     {
         return baseLocation;
     }
-
 
 
     @ConfigurationValueHandler

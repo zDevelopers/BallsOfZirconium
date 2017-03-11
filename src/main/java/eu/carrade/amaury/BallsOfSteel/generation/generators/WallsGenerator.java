@@ -37,6 +37,8 @@ import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
 import fr.zcraft.zlib.components.i18n.I;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -60,8 +62,17 @@ public class WallsGenerator extends WithRadiusGenerator
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Walls {gray}(size {0}, pattern '{1}')", radius, patternString);
+        return I.t("Walls");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("Size: {0}", radius),
+                I.t("Pattern: {0}", patternString)
+        );
     }
 }

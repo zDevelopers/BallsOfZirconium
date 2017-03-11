@@ -38,6 +38,8 @@ import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGe
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,8 +61,17 @@ public class PyramidGenerator extends WithRadiusGenerator
     }
 
     @Override
-    public String doDescription()
+    public String doName()
     {
-        return I.t("Pyramid {gray}(radius {0}, pattern '{1}')", radius.getX(), patternString);
+        return I.t("Pyramid");
+    }
+
+    @Override
+    public List<String> doSettingsDescription()
+    {
+        return Arrays.asList(
+                I.t("Radius: {0}", radius.getX()),
+                I.t("Pattern: {0}", patternString)
+        );
     }
 }

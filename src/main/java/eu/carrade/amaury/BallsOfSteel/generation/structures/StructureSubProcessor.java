@@ -29,47 +29,58 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
+package eu.carrade.amaury.BallsOfSteel.generation.structures;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
+import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
+import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import org.apache.commons.lang.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 
-public class SetPostProcessor extends PostProcessor
+public abstract class StructureSubProcessor extends AbstractGenerationTool
 {
-    private final String pattern;
+    /**
+     * A name for the processor.
+     *
+     * @return The name.
+     */
+    public abstract String getName();
 
-    public SetPostProcessor(Map parameters)
+    /**
+     * @return A list describing each setting of the processor.
+     */
+    public abstract List<String> getSettingsDescription();
+
+
+    /**
+     * @return The generator or post-processor identifier used in map.yml
+     */
+    public String getIdentifier()
     {
-        super(parameters);
+        String identifier;
 
-        pattern = getValue(parameters, "pattern", String.class, null);
-    }
+        final Class processorType = this instanceof Generator ? Generator.class : (this instanceof PostProcessor ? PostProcessor.class : null);
 
-    @Override
-    protected void doProcess() throws MaxChangedBlocksException
-    {
-        if (pattern == null) return;
+        if (processorType == null)
+        {
+            identifier = getClass().getName();
+        }
+        else
+        {
+            if (getClass().getPackage().equals(processorType.getPackage()))
+            {
+                identifier = getClass().getSimpleName();
+                if (identifier.endsWith(processorType.getSimpleName()))
+                    identifier = identifier.substring(0, identifier.length() - processorType.getSimpleName().length());
+            }
+            else
+            {
+                identifier = getClass().getName();
+            }
+        }
 
-        session.setBlocks(region, WorldEditUtils.parsePatternLegacy(region.getWorld(), pattern));
-    }
-
-    @Override
-    public String doName()
-    {
-        return I.t("Blocks set");
-    }
-
-    @Override
-    public List<String> doSettingsDescription()
-    {
-        return Collections.singletonList(
-                I.t("To: {0}", pattern)
-        );
+        return StringUtils.uncapitalize(identifier);
     }
 }

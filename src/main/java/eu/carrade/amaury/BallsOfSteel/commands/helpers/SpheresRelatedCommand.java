@@ -72,7 +72,7 @@ public abstract class SpheresRelatedCommand extends BoSCommand
         }
 
         if (generator == null)
-            throwInvalidArgument(I.t("No generator found under the name {0}. Available generators: {1}.", name, StringUtils.join(getSphereNamesWithoutSpaces(), ", ")));
+            throwInvalidArgument(I.t("No generator found under the name {0}. \nAvailable generators: {1}.", name, StringUtils.join(getSphereNamesWithoutSpaces(), ", ")));
 
         return generator;
     }
