@@ -10,9 +10,12 @@ player is, or fails if the sender is not a player. You
 can also provide coordinates (they may be relative,
 with ~), and world.
 
-You can add "-s" after the arguments to set your WorldEdit
-selection to the thing just created.
-
 Relative coordinates cannot be used from the console,
 and without world, the player world or the default Balls
 of Steel world are used.
+
+§lFlags
+
+§6-s  §rSets your WorldEdit selection to the thing just
+created.
+§6-u  §rUnstucks yourself after the generation.
