@@ -11,4 +11,4 @@ currentstructure: Displays the structure at the sender's location, or selects or
 restart: Restarts the game.
 start: Starts the game.
 team: Manages teams.
-help: Displays this help, or a detailled help with sub-command.
+help: Displays this help, or a detailed help with sub-command.
