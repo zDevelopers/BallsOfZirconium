@@ -14,16 +14,20 @@
 				"min": 1,
 				"max": 9
 			  }
-			},
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 1,
+		  "name": "minecraft:charcoal",
+		  "functions": [
 			{
-			  "function": "set_data",
-			  "data": 1,
-			  "conditions": [
-				{
-				  "condition": "random_chance",
-				  "chance": 0.5
-				}
-			  ]
+			  "function": "set_count",
+			  "count": {
+				"min": 1,
+				"max": 9
+			  }
 			}
 		  ]
 		}
@@ -31,3 +35,4 @@
 	}
   ]
 }
+

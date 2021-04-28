@@ -32,9 +32,9 @@ public class BoSChestsListener implements Listener
 {
     private BallsOfSteel p = null;
 
-    BoSSound soundCountIncrease = null;
-    BoSSound soundCountDecrease = null;
-    BoSSound soundChestLocked = null;
+    private BoSSound soundCountIncrease = null;
+    private BoSSound soundCountDecrease = null;
+    private BoSSound soundChestLocked = null;
 
     public BoSChestsListener(BallsOfSteel plugin)
     {
@@ -123,7 +123,7 @@ public class BoSChestsListener implements Listener
         if (p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
                 && (playerTeam == null || (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1()) && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2()))))
         {
-            MessageSender.sendActionBarMessage(ev.getPlayer(), I.t("{ce}You cannot open the chests of another team."));
+            MessageSender.sendActionBarMessage(ev.getPlayer(), I.t("{ce}You cannot open the chest of another team."));
             ev.setCancelled(true);
 
             if (soundChestLocked != null) soundChestLocked.play(ev.getPlayer());
