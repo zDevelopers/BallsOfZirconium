@@ -31,12 +31,12 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 
 import java.util.Map;
 
@@ -48,13 +48,17 @@ public class PyramidGenerator extends WithRadiusGenerator
         super(parameters);
 
         if (!simpleRadius)
-            PluginLogger.warning("You declared a pyramid with a thee-dimensional radius {0}, but we don't support this. Only the first coordinate will be used.", radius);
+            PluginLogger.warning(
+                "You declared a pyramid with a thee-dimensional radius {0}, but we don't support this. Only " +
+                "the first coordinate will be used.",
+                radius
+            );
     }
 
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected Region doGenerate() throws WorldEditException
     {
-        session.makePyramid(baseVector(), oldPattern(baseLocation.getWorld()), radius.getBlockX(), true);
+        session.makePyramid(baseVector(), pattern(baseLocation.getWorld()), radius.getBlockX(), true);
         return new CuboidRegion(baseVector().subtract(radius), baseVector().add(radius));
     }
 

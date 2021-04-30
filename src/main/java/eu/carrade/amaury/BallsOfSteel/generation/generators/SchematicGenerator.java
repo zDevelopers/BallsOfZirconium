@@ -31,13 +31,13 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class SchematicGenerator extends Generator
     private final boolean skipAir;
 
 
-    public SchematicGenerator(Map parameters)
+    public SchematicGenerator(Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -83,7 +83,7 @@ public class SchematicGenerator extends Generator
     }
 
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected Region doGenerate() throws WorldEditException
     {
         if (schematic == null) return null;
         return WorldEditUtils.pasteClipboard(session, schematic, baseVector(), skipAir);

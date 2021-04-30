@@ -22,10 +22,10 @@ import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.PluginLogger;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +39,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.text.DecimalFormat;
 
 
-public class BoSScoreboardManager extends ZLibComponent implements Listener
+public class BoSScoreboardManager extends QuartzComponent implements Listener
 {
     private Scoreboard sb = null;
     private Objective sidebar = null;

@@ -31,7 +31,7 @@
  */
 package eu.carrade.amaury.BallsOfSteel.commands.helpers;
 
-import fr.zcraft.zlib.components.commands.Command;
+import fr.zcraft.quartzlib.components.commands.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

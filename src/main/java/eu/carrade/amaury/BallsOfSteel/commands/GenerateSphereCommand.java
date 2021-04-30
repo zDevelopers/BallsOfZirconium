@@ -32,17 +32,16 @@
 package eu.carrade.amaury.BallsOfSteel.commands;
 
 import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -53,7 +52,7 @@ import java.util.List;
 import java.util.Random;
 
 
-@CommandInfo (name = "generatesphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-s]")
+@CommandInfo (name = "generate-sphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-s]", aliases = { "generatesphere" })
 public class GenerateSphereCommand extends SpheresRelatedCommand
 {
     @Override
@@ -111,14 +110,14 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         }
 
         final long time = System.currentTimeMillis();
-        final Region region = generator.applyAt(baseLocation, new Random(), WorldEditUtils.newEditSession(baseLocation.getWorld(), /*sender instanceof Player ? (Player) sender :*/ null));
+        final Region region = generator.applyAt(baseLocation, new Random());
 
         info(I.t("{gray}{0} generated in {1} ms. {2}", generator.getName(), System.currentTimeMillis() - time, selectAfter ? I.t("WorldEdit selection updated.") : ""));
 
         if (selectAfter && sender instanceof Player)
         {
             final LocalSession session = BallsOfSteel.get().getWorldEditDependency().getWE().getSession(playerSender());
-            final RegionSelector regionSelector = session.getRegionSelector((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(baseLocation.getWorld()));
+            final RegionSelector regionSelector = session.getRegionSelector(BukkitAdapter.adapt(baseLocation.getWorld()));
 
             regionSelector.selectPrimary(region.getMinimumPoint(), PermissiveSelectorLimits.getInstance());
             regionSelector.selectSecondary(region.getMaximumPoint(), PermissiveSelectorLimits.getInstance());

@@ -2,18 +2,18 @@ package eu.carrade.amaury.BallsOfSteel;
 
 import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.configuration.ConfigurationItem;
-import fr.zcraft.zlib.components.configuration.ConfigurationSection;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.components.configuration.Configuration;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationItem;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationSection;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 
 import java.util.Locale;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.item;
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.section;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.item;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.section;
 
 
 public class GameConfig extends Configuration

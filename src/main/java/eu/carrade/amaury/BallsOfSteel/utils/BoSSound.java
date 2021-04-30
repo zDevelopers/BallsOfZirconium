@@ -18,9 +18,9 @@
 
 package eu.carrade.amaury.BallsOfSteel.utils;
 
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;

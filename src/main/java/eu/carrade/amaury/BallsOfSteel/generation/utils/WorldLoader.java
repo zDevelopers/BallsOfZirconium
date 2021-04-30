@@ -31,9 +31,9 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.utils;
 
-import com.sk89q.worldedit.Vector2D;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import com.sk89q.worldedit.math.BlockVector2;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -46,12 +46,12 @@ public class WorldLoader extends BukkitRunnable
     private final World world;
     private final CommandSender logsReceiver;
 
-    private final Vector2D min;
-    private final Vector2D max;
+    private final BlockVector2 min;
+    private final BlockVector2 max;
 
     private int chunksToProcess;
     private int chunksProcessed;
-    private Vector2D current;
+    private BlockVector2 current;
 
     private int lastPercentageDisplayed = -1;
 
@@ -62,13 +62,13 @@ public class WorldLoader extends BukkitRunnable
      * @param corner1 The first corner of the area to load.
      * @param corner2 The other corner of the area to load.
      */
-    public WorldLoader(final World world, final CommandSender logsReceiver, final Vector2D corner1, final Vector2D corner2)
+    public WorldLoader(final World world, final CommandSender logsReceiver, final BlockVector2 corner1, final BlockVector2 corner2)
     {
         this.world = world;
         this.logsReceiver = logsReceiver;
 
-        min = Vector2D.getMinimum(corner1, corner2);
-        max = Vector2D.getMaximum(corner1, corner2);
+        min = corner1.getMinimum(corner2);
+        max = corner1.getMaximum(corner2);
     }
 
     /**
@@ -89,7 +89,7 @@ public class WorldLoader extends BukkitRunnable
 
         current = min;
 
-        RunTask.timer(this, 1l, 20l);
+        RunTask.timer(this, 1L, 20L);
     }
 
     /**
@@ -112,12 +112,13 @@ public class WorldLoader extends BukkitRunnable
 
             // Next chunk
 
-            current = current.setZ(current.getZ() + 16);
+            current = current.add(0, 16);
 
             if (current.getZ() > max.getZ())
             {
-                current = current.setZ(min.getZ()).setX(current.getX() + 16);
+                current = BlockVector2.at(current.getX() + 16, min.getZ());
             }
+
             if (current.getX() > max.getX())
             {
                 cancel();

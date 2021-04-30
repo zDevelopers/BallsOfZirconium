@@ -33,20 +33,21 @@ package eu.carrade.amaury.BallsOfSteel.generation.structures;
 
 
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.World;
 
 import java.io.File;
@@ -64,7 +65,7 @@ import java.util.Random;
  */
 public class StaticBuilding extends Structure
 {
-    private final Vector pasteLocation;
+    private final BlockVector3 pasteLocation;
 
     private final File schematicFile;
     private final Clipboard building;
@@ -85,7 +86,7 @@ public class StaticBuilding extends Structure
      *
      * @throws IOException If the schematic file cannot be loaded.
      */
-    public StaticBuilding(final String name, final Vector pasteLocation, final boolean nothingUnder, final boolean nothingAbove, final File schematicFile) throws IOException
+    public StaticBuilding(final String name, final BlockVector3 pasteLocation, final boolean nothingUnder, final boolean nothingAbove, final File schematicFile) throws IOException
     {
         setName(name);
         setEnabled(true);
@@ -99,8 +100,8 @@ public class StaticBuilding extends Structure
 
         try
         {
-            if (nothingAbove) privateRegion.expand(new Vector(0, 256, 0));
-            if (nothingUnder) privateRegion.expand(new Vector(0, -256, 0));
+            if (nothingAbove) privateRegion.expand(BlockVector3.at(0, 256, 0));
+            if (nothingUnder) privateRegion.expand(BlockVector3.at(0, -256, 0));
         }
         catch (final RegionOperationException e)
         {
@@ -108,40 +109,34 @@ public class StaticBuilding extends Structure
         }
     }
 
-
     public boolean build(final World world, final Random random)
-    {
-        return build(WorldEditUtils.newEditSession(world), random);
-    }
-
-    public boolean build(final EditSession session, final Random random)
     {
         try
         {
-            final Region region = WorldEditUtils.pasteClipboard(session, building, pasteLocation, true);
+            final Region region;
 
-            // Ensures all is wrote before post-processors are run
-            session.flushQueue();
+            try (final EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world)))
+            {
+                region = WorldEditUtils.pasteClipboard(session, building, pasteLocation, true);
+            }
 
             for (final PostProcessor processor : postProcessors)
             {
-                try
+                try (final EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world)))
                 {
                     processor.process(session, region, random);
                 }
-                catch (final Exception e)
+                catch (final Throwable e)
                 {
                     PluginLogger.error("Exception occurred while executing post-processor {0} for static building {1}", e, processor.getClass().getName(), name);
                 }
-
-                session.flushQueue();
             }
 
-            GenerationMetadata.saveStructure(this, ((BukkitWorld) session.getWorld()).getWorld(), region);
+            GenerationMetadata.saveStructure(this, world, region);
 
             return true;
         }
-        catch (final MaxChangedBlocksException e)
+        catch (final WorldEditException e)
         {
             PluginLogger.error("Cannot build static building {0}: too many blocks changed.", e, name);
             return false;
@@ -160,7 +155,7 @@ public class StaticBuilding extends Structure
     /**
      * @return The building paste location.
      */
-    public Vector getPasteLocation()
+    public BlockVector3 getPasteLocation()
     {
         return pasteLocation;
     }
@@ -219,11 +214,11 @@ public class StaticBuilding extends Structure
 
 
     @ConfigurationValueHandler
-    public static StaticBuilding handleStaticBuilding(final Map map) throws ConfigurationParseException
+    public static StaticBuilding handleStaticBuilding(final Map<?, ?> map) throws ConfigurationParseException
     {
         final String name = getValue(map, "name", String.class, "Unnamed static building");
         final String schematicPath = getValue(map, "schematic", String.class, null);
-        final Vector pasteLocation = getValue(map, "pasteAt", Vector.class, null);
+        final BlockVector3 pasteLocation = getValue(map, "pasteAt", BlockVector3.class, null);
 
         final boolean nothingAbove = getValue(map, "nothingAbove", boolean.class, false);
         final boolean nothingUnder = getValue(map, "nothingUnder", boolean.class, false);

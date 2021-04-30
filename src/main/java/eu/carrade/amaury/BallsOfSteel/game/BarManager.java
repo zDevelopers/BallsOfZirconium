@@ -4,9 +4,9 @@ import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BossBar;
@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 
-public class BarManager extends ZLibComponent implements Listener
+public class BarManager extends QuartzComponent implements Listener
 {
     private BossBar bar;
 

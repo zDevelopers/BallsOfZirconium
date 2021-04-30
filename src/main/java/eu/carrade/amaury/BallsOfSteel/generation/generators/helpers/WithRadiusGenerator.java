@@ -31,17 +31,17 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators.helpers;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 
 import java.util.Map;
 
 
 public abstract class WithRadiusGenerator extends WithPatternGenerator
 {
-    protected Vector radius;
+    protected BlockVector3 radius;
     protected boolean simpleRadius;
 
-    public WithRadiusGenerator(Map parameters)
+    public WithRadiusGenerator(Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -49,12 +49,12 @@ public abstract class WithRadiusGenerator extends WithPatternGenerator
         try
         {
             final Double radii = Double.valueOf(parameters.get("radius").toString());
-            radius = new Vector(radii, radii, radii);
+            radius = BlockVector3.at(radii, radii, radii);
             simpleRadius = true;
         }
         catch (NumberFormatException e)
         {
-            radius = getValue(parameters, "radius", Vector.class, Vector.ZERO);
+            radius = getValue(parameters, "radius", BlockVector3.class, BlockVector3.ZERO);
             simpleRadius = false;
         }
     }

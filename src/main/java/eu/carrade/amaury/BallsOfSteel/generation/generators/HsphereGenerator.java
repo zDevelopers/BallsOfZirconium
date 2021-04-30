@@ -31,11 +31,11 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.Map;
 
@@ -48,10 +48,10 @@ public class HsphereGenerator extends WithRadiusGenerator
     }
 
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected Region doGenerate() throws WorldEditException
     {
-        session.makeSphere(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
-        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1));
+        session.makeSphere(baseVector(), pattern(baseLocation.getWorld()), radius.getX(), radius.getY(), radius.getZ(), false);
+        return new EllipsoidRegion(session.getWorld(), baseVector(), radius.add(1, 1, 1).toVector3());
     }
 
     @Override

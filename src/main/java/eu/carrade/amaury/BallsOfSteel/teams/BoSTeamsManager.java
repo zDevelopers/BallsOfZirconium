@@ -21,9 +21,9 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -35,7 +35,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import java.util.ArrayList;
 
 
-public class BoSTeamsManager extends ZLibComponent implements Listener
+public class BoSTeamsManager extends QuartzComponent implements Listener
 {
     private ArrayList<BoSTeam> teams = new ArrayList<>();
     private int maxPlayersPerTeam;

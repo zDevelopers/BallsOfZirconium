@@ -31,21 +31,20 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.blocks.BlockMaterial;
 import com.sk89q.worldedit.function.RegionFunction;
 import com.sk89q.worldedit.function.RegionMaskingFilter;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.function.visitor.RegionVisitor;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.registry.BlockMaterial;
 import com.sk89q.worldedit.world.registry.BundledBlockData;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -54,58 +53,47 @@ import java.util.Set;
 
 public class ReplaceVisibleBlocksPostProcessor extends ReplacePostProcessor
 {
-    public ReplaceVisibleBlocksPostProcessor(Map parameters)
+    public ReplaceVisibleBlocksPostProcessor(final Map<?, ?> parameters)
     {
         super(parameters);
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
         final Pattern replacementPattern = WorldEditUtils.parsePattern(session.getWorld(), toPattern);
 
-        final RegionFunction replaceBlocksIfVisible = new RegionFunction()
-        {
-            @Override
-            public boolean apply(Vector position) throws WorldEditException
+        final RegionFunction replaceBlocksIfVisible = position -> {
+            final BundledBlockData blockData = BundledBlockData.getInstance();
+            final Set<BlockVector3> neighbors = new HashSet<>();
+
+            neighbors.add(position.add(1, 0, 0));
+            neighbors.add(position.add(0, 1, 0));
+            neighbors.add(position.add(0, 0, 1));
+            neighbors.add(position.add(-1, 0, 0));
+            neighbors.add(position.add(0, -1, 0));
+            neighbors.add(position.add(0, 0, -1));
+
+            boolean isBlockVisible = false;
+            for (BlockVector3 neighbor : neighbors)
             {
-                final BundledBlockData blockData = BundledBlockData.getInstance();
-                final Set<Vector> neighbors = new HashSet<>();
+                BlockState blockNeighbor = session.getBlock(neighbor);
+                final BlockMaterial material = blockData.getMaterialById(blockNeighbor.getBlockType().getId());
+                if (material == null) continue;
 
-                neighbors.add(position.add(1, 0, 0));
-                neighbors.add(position.add(0, 1, 0));
-                neighbors.add(position.add(0, 0, 1));
-                neighbors.add(position.add(-1, 0, 0));
-                neighbors.add(position.add(0, -1, 0));
-                neighbors.add(position.add(0, 0, -1));
-
-                boolean isBlockVisible = false;
-                for (Vector neighbor : neighbors)
+                if (material.isAir() || !material.isOpaque() || material.isTranslucent())
                 {
-                    BaseBlock blockNeighbor = session.getLazyBlock(neighbor);
-                    if (blockNeighbor.isAir())
-                    {
-                        isBlockVisible = true;
-                        break;
-                    }
-
-                    final BlockMaterial material = blockData.getMaterialById(blockNeighbor.getId());
-                    if (material == null) continue;
-
-                    if (!material.isOpaque() || material.getLightOpacity() == 0)
-                    {
-                        isBlockVisible = true;
-                        break;
-                    }
+                    isBlockVisible = true;
+                    break;
                 }
-
-                if (isBlockVisible)
-                {
-                    session.setBlock(position, replacementPattern.apply(position));
-                }
-
-                return isBlockVisible;
             }
+
+            if (isBlockVisible)
+            {
+                session.setBlock(position, replacementPattern.applyBlock(position));
+            }
+
+            return isBlockVisible;
         };
 
         final Mask blocksMask = WorldEditUtils.parseMask(session.getWorld(), fromMask, session);

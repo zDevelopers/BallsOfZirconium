@@ -24,10 +24,10 @@ import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.PluginLogger;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class BoSGameManager extends ZLibComponent implements Listener
+public class BoSGameManager extends QuartzComponent implements Listener
 {
     private BallsOfSteel p = null;
 

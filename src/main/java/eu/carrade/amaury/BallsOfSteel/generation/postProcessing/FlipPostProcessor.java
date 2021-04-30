@@ -31,11 +31,11 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.util.Direction;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.Map;
 
@@ -52,12 +52,12 @@ public class FlipPostProcessor extends PostProcessor
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
         final Direction weDirection = getDirection(direction);
         if (weDirection == null) return;
 
-        WorldEditUtils.applyTransform(session, region, new AffineTransform().scale(weDirection.toVector().positive().multiply(-2).add(1, 1, 1)));
+        WorldEditUtils.applyTransform(session, region, new AffineTransform().scale(weDirection.toVector().abs().multiply(-2).add(1, 1, 1)));
     }
 
     @Override

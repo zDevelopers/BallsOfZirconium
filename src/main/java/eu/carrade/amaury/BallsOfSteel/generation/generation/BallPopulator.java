@@ -31,18 +31,17 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.GeometryUtils;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -57,7 +56,7 @@ public class BallPopulator extends BlockPopulator
     private final GenerationManager generationManager = BallsOfSteel.get().getGenerationManager();
 
     @Override
-    public void populate(World world, Random random, Chunk chunk)
+    public void populate(final World world, final Random random, final Chunk chunk)
     {
         final long time = System.currentTimeMillis();
 
@@ -71,16 +70,13 @@ public class BallPopulator extends BlockPopulator
 
         final int spheresInThisChunk = random.nextInt((int) Math.floor(((double) (yMax - yMin)) / ((double) spheresFreeDistance * 3))) + 1;
 
-        final com.sk89q.worldedit.world.World worldEditWorld = BukkitUtil.getLocalWorld(world);
-        final EditSession session = WorldEditUtils.newEditSession(worldEditWorld);
-
-        session.setFastMode(false);
+        final com.sk89q.worldedit.world.World worldEditWorld = BukkitAdapter.adapt(world);
 
         spheresLoop:
         for (int i = 0; i < spheresInThisChunk; i++)
         {
             // Determines where the sphere should be generated
-            final int generationWindowHeight = (int) (Math.floor((double) (yMax - yMin)) / ((double) spheresInThisChunk));
+            final int generationWindowHeight = (int) (Math.floor(yMax - yMin) / ((double) spheresInThisChunk));
             final int localYMin = i * generationWindowHeight;
             final int localYMax = localYMin + generationWindowHeight;
 
@@ -88,17 +84,17 @@ public class BallPopulator extends BlockPopulator
             final Location base = new Location(world, (chunk.getX() << 4) + random.nextInt(16), random.nextInt(localYMax - localYMin) + localYMin, (chunk.getZ() << 4) + random.nextInt(16));
             if (!this.generationManager.isInsideBoundaries(base)) continue;
 
-            final Vector baseVector = BukkitUtil.toVector(base);
+            final BlockVector3 baseVector = BukkitAdapter.asBlockVector(base);
 
 
             // Proximity checks
 
-            final EllipsoidRegion noSpheresRegion = new EllipsoidRegion(worldEditWorld, baseVector, new Vector(spheresFreeDistance, spheresFreeDistance, spheresFreeDistance));
-            final EllipsoidRegion noBuildingsRegion = new EllipsoidRegion(worldEditWorld, baseVector, new Vector(buildingsFreeDistance, buildingsFreeDistance, buildingsFreeDistance));
+            final EllipsoidRegion noSpheresRegion = new EllipsoidRegion(worldEditWorld, baseVector, Vector3.at(spheresFreeDistance, spheresFreeDistance, spheresFreeDistance));
+            final EllipsoidRegion noBuildingsRegion = new EllipsoidRegion(worldEditWorld, baseVector, Vector3.at(buildingsFreeDistance, buildingsFreeDistance, buildingsFreeDistance));
 
 
             // We check if any sphere is too close
-            for (final Vector nearChunk : noSpheresRegion.getChunkCubes())
+            for (final BlockVector3 nearChunk : noSpheresRegion.getChunkCubes())
             {
                 final ChunkSnapshot snapshot = world.getChunkAt(nearChunk.getBlockX(), nearChunk.getBlockZ()).getChunkSnapshot(false, false, false);
                 if (!snapshot.isSectionEmpty(Math.min(Math.max(nearChunk.getBlockY(), 0), 15)))
@@ -119,7 +115,7 @@ public class BallPopulator extends BlockPopulator
 
             // Generation
             final GeneratedSphere process = this.generationManager.getRandomSphere(random);
-            process.applyAt(base, random, session);
+            process.applyAt(base, random);
 
 
             if (this.generationManager.isLogged())

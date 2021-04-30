@@ -3,15 +3,12 @@ description: Balls of Steel plugin
 main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
 version: 0.1 §cdev§r
 author: "Amaury Carrade"
+api-version: "1.15"
 
 load: STARTUP
 
 softdepend:
   - WorldEdit
-
-awareness:
-  - !@UTF8
-
 
 commands:
    bos:

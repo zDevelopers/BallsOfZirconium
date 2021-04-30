@@ -33,18 +33,16 @@ package eu.carrade.amaury.BallsOfSteel.commands;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.components.rawtext.RawText;
-import fr.zcraft.zlib.tools.commands.PaginatedTextView;
-import fr.zcraft.zlib.tools.items.ItemStackBuilder;
-import fr.zcraft.zlib.tools.text.RawMessage;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.rawtext.RawText;
+import fr.zcraft.quartzlib.tools.commands.PaginatedTextView;
+import fr.zcraft.quartzlib.tools.text.RawMessage;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -145,13 +143,17 @@ public class SpheresCommand extends SpheresRelatedCommand
                                 .color(ChatColor.GRAY)
                             .then(process.getName())
                                 .color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
-                                .hover(new ItemStackBuilder(Material.POTATO_ITEM)
-                                            .title(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED, process.getName())
-                                            .loreLine(ChatColor.GRAY, I.tn("{0} generator", "{0} generators", process.getGenerators().size()))
-                                            .loreLine(ChatColor.GRAY, I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size()))
-                                            .loreLine()
-                                            .loreLine(I.t("{gray}» {white}Click{gray} for details"))
-                                        .item()
+                                .hover(new RawText()
+                                        .then(process.getName())
+                                            .color(process.isEnabled() ? ChatColor.GREEN : ChatColor.RED)
+                                        .then("\n")
+                                        .then(I.tn("{0} generator", "{0} generators", process.getGenerators().size()))
+                                            .color(ChatColor.GRAY)
+                                        .then("\n")
+                                        .then(I.tn("{0} post-processor", "{0} post-processors", process.getPostProcessors().size()))
+                                            .color(ChatColor.GRAY)
+                                        .then("\n\n")
+                                        .then(I.t("{gray}» {white}Click{gray} for details"))
                                 )
                                 .command(SpheresCommand.class, process.getName().replace(" ", ""))
                             .then(" (").color(ChatColor.WHITE)

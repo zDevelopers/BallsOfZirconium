@@ -31,18 +31,17 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.BlockPopulator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -52,35 +51,24 @@ public class BuildingsPopulator extends BlockPopulator
     private final GenerationManager generationManager = BallsOfSteel.get().getGenerationManager();
 
     @Override
-    public void populate(World world, Random random, Chunk chunk)
+    public void populate(@NotNull World world, @NotNull Random random, @NotNull Chunk chunk)
     {
         final Region chunkRegion = new CuboidRegion(
-                new Vector(chunk.getX() << 4, 0, chunk.getZ() << 4),
-                new Vector((chunk.getX() << 4) + 15, 256, (chunk.getZ() << 4) + 15)
+                BlockVector3.at(chunk.getX() << 4, 0, chunk.getZ() << 4),
+                BlockVector3.at((chunk.getX() << 4) + 15, 256, (chunk.getZ() << 4) + 15)
         );
-
-        EditSession session = null;
 
         for (final StaticBuilding building : generationManager.getBuildings())
         {
             if (chunkRegion.contains(building.getPasteLocation()))
             {
-                if (session == null)
-                {
-                    session = WorldEditUtils.newEditSession(world);
-                    session.setFastMode(false);
-                }
-
                 final long time = System.currentTimeMillis();
 
-                building.build(session, random);
+                building.build(world, random);
 
                 if (generationManager.isLogged())
                     PluginLogger.info("Build {0} generated at {1} in {2} ms", building.getName(), building.getPasteLocation(), System.currentTimeMillis() - time);
             }
         }
-
-        if (session != null)
-            session.flushQueue();
     }
 }

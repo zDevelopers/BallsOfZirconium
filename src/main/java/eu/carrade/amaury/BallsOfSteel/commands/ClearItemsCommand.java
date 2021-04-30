@@ -32,10 +32,10 @@
 package eu.carrade.amaury.BallsOfSteel.commands;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import fr.zcraft.zlib.components.commands.Command;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.commands.Command;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.i18n.I;
 import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Entity;
@@ -75,7 +75,7 @@ public class ClearItemsCommand extends Command
                     {
                         case DIAMOND:
                         case DIAMOND_AXE:
-                        case DIAMOND_BARDING:
+                        case DIAMOND_HORSE_ARMOR:
                         case DIAMOND_BLOCK:
                         case DIAMOND_BOOTS:
                         case DIAMOND_CHESTPLATE:
@@ -84,7 +84,7 @@ public class ClearItemsCommand extends Command
                         case DIAMOND_LEGGINGS:
                         case DIAMOND_ORE:
                         case DIAMOND_PICKAXE:
-                        case DIAMOND_SPADE:
+                        case DIAMOND_SHOVEL:
                         case DIAMOND_SWORD:
                             continue;
                         default:
