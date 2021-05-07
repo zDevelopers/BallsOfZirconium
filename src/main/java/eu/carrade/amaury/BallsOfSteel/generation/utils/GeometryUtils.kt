@@ -29,50 +29,29 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package eu.carrade.amaury.BallsOfSteel.generation.utils;
+package eu.carrade.amaury.BallsOfSteel.generation.utils
 
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.EllipsoidRegion;
+import com.sk89q.worldedit.regions.CuboidRegion
+import com.sk89q.worldedit.regions.EllipsoidRegion
 
-
-public final class GeometryUtils
-{
-    private GeometryUtils() {}
-
-
+object GeometryUtils {
     /**
-     * Checks if a cuboid and a <strong>sphere</strong> intersects.
+     * Checks if a cuboid and a **sphere** intersects.
      *
      * @param cuboid A cuboid.
      * @param ellipsoid A sphere (first component of the radii used as radii).
      *
-     * @return {@code true} if the cuboid and sphere intersects.
+     * @return `true` if the cuboid and sphere intersects.
      */
-    public static boolean intersects(final CuboidRegion cuboid, final EllipsoidRegion ellipsoid)
-    {
-        float distanceMin = 0;
-
-        final Vector3 sphereCenter = ellipsoid.getCenter();
-        final BlockVector3 cuboidMin = cuboid.getMinimumPoint();
-        final BlockVector3 cuboidMax = cuboid.getMaximumPoint();
-
-        if (sphereCenter.getX() < cuboidMin.getX())
-            distanceMin += Math.pow(sphereCenter.getX() - cuboidMin.getX(), 2);
-        else if (sphereCenter.getX() > cuboidMax.getX())
-            distanceMin += Math.pow(sphereCenter.getX() - cuboidMax.getX(), 2);
-
-        if (sphereCenter.getY() < cuboidMin.getY())
-            distanceMin += Math.pow(sphereCenter.getY() - cuboidMin.getY(), 2);
-        else if (sphereCenter.getY() > cuboidMax.getY())
-            distanceMin += Math.pow(sphereCenter.getY() - cuboidMax.getY(), 2);
-
-        if (sphereCenter.getZ() < cuboidMin.getZ())
-            distanceMin += Math.pow(sphereCenter.getZ() - cuboidMin.getZ(), 2);
-        else if (sphereCenter.getZ() > cuboidMax.getZ())
-            distanceMin += Math.pow(sphereCenter.getZ() - cuboidMax.getZ(), 2);
-
-        return distanceMin <= Math.pow(ellipsoid.getRadius().getX(), 2);
+    @JvmStatic
+    fun intersects(cuboid: CuboidRegion, ellipsoid: EllipsoidRegion): Boolean {
+        var distanceMin = 0f
+        val sphereCenter = ellipsoid.center
+        val cuboidMin = cuboid.minimumPoint
+        val cuboidMax = cuboid.maximumPoint
+        if (sphereCenter.x < cuboidMin.x) distanceMin += Math.pow(sphereCenter.x - cuboidMin.x, 2.0).toFloat() else if (sphereCenter.x > cuboidMax.x) distanceMin += Math.pow(sphereCenter.x - cuboidMax.x, 2.0).toFloat()
+        if (sphereCenter.y < cuboidMin.y) distanceMin += Math.pow(sphereCenter.y - cuboidMin.y, 2.0).toFloat() else if (sphereCenter.y > cuboidMax.y) distanceMin += Math.pow(sphereCenter.y - cuboidMax.y, 2.0).toFloat()
+        if (sphereCenter.z < cuboidMin.z) distanceMin += Math.pow(sphereCenter.z - cuboidMin.z, 2.0).toFloat() else if (sphereCenter.z > cuboidMax.z) distanceMin += Math.pow(sphereCenter.z - cuboidMax.z, 2.0).toFloat()
+        return distanceMin <= Math.pow(ellipsoid.radius.x, 2.0)
     }
 }
