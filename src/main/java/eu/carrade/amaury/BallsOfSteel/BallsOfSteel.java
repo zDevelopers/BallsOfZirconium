@@ -22,27 +22,46 @@ import eu.carrade.amaury.BallsOfSteel.commands.AboutCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatGlobalCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.CheckGenerationSettings;
 import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.CurrentStructureCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.GenerateCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.GenerateSphereCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.SpheresCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.StartCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.TeamsCommand;
+import eu.carrade.amaury.BallsOfSteel.dependencies.WorldEditDependency;
+import eu.carrade.amaury.BallsOfSteel.game.BarManager;
+import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
-import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
-import eu.carrade.amaury.BallsOfSteel.game.BarManager;
+import eu.carrade.amaury.BallsOfSteel.game.MetadataActionBarManager;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
+import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.timers.Timers;
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZLib;
-import fr.zcraft.zlib.core.ZPlugin;
+import fr.zcraft.quartzlib.components.commands.Commands;
+import fr.zcraft.quartzlib.components.i18n.I18n;
+import fr.zcraft.quartzlib.core.QuartzLib;
+import fr.zcraft.quartzlib.core.QuartzPlugin;
+import org.bukkit.generator.ChunkGenerator;
 
 
-public final class BallsOfSteel extends ZPlugin
+public final class BallsOfSteel extends QuartzPlugin
 {
+    /**
+     * A namespace to be used when needed.
+     */
+    public static final String BOS_NAMESPACE = "balls_of_steel";
+
+
     private static BallsOfSteel instance;
+
+    private WorldEditDependency worldEditDependency = null;
 
     private BoSTeamsManager teamsManager = null;
     private BoSScoreboardManager scoreboardManager = null;
@@ -52,6 +71,8 @@ public final class BallsOfSteel extends ZPlugin
 
     private BarManager barManager = null;
 
+    private GenerationManager generationManager = null;
+
 
     @Override
     public void onEnable()
@@ -59,7 +80,9 @@ public final class BallsOfSteel extends ZPlugin
         instance = this;
 
         saveDefaultConfig();
-        saveResource("map.yml", false);
+        // TODO save default map config folder to plugin directory
+
+        worldEditDependency = loadComponent(WorldEditDependency.class);
 
         loadComponents(I18n.class, Commands.class, GameConfig.class, MapConfig.class, Timers.class);
 
@@ -72,23 +95,37 @@ public final class BallsOfSteel extends ZPlugin
         teamChatManager   = loadComponent(BoSTeamChatManager.class);
         equipmentManager  = loadComponent(BoSEquipmentManager.class);
         barManager        = loadComponent(BarManager.class);
+        generationManager = loadComponent(GenerationManager.class);
+
+        if (generationManager.isEnabled())
+        {
+            loadComponents(GenerationData.class, MetadataActionBarManager.class);
+        }
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
                 ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
-                StartCommand.class, RestartCommand.class, TeamsCommand.class
+                StartCommand.class, RestartCommand.class, TeamsCommand.class,
+                SpheresCommand.class, GenerateSphereCommand.class, GenerateCommand.class,
+                CheckGenerationSettings.class, CurrentStructureCommand.class
         );
 
         Commands.registerShortcut("bos", ChatTeamCommand.class, "t");
         Commands.registerShortcut("bos", ChatGlobalCommand.class, "g");
         Commands.registerShortcut("bos", ChatToggleCommand.class, "togglechat");
 
-        ZLib.registerEvents(new BoSChestsListener(this));
+        QuartzLib.registerEvents(new BoSChestsListener(this));
     }
 
     public static BallsOfSteel get()
     {
         return instance;
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id)
+    {
+        return new BallsOfSteelGenerator();
     }
 
     /**
@@ -137,5 +174,15 @@ public final class BallsOfSteel extends ZPlugin
     public BarManager getBarManager()
     {
         return barManager;
+    }
+
+    public GenerationManager getGenerationManager()
+    {
+        return generationManager;
+    }
+
+    public WorldEditDependency getWorldEditDependency()
+    {
+        return worldEditDependency;
     }
 }

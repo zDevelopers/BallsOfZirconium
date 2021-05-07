@@ -1,0 +1,4 @@
+Starts the game.
+
+Clears inventories and teleport players to their spawns,
+then displays the scoreboard and starts the game timer.

@@ -1,0 +1,915 @@
+## This is a config file for a specific map.
+## You can found other map files in this project's repository, at https://github.com/AmauryCarrade/BallsOfSteel/tree/master/src/main/resources .
+
+
+# Specify here the world where the game will take place.
+world-name: world
+
+# List here the teams and their spawn and chests for this map.
+map-teams:
+    - name: Falaisie
+      color: blue
+      chest: 0,101,-2
+      spawn: 150.5,126.5,-149.5,45,-12
+    - name: Vaalonnie
+      color: darkgreen
+      chest: -2,101,0
+      spawn: -149.5,126.5,-149.5,-45,-12
+    - name: Bambellonie
+      color: gold
+      chest: 2,101,0
+      spawn: 150.5,126.5,150.5,135,-12
+    - name: Alloria
+      color: red
+      chest: 0,101,2
+      spawn: -149.5,126.5,150.5,-135,-12
+
+
+
+# Below are the options to randomly generate the map. It will be generated in the above world,
+# except if the world already exists.
+# Requires WorldEdit as a dependency to work.
+# All schematics locations are relative to the plugin directory (<server>/plugins/BallsOfSteel/).
+
+generation:
+    # Set to true to enable random generation of the map.
+    enabled: true
+
+    # Set to true to log the map generation events into the console.
+    logs: true
+
+
+    map:
+        # The map seed. If empty, a random seed will be used.
+        seed:
+
+        # The map boundaries. No sphere will be generated outsite, and this will be used by the
+        # generateFully option below.
+        boundaries:
+            corner1: -150,10,-150
+            corner2: 150,256,150
+
+        # The spawn coordinates.
+        spawn: 5.5,100.5,0.5
+
+        # The map environment (can be NORMAL, NETHER or THE_END).
+        environment: THE_END
+
+        # If true, the map will be generated at startup (else, use /bos generate to generate it and
+        # /bos goto to be teleported inside).
+        generateAtStartup: true
+
+        # If true, forces the whole map to be generated (if generateAtStartup is true).
+        generateFully: true
+
+        # If true, animals will spawn into the world.
+        allowAnimals: false
+
+        # if true, monsters will be able to spawn into the world.
+        allowMonsters: false
+
+        # The minimal distance between two spheres.
+        distanceBetweenSpheres: 12
+
+        # The minimal distance between a sphere and the edge of a pasted schematic.
+        distanceBetweenSpheresAndStaticBuildings: 16
+
+
+    staticBuildings:
+        - name: Spawn
+          schematic: buildings/spawn.schematic
+          pasteAt: 0,107,0
+          nothingAbove: true
+          nothingUnder: false
+          postActions:
+            -
+
+        - name: Falaisie
+          schematic: buildings/team-spawn.schematic
+          pasteAt: 149,126.5,-149
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
+            - type: replace
+              from: wool
+              to: wool:blue
+            - type: replace
+              from: carpet
+              to: carpet:blue
+            - type: flip
+              direction: west
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
+
+        - name: Vaalonnie
+          schematic: buildings/team-spawn.schematic
+          pasteAt: -149,126.5,-149
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
+            - type: replace
+              from: wool
+              to: wool:lightgreen
+            - type: replace
+              from: carpet
+              to: carpet:lightgreen
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
+
+        - name: Bambellonie
+          schematic: buildings/team-spawn.schematic
+          pasteAt: 149,126.5,149
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
+            - type: replace
+              from: wool
+              to: wool:yellow
+            - type: replace
+              from: carpet
+              to: carpet:yellow
+            - type: flip
+              direction: north
+            - type: flip
+              direction: west
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
+
+        - name: Alloria
+          schematic: buildings/team-spawn.schematic
+          pasteAt: -149,126.5,149
+          nothingAbove: true
+          nothingUnder: true
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
+            - type: replace
+              from: wool
+              to: wool:red
+            - type: replace
+              from: carpet
+              to: carpet:red
+            - type: flip
+              direction: north
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
+
+
+    spheres:
+        - name: Test Spawn
+          enabled: false
+          rules:
+            - type: schematic
+              schematic: buildings/team-spawn.schematic
+          postActions:
+            - type: replace
+              from: stone
+              to: 60%stone,15%cobblestone,10%mossy_cobblestone,15%coal_ore,11%iron_ore,3%gold_ore,7%redstone_ore
+            - type: replaceVisibleBlocks
+              from: gold_ore,redstone_ore
+              to: 75%stone,15%cobblestone,10%mossy_cobblestone
+            - type: replace
+              from: wool
+              to: wool:red
+            - type: replace
+              from: carpet
+              to: carpet:red
+            - type: populateChests
+              loot_table: spawns/furnaces
+              chests: false
+              trapped_chests: false
+              shulker_boxes: false
+              hoppers: false
+              dispensers: false
+              droppers: false
+              storage_minecarts: false
+              hopper_minecarts: false
+              furnaces: true
+
+        # Basic spheres   -------------------------------
+
+        - name: Log Oak
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%oak_wood,40%oak_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%oak_wood,36%oak_leaves,4%diamond_ore
+
+        - name: Log Spruce
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%spruce_wood,40%spruce_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%spruce_wood,36%spruce_leaves,4%diamond_ore
+
+        - name: Log Birch
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%birch_wood,40%birch_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%birch_wood,36%birch_leaves,4%diamond_ore
+
+        - name: Log Jungle
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%jungle_wood,40%jungle_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%jungle_wood,36%jungle_leaves,4%diamond_ore
+
+        - name: Log Acacia
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%acacia_wood,40%acacia_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%acacia_wood,36%acacia_leaves,4%diamond_ore
+
+        - name: Log Dark Oak
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%dark_oak_wood,40%dark_oak_leaves
+            - type: sphere
+              radius: 6
+              pattern: 60%dark_oak_wood,36%dark_oak_leaves,4%diamond_ore
+
+        - name: Stone
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 60%stone,10%granite,10%diorite,10%andesite
+            - type: sphere
+              radius: 6
+              pattern: 56%stone,10%granite,10%diorite,10%andesite,4%diamond_ore
+
+        - name: Infected Stone
+          display: Stone
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 40%stone,10%granite,10%diorite,10%andesite,20%infested_stone
+            - type: sphere
+              radius: 6
+              pattern: 36%stone,10%granite,10%diorite,10%andesite,20%infested_stone,4%diamond_ore
+
+        - name: Stone Bricks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 90%stone_bricks,5%cracked_stone_bricks,5%mossy_stone_bricks
+            - type: sphere
+              radius: 6
+              pattern: 86%stone_bricks,5%cracked_stone_bricks,5%mossy_stone_bricks,4%diamond_ore
+
+        - name: Infected Stone Bricks
+          display: Stone Bricks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 70%stone_bricks,3%cracked_stone_bricks,3%mossy_stone_bricks,20%infested_stone_bricks,2%infested_cracked_stone_bricks,2%infested_mossy_stone_bricks
+            - type: sphere
+              radius: 6
+              pattern: 66%stone_bricks,3%cracked_stone_bricks,3%mossy_stone_bricks,20%infested_stone_bricks,2%infested_cracked_stone_bricks,2%infested_mossy_stone_bricks,4%diamond_ore
+
+        - name: Chiseled Bricks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: chiseled_stone_bricks
+            - type: sphere
+              radius: 6
+              pattern: 96%chiseled_stone_bricks,4%diamond_ore
+
+        - name: Infected Chiseled Bricks
+          display: Chiseled Bricks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 80%chiseled_stone_bricks,20%infested_chiseled_stone_bricks
+            - type: sphere
+              radius: 6
+              pattern: 76%chiseled_stone_bricks,20%infested_chiseled_stone_bricks,4%diamond_ore
+
+        - name: Sandstone
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: sandstone
+            - type: sphere
+              radius: 6
+              pattern: 96%sandstone,4%diamond_ore
+
+        - name: Red Sandstone
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: red_sandstone
+            - type: sphere
+              radius: 6
+              pattern: 96%red_sandstone,4%diamond_ore
+
+        - name: Glowstone
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: glowstone
+            - type: sphere
+              radius: 6
+              pattern: 96%glowstone,4%diamond_ore
+
+        - name: Quartz
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: quartz_block
+            - type: sphere
+              radius: 6
+              pattern: 96%quartz_block,4%diamond_ore
+
+        - name: Netherbrick
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: nether_bricks
+            - type: sphere
+              radius: 6
+              pattern: 96%nether_bricks,4%diamond_ore
+
+        - name: Red Netherbrick
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: red_nether_bricks
+            - type: sphere
+              radius: 6
+              pattern: 96%red_nether_bricks,4%diamond_ore
+
+        - name: Nether Wart
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: nether_wart_block
+            - type: sphere
+              radius: 6
+              pattern: 96%nether_wart_block,4%diamond_ore
+
+        - name: Warped Wart
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: warped_wart_block
+            - type: sphere
+              radius: 6
+              pattern: 96%warped_wart_block,4%diamond_ore
+
+        - name: Soul Sand
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: soul_sand
+            - type: sphere
+              radius: 6
+              pattern: 96%soul_sand,4%diamond_ore
+
+        - name: Soul Soil
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: soul_soil
+            - type: sphere
+              radius: 6
+              pattern: 96%soul_soil,4%diamond_ore
+
+        - name: Soul
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: soul_soil,soul_sand
+            - type: sphere
+              radius: 6
+              pattern: 48%soul_soil,48%soul_sand,4%diamond_ore
+
+        - name: Magma
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: magma_block
+            - type: sphere
+              radius: 4
+              pattern: 99.6%magma_block,0.4%diamond_block
+
+        - name: Bones
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: bone_block
+            - type: sphere
+              radius: 6
+              pattern: 96%bone_block,4%diamond_ore
+
+        - name: Purpur
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: purpur_block
+            - type: sphere
+              radius: 6
+              pattern: 96%purpur_block,4%diamond_ore
+
+        - name: Prismarine
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 87%prismarine,10%dark_prismarine,3%sea_lantern
+            - type: sphere
+              radius: 6
+              pattern: 83%prismarine,10%dark_prismarine,4%diamond_ore,3%sea_lantern
+
+        - name: Prismarine Bricks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: 97%prismarine_bricks,3%sea_lantern
+            - type: sphere
+              radius: 6
+              pattern: 93%prismarine_bricks,4%diamond_ore,3%sea_lantern
+
+        - name: Ice
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: packed_ice,ice
+            - type: sphere
+              radius: 6
+              pattern: 48%packed_ice,48%ice,4%diamond_ore
+
+        - name: Ice And Snow
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: snow_block,ice,packed_ice
+            - type: sphere
+              radius: 6
+              pattern: 32%packed_ice,32%ice,32%snow_block,4%diamond_ore
+
+        - name: Sponge
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: wet_sponge,sponge
+            - type: sphere
+              radius: 6
+              pattern: 46%wet_sponge,50%sponge,4%diamond_ore
+
+        - name: Snow
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: snow_block
+            - type: sphere
+              radius: 6
+              pattern: 96%snow_block,4%diamond_ore
+
+        - name: Melon
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: melon
+            - type: sphere
+              radius: 6
+              pattern: 96%melon,4%diamond_ore
+
+        - name: Pumpkins
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: pumpkin,jack_o_lantern
+            - type: sphere
+              radius: 6
+              pattern: 48%pumpkin,48%jack_o_lantern,4%diamond_ore
+
+        - name: Brown Mushrooms
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: brown_mushroom_block
+            - type: sphere
+              radius: 6
+              pattern: 96%brown_mushroom_block,4%diamond_ore
+
+        - name: Red Mushrooms
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: red_mushroom_block
+            - type: sphere
+              radius: 6
+              pattern: 96%red_mushroom_block,4%diamond_ore
+
+        - name: Mushroom Stems
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: mushroom_stem
+            - type: sphere
+              radius: 6
+              pattern: 96%mushroom_stem,4%diamond_ore
+
+        - name: Pores Mushrooms
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: red_mushroom_block[east=false,down=false,north=false,south=false,up=false,west=false]
+            - type: sphere
+              radius: 6
+              pattern: 96%red_mushroom_block[east=false,down=false,north=false,south=false,up=false,west=false],4%diamond_ore
+
+        - name: Pistons
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: "*piston[extended=false],*sticky_piston[extended=false]"
+            - type: sphere
+              radius: 6
+              pattern: "48%*piston[extended=false],48%*sticky_piston[extended=false],4%diamond_ore"
+
+        - name: Crafting Tables
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: crafting_table
+            - type: sphere
+              radius: 6
+              pattern: 96%crafting_table,4%diamond_ore
+
+        - name: Furnaces
+          enabled: false
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: "*furnace"
+            - type: sphere
+              radius: 6
+              pattern: "96%*furnace,4%diamond_ore"
+
+        - name: Note Blocks
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: "*note_block[powered=false]"
+            - type: sphere
+              radius: 6
+              pattern: "96%*note_block[powered=false],4%diamond_ore"
+
+        - name: Jukeboxes
+          enabled: false
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: jukebox
+            - type: sphere
+              radius: 6
+              pattern: 96%jukebox,4%diamond_ore
+
+        - name: Bedrock
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: bedrock
+
+        - name: Barrier
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 7
+              pattern: barrier
+            - type: sphere
+              radius: 6
+              pattern: 96%barrier,4%diamond_ore
+
+        # Complex generated spheres   -------------------
+
+        - name: Death Star
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 12
+              pattern: 90%coal_block,10%obsidian
+            - type: sphere
+              radius: 10
+              pattern: 90%coal_block,6%obsidian,4%diamond_ore
+            - type: sphere
+              radius: 10
+              offset: -10,10,-10
+              pattern: air
+          postActions:
+            - type: rotate
+              angleY: random
+
+        - name: Mesa
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 9
+              pattern: terracotta
+            - type: sphere
+              radius: 8
+              pattern: 92%orange_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 7
+              pattern: 92%red_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 6
+              pattern: 92%yellow_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 5
+              pattern: 92%gray_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 4
+              pattern: 92%light_blue_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 3
+              pattern: 92%white_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 2
+              pattern: 92%orange_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 1
+              pattern: 92%red_terracotta,4%diamond_ore,4%gold_ore
+            - type: sphere
+              radius: 0
+              pattern: 92%yellow_terracotta,4%diamond_ore,4%gold_ore
+
+        - name: Overworld
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 9
+              pattern: grass_block
+            - type: sphere
+              radius: 8
+              pattern: dirt
+            - type: sphere
+              radius: 6
+              pattern: 68%stone,5%granite,5%andesite,5%diorite,10%coal_ore,10%iron_ore
+            - type: sphere
+              radius: 4
+              pattern: 60%stone,5%granite,5%andesite,10%iron_ore,5%gold_ore,3%redstone_ore,12%diamond_ore
+
+        - name: Nether
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 90%netherrack,10%nether_quartz_ore
+            - type: sphere
+              radius: 6
+              pattern: 80%netherrack,8%nether_quartz_ore,7%blackstone,5%diamond_ore
+            - type: sphere
+              radius: 4
+              pattern: 70%netherrack,8%nether_quartz_ore,7%blackstone,10%magma_block,5%diamond_ore,0.2%ancient_debris
+
+        - name: End
+          enabled: true
+          rules:
+            - type: sphere
+              radius: 8
+              pattern: 95%end_stone,5%end_stone_bricks
+            - type: sphere
+              radius: 6
+              pattern: 90%end_stone,9%end_stone_bricks,1%chest
+          postActions:
+            - type: populateChests
+              loot_table: spheres/end
+
+        - name: Falls
+          enabled: true
+          rules:
+            - type: hsphere
+              radius: 9
+              pattern: yellow_stained_glass
+            - type: sphere
+              radius: 8
+              pattern: 51%sand,45%gravel,4%diamond_ore
+
+        - name: Aqua
+          enabled: true
+          rules:
+            - type: hsphere
+              radius: 10
+              pattern: blue_stained_glass
+            - type: sphere
+              radius: 9
+              pattern: water
+            - type: sphere
+              radius: 7
+              pattern: 0.5%chest[waterlogged=true],99.5%water
+          postActions:
+            - type: populateChests
+              loot_table: spheres/aqua
+
+        - name: Magmatic 1
+          rules:
+            - type: sphere
+              radius: 9
+              pattern: obsidian
+            - type: sphere
+              radius: 8
+              pattern: 60%obsidian,40%magma_block
+            - type: sphere
+              radius: 7
+              pattern: 60%obsidian,35%magma_block,5%diamond_block
+
+        - name: Magmatic 2
+          rules:
+            - type: sphere
+              radius: 9
+              pattern: obsidian
+            - type: sphere
+              radius: 8
+              pattern: 65%obsidian,30%magma_block,5%lava
+            - type: sphere
+              radius: 7
+              pattern: 65%obsidian,24%magma_block,5%lava,6%diamond_block
+
+
+        # Built spheres   -------------------
+
+        - name: Nether Room
+          rules:
+            - type: schematic
+              schematic: rooms/room-nether-fortress.schematic
+          postActions:
+            - type: populateChests
+              loot_table: minecraft:chests/nether_bridge  # todo custom table
+            - type: randomSpawner
+              entities:
+                - magma_cube
+                - zombie_pigman
+                - wither_skeleton
+              spawn_range: 30
+              max_nearby_entities: 8
+              required_player_range: 20
+
+
+
+    spheres-no:  # Work in progres, disables the spheres below
+        - name: Gravity
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-gravity.schematic
+          postActions:
+            - type: flip
+              direction: random
+
+        - name: Nether Room
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-nether.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable: natural/nether  # todo
+            - type: randomSpawner
+              choices: magma_cube,pig_zombie,wither_skeleton
+
+        - name: Aquatic Room
+          enabled: true
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-guardians.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable: natural/guardians  # todo
+
+        - name: Dunjeons Room
+          rules:
+            - type: schematic
+              schematic: map-zcraft/sphere-dungeons.schematic
+          postActions:
+            - type: flip
+              direction: random_horizontal
+            - type: rotate
+              angle: random
+            - type: populateChests
+              lootTable: structures/dunjeon  # todo
+            - type: randomSpawner
+              choices: spider,cave_spider,zombie,silverfish,skeleton,creeper,slime

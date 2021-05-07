@@ -1,0 +1,208 @@
+{
+  "pools": [
+	{
+	  "rolls": {
+		"min": 4,
+		"max": 8
+	  },
+	  "bonus_rolls": {
+		"min": 7,
+		"max": 12
+	  },
+	  "entries": [
+		{
+		  "type": "item",
+		  "weight": 3,
+		  "name": "minecraft:snowball",
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 5,
+				"max": 13
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 1,
+		  "name": "minecraft:chainmail_helmet",
+		  "functions": [
+			{
+			  "function": "enchant_with_levels",
+			  "treasure": true,
+			  "levels": {
+				"min": 5,
+				"max": 30
+			  },
+			  "conditions": [
+				{
+				  "condition": "random_chance",
+				  "chance": 0.5
+				}
+			  ]
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 3,
+		  "name": "minecraft:chainmail_chestplate",
+		  "functions": [
+			{
+			  "function": "enchant_with_levels",
+			  "treasure": true,
+			  "levels": {
+				"min": 5,
+				"max": 30
+			  },
+			  "conditions": [
+				{
+				  "condition": "random_chance",
+				  "chance": 0.5
+				}
+			  ]
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 3,
+		  "name": "minecraft:chainmail_leggings",
+		  "functions": [
+			{
+			  "function": "enchant_with_levels",
+			  "treasure": true,
+			  "levels": {
+				"min": 5,
+				"max": 30
+			  },
+			  "conditions": [
+				{
+				  "condition": "random_chance",
+				  "chance": 0.5
+				}
+			  ]
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 3,
+		  "name": "minecraft:chainmail_boots",
+		  "functions": [
+			{
+			  "function": "enchant_with_levels",
+			  "treasure": true,
+			  "levels": {
+				"min": 5,
+				"max": 30
+			  },
+			  "conditions": [
+				{
+				  "condition": "random_chance",
+				  "chance": 0.5
+				}
+			  ]
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 4,
+		  "name": "minecraft:flint_and_steel"
+		},
+		{
+		  "type": "item",
+		  "weight": 10,
+		  "name": "minecraft:diamond",
+		  "quality": 1,
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 3,
+				"max": 8
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 5,
+		  "name": "minecraft:shield"
+		},
+		{
+		  "type": "item",
+		  "weight": 1,
+		  "name": "minecraft:arrow",
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 1,
+				"max": 7
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 2,
+		  "name": "minecraft:tipped_arrow",
+		  "quality": 1,
+		  "functions": [
+			{
+			  "function": "set_nbt",
+			  "tag": "{Potion:\"minecraft:poison\"}"
+			},
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 1,
+				"max": 7
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 2,
+		  "name": "minecraft:tipped_arrow",
+		  "functions": [
+			{
+			  "function": "set_nbt",
+			  "tag": "{Potion:\"minecraft:slowness\"}"
+			},
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 1,
+				"max": 7
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 2,
+		  "name": "minecraft:tipped_arrow",
+		  "functions": [
+			{
+			  "function": "set_nbt",
+			  "tag": "{Potion:\"minecraft:harming\"}"
+			},
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 3,
+				"max": 7
+			  }
+			}
+		  ]
+		}
+	  ]
+	}
+  ]
+}

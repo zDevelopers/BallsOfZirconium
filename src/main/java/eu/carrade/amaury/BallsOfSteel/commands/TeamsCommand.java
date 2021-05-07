@@ -36,10 +36,12 @@ import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import eu.carrade.amaury.BallsOfSteel.utils.StringToChatColor;
-import fr.zcraft.zlib.components.commands.Command;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.commands.Command;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.commands.HelpCommand;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.rawtext.RawText;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -87,18 +89,11 @@ public class TeamsCommand extends Command
         // No action provided: doc
         if (args.length == 0)
         {
-            if (sender instanceof Player) sender.sendMessage("");
-            sender.sendMessage(I.t("{aqua}------ Team commands ------"));
-            sender.sendMessage(I.t("{cc}/bos team add <color> {ci}: adds a team with the provided color."));
-            sender.sendMessage(I.t("{cc}/bos team add <color> <name ...> {ci}: adds a named team with the provided name and color."));
-            sender.sendMessage(I.t("{cc}/bos team remove <name ...> {ci}: removes a team"));
-            sender.sendMessage(I.t("{cc}/bos team spawn [x,y,z | x,z] <name ...> {ci}: sets the spawn point of the team (location of the sender or coordinates)."));
-            sender.sendMessage(I.t("{cc}/bos team chest [x,y,z] <name ...> {ci}: sets the chest of this team (where the diamonds will be stored), using the given coordinates or the block the sender is looking at."));
-            sender.sendMessage(I.t("{cc}/bos team join <player> <teamName ...>{ci}: adds a player inside the given team. The name of the team is it color, or the explicit name given."));
-            sender.sendMessage(I.t("{cc}/bos team leave <player> {ci}: removes a player from his team."));
-            sender.sendMessage(I.t("{cc}/bos team list {ci}: lists the teams and their players."));
-            sender.sendMessage(I.t("{cc}/bos team reset {ci}: removes all teams."));
-            if (sender instanceof Player) sender.sendMessage("");
+            info(I.t("{ce}Sub command required."));
+            send(new RawText(I.t("{ce}You can list the sub commands in {cc}/bos help team{ce} or by clicking this message."))
+                    .command(HelpCommand.class, "team")
+                    .hover(new RawText(I.t("Display teams help")))
+            );
         }
         else
         {

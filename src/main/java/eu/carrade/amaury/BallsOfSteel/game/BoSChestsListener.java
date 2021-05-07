@@ -5,8 +5,8 @@ import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSSound;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.text.MessageSender;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.text.MessageSender;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -32,9 +32,9 @@ public class BoSChestsListener implements Listener
 {
     private BallsOfSteel p = null;
 
-    BoSSound soundCountIncrease = null;
-    BoSSound soundCountDecrease = null;
-    BoSSound soundChestLocked = null;
+    private BoSSound soundCountIncrease = null;
+    private BoSSound soundCountDecrease = null;
+    private BoSSound soundChestLocked = null;
 
     public BoSChestsListener(BallsOfSteel plugin)
     {
@@ -123,7 +123,7 @@ public class BoSChestsListener implements Listener
         if (p.getGameManager().getTrackedChests().containsKey(ev.getClickedBlock().getLocation())
                 && (playerTeam == null || (!ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation1()) && !ev.getClickedBlock().getLocation().equals(playerTeam.getChestLocation2()))))
         {
-            MessageSender.sendActionBarMessage(ev.getPlayer(), I.t("{ce}You cannot open the chests of another team."));
+            MessageSender.sendActionBarMessage(ev.getPlayer(), I.t("{ce}You cannot open the chest of another team."));
             ev.setCancelled(true);
 
             if (soundChestLocked != null) soundChestLocked.play(ev.getPlayer());

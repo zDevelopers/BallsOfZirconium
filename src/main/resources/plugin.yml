@@ -3,18 +3,16 @@ description: Balls of Steel plugin
 main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
 version: 0.1 §cdev§r
 author: "Amaury Carrade"
+api-version: "1.15"
+
+load: STARTUP
 
 softdepend:
-  - BarAPI
-
-awareness:
-  - !@UTF8
-
+  - WorldEdit
 
 commands:
    bos:
       description: Balls of Steel base command
-      usage: /<command> <subcommand> - see /<command> for available subcommands.
 
    t:
       description: Allows an user to send a message to his team.

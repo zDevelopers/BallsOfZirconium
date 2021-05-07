@@ -32,15 +32,15 @@
 package eu.carrade.amaury.BallsOfSteel.timers;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class Timers extends ZLibComponent
+public class Timers extends QuartzComponent
 {
     private static Set<Timer> timers = new HashSet<>();
     private UpdateTimerTask updateTimerTask;

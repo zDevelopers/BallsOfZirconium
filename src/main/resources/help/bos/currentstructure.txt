@@ -1,0 +1,15 @@
+Accesses metadata about the structures.
+
+You can use the following (sub-)commands.
+
+§6/bos currentstructure §7(no argument)
+    Displays what the structure you are into, is.
+§6/bos currentstructure select
+    If WorldEdit is installed, sets your WorldEdit
+    selection to the structure you are into.
+§6/bos currentstructure forget
+    Removes the structure you are into from the
+    world metadata. Subsequent calls to §7/bos
+    §7currentstructure§r will say that there is
+    no structure here.
+    This will not delete the structure.

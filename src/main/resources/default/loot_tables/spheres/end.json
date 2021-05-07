@@ -1,0 +1,67 @@
+{
+  "pools": [
+	{
+	  "rolls": {
+		"min": 4,
+		"max": 6
+	  },
+	  "bonus_rolls": {
+		"min": 2,
+		"max": 3
+	  },
+	  "entries": [
+		{
+		  "type": "item",
+		  "weight": 10,
+		  "name": "minecraft:diamond",
+		  "quality": 4,
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 3,
+				"max": 12
+			  }
+			}
+		  ]
+		},
+		{
+		  "type": "item",
+		  "weight": 10,
+		  "name": "minecraft:ender_pearl",
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 2,
+				"max": 5
+			  }
+			}
+		  ]
+		}
+	  ]
+	},
+	{
+	  "rolls": {
+		"min": 1,
+		"max": 3
+	  },
+	  "entries": [
+		{
+		  "type": "item",
+		  "weight": 1,
+		  "name": "minecraft:chorus_fruit",
+		  "functions": [
+			{
+			  "function": "set_count",
+			  "count": {
+				"min": 4,
+				"max": 10
+			  }
+			}
+		  ]
+		}
+	  ]
+	}
+  ]
+}

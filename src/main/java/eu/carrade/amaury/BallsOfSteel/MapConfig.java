@@ -31,16 +31,28 @@
  */
 package eu.carrade.amaury.BallsOfSteel;
 
+import com.sk89q.worldedit.math.BlockVector3;
+import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
+import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
-import fr.zcraft.zlib.components.configuration.ConfigurationInstance;
-import fr.zcraft.zlib.components.configuration.ConfigurationItem;
-import fr.zcraft.zlib.components.configuration.ConfigurationList;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationInstance;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationItem;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationList;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationSection;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.item;
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.list;
+import java.io.File;
+
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.item;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.list;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.section;
 
 
 public class MapConfig extends ConfigurationInstance
@@ -49,13 +61,72 @@ public class MapConfig extends ConfigurationInstance
     {
         ConfigurationValueHandlers.registerHandlers(PitchedVector.class);
         ConfigurationValueHandlers.registerHandlers(BoSTeam.class);
+
+        ConfigurationValueHandlers.registerHandlers(MapConfig.class);
+        ConfigurationValueHandlers.registerHandlers(Generator.class);
+        ConfigurationValueHandlers.registerHandlers(PostProcessor.class);
+        ConfigurationValueHandlers.registerHandlers(GeneratedSphere.class);
+        ConfigurationValueHandlers.registerHandlers(StaticBuilding.class);
+
+        final File mapConfigDirectory = new File(BallsOfSteel.get().getDataFolder(), GameConfig.MAP_CONFIG.get());
+
+        MAP_CONFIG_DIRECTORY = mapConfigDirectory;
+        MAP_SCHEMATICS_DIRECTORY = new File(mapConfigDirectory, "schematics");
+        MAP_LOOT_TABLES_DIRECTORY = new File(mapConfigDirectory, "loot_tables");
     }
 
     public MapConfig()
     {
-        super("map.yml");
+        super(GameConfig.MAP_CONFIG.get() + "/map.yml");
     }
 
-    public static ConfigurationItem<World> WORLD = item("world-name", World.class);
-    public static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);
+    public final static File MAP_CONFIG_DIRECTORY;
+    public final static File MAP_SCHEMATICS_DIRECTORY;
+    public final static File MAP_LOOT_TABLES_DIRECTORY;
+
+    public final static ConfigurationItem<String> WORLD = item("world-name", "world");
+    public final static ConfigurationList<BoSTeam> TEAMS = list("map-teams", BoSTeam.class);
+
+    public final static GenerationSection GENERATION = section("generation", GenerationSection.class);
+    public final static class GenerationSection extends ConfigurationSection
+    {
+        public final ConfigurationItem<Boolean> ENABLED = item("enabled", true);
+        public final ConfigurationItem<Boolean> LOGS = item("logs", true);
+
+        public final MapSection MAP = section("map", MapSection.class);
+        public final static class MapSection extends ConfigurationSection
+        {
+            public final ConfigurationItem<String> SEED = item("seed", "");
+
+            public final BoundariesSection BOUNDARIES = section("boundaries", BoundariesSection.class);
+            public final static class BoundariesSection extends ConfigurationSection
+            {
+                public final ConfigurationItem<BlockVector3> CORNER_1 = item("corner1", BlockVector3.ZERO);
+                public final ConfigurationItem<BlockVector3> CORNER_2 = item("corner2", BlockVector3.ZERO);
+            }
+
+            public final ConfigurationItem<BlockVector3> SPAWN = item("spawn", BlockVector3.ZERO);
+            public final ConfigurationItem<World.Environment> ENVIRONMENT = item("environment", World.Environment.NORMAL);
+
+            public final ConfigurationItem<Boolean> GENERATE_AT_STARTUP = item("generateAtStartup", true);
+            public final ConfigurationItem<Boolean> GENERATE_FULLY = item("generateFully", true);
+
+            public final ConfigurationItem<Boolean> ALLOW_ANIMALS = item("allowAnimals", false);
+            public final ConfigurationItem<Boolean> ALLOW_MONSTERS = item("allowMonsters", false);
+
+            public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES = item("distanceBetweenSpheres", 32);
+            public final ConfigurationItem<Integer> DISTANCE_BETWEEN_SPHERES_AND_STATIC_BUILDINGS = item("distanceBetweenSpheresAndStaticBuildings", 48);
+        }
+
+        public final ConfigurationList<StaticBuilding> STATIC_BUILDINGS = list("staticBuildings", StaticBuilding.class);
+        public final ConfigurationList<GeneratedSphere> SPHERES = list("spheres", GeneratedSphere.class);
+    }
+
+
+    @ConfigurationValueHandler
+    public static BlockVector3 handleVector(Object obj) throws ConfigurationParseException
+    {
+        final Vector vector = ConfigurationValueHandlers.handleValue(obj, Vector.class);
+        return BlockVector3.at(vector.getX(), vector.getY(), vector.getZ());
+    }
 }

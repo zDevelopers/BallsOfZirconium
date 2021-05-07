@@ -22,10 +22,16 @@ import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -33,7 +39,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.text.DecimalFormat;
 
 
-public class BoSScoreboardManager extends ZLibComponent
+public class BoSScoreboardManager extends QuartzComponent implements Listener
 {
     private Scoreboard sb = null;
     private Objective sidebar = null;
@@ -45,9 +51,25 @@ public class BoSScoreboardManager extends ZLibComponent
     @Override
     protected void onEnable()
     {
-        this.sb = Bukkit.getScoreboardManager().getNewScoreboard();
-
         this.sidebarTitle = GameConfig.GAME_NAME.get();
+
+        // The scoreboard manager is only available when at least a world is loaded.
+        // If it's not the case, the scoreboard will be created when possible (see below).
+        if (Bukkit.getWorlds().size() > 0)
+            sb = Bukkit.getScoreboardManager().getNewScoreboard();
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onWorldLoad(WorldLoadEvent ev)
+    {
+        RunTask.nextTick(new Runnable() {
+            @Override
+            public void run()
+            {
+                // The scoreboard manager is only available when at least a world is loaded
+                if (sb == null) sb = Bukkit.getScoreboardManager().getNewScoreboard();
+            }
+        });
     }
 
     @Override
@@ -66,6 +88,12 @@ public class BoSScoreboardManager extends ZLibComponent
      */
     public void initScoreboard()
     {
+        if (sb == null)
+        {
+            PluginLogger.error("Cannot initialize the scoreboard: no world loaded!");
+            return;
+        }
+
         if (sb.getObjective("Diamonds") != null)
         {
             sb.getObjective("Diamonds").unregister();
@@ -153,7 +181,8 @@ public class BoSScoreboardManager extends ZLibComponent
      */
     public void setScoreboardForPlayer(Player p)
     {
-        p.setScoreboard(sb);
+        if (sb != null)
+            p.setScoreboard(sb);
     }
 
     /**

@@ -1,0 +1,5 @@
+Sends a message to the whole server, when in locked team chat.
+
+You should use the alias /g instead, as this is only here
+to be used that way.
+Also, this is not a garbage collection tool. Sorry.

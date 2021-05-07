@@ -32,12 +32,12 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.components.rawtext.RawText;
-import fr.zcraft.zlib.components.rawtext.RawTextPart;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.items.ItemStackBuilder;
-import fr.zcraft.zlib.tools.text.RawMessage;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.rawtext.RawText;
+import fr.zcraft.quartzlib.components.rawtext.RawTextPart;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.items.ItemStackBuilder;
+import fr.zcraft.quartzlib.tools.text.RawMessage;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,7 +60,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class BoSEquipmentManager extends ZLibComponent implements Listener
+public class BoSEquipmentManager extends QuartzComponent implements Listener
 {
     private Map<UUID, Set<ToolsType>> playersUnlockedTools = new HashMap<>();
 
@@ -152,7 +152,7 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
         }
         if (giveShovel)
         {
-            inv.addItem(new ItemStack(Material.IRON_SPADE, 1));
+            inv.addItem(new ItemStack(Material.IRON_SHOVEL, 1));
         }
 
         // Food & blocks
@@ -266,26 +266,32 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
                     .then(" ")
                     .then(tool.getName())
                         .color(ChatColor.GOLD)
-                        .hover(new ItemStackBuilder(Material.POTATO_ITEM)
-                                    .title(ChatColor.GOLD, ChatColor.BOLD + tool.getName())
-                                    .longLore(ChatColor.GRAY, I.t("You'll obtain this tool on every respawn now. You'll no longer have to craft it."))
-                                .item()
+                        .hover(new RawText()
+                                .then(tool.getName()).style(ChatColor.GOLD, ChatColor.BOLD).then("\n")
+                                .then(I.t("You'll obtain this tool on every respawn now. You'll no longer have to craft it.")).style(ChatColor.GRAY)
+                            .build()
                         )
                     .then(".")
                         .color(ChatColor.YELLOW);
 
                 if (!leftToUnlock.isEmpty())
                 {
-                    ItemStackBuilder leftToUnlockHover = new ItemStackBuilder(Material.POTATO_ITEM)
-                            .title(ChatColor.GOLD, ChatColor.BOLD + I.t("What's left to unlock"))
-                            .longLore(ChatColor.GRAY, I.t("You can still unlock these, by crafting them one time to get them on every respawn."));
+                    final RawTextPart<?> leftToUnlockHover = new RawText()
+                            .then(I.t("What's left to unlock"))
+                                .style(ChatColor.GOLD, ChatColor.BOLD)
+                            .then("\n")
+                            .then(I.t("You can still unlock these, by crafting them one time to get them on every respawn."))
+                                .color(ChatColor.GRAY);
 
                     for (final ToolsType toolToUnlock : leftToUnlock)
-                        leftToUnlockHover.loreLine(ChatColor.DARK_GRAY + "- ", ChatColor.WHITE + StringUtils.capitalize(toolToUnlock.getName().toLowerCase()));
+                        leftToUnlockHover
+                                .then("\n")
+                                .then("- ").color(ChatColor.DARK_GRAY)
+                                .then(StringUtils.capitalize(toolToUnlock.getName().toLowerCase())).color(ChatColor.WHITE);
 
                     notification.then(" ").then(I.t("Hover here to see what's next..."))
                             .color(ChatColor.GRAY)
-                            .hover(leftToUnlockHover.item());
+                            .hover(leftToUnlockHover);
                 }
 
                 RawMessage.send(player, notification.build());
@@ -326,13 +332,7 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
         switch (tool)
         {
             case PICKAXE:
-                enabled = GameConfig.EQUIPMENT.TOOLS.get();
-                break;
-
             case AXE:
-                enabled = GameConfig.EQUIPMENT.TOOLS.get();
-                break;
-
             case SHOVEL:
                 enabled = GameConfig.EQUIPMENT.TOOLS.get();
                 break;
@@ -383,7 +383,6 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
     public void onBowCraft(final CraftItemEvent ev)
     {
         if (GameConfig.EQUIPMENT.CRAFT_ENCHANTED.get()
-                && ev.getInventory() != null
                 && ev.getInventory().getResult() != null
                 && ev.getInventory().getResult().getType() == Material.BOW)
         {
@@ -418,9 +417,9 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
 
         switch (craftedMaterial)
         {
-            case WOOD_PICKAXE:
+            case WOODEN_PICKAXE:
             case STONE_PICKAXE:
-            case GOLD_PICKAXE:
+            case GOLDEN_PICKAXE:
             case DIAMOND_PICKAXE:
                 if (anyUnlock) unlock(player, ToolsType.PICKAXE);
                 break;
@@ -430,9 +429,9 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
                 break;
 
 
-            case WOOD_AXE:
+            case WOODEN_AXE:
             case STONE_AXE:
-            case GOLD_AXE:
+            case GOLDEN_AXE:
             case DIAMOND_AXE:
                 if (anyUnlock) unlock(player, ToolsType.AXE);
                 break;
@@ -442,21 +441,21 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
                 break;
 
 
-            case WOOD_SPADE:
-            case STONE_SPADE:
-            case GOLD_SPADE:
-            case DIAMOND_SPADE:
+            case WOODEN_SHOVEL:
+            case STONE_SHOVEL:
+            case GOLDEN_SHOVEL:
+            case DIAMOND_SHOVEL:
                 if (anyUnlock) unlock(player, ToolsType.SHOVEL);
                 break;
 
-            case IRON_SPADE:
+            case IRON_SHOVEL:
                 unlock(player, ToolsType.SHOVEL);
                 break;
 
 
-            case WOOD_SWORD:
+            case WOODEN_SWORD:
             case STONE_SWORD:
-            case GOLD_SWORD:
+            case GOLDEN_SWORD:
             case DIAMOND_SWORD:
                 if (anyUnlock) unlock(player, ToolsType.SWORD);
                 break;
@@ -473,7 +472,7 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
 
             case LEATHER_HELMET:
             case CHAINMAIL_HELMET:
-            case GOLD_HELMET:
+            case GOLDEN_HELMET:
             case IRON_HELMET:
             case DIAMOND_HELMET:
                 unlockArmor(player, ToolsType.ARMOR_HELMET, craftedMaterial, anyUnlock);
@@ -481,7 +480,7 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
 
             case LEATHER_CHESTPLATE:
             case CHAINMAIL_CHESTPLATE:
-            case GOLD_CHESTPLATE:
+            case GOLDEN_CHESTPLATE:
             case IRON_CHESTPLATE:
             case DIAMOND_CHESTPLATE:
                 unlockArmor(player, ToolsType.ARMOR_CHESTPLATE, craftedMaterial, anyUnlock);
@@ -489,14 +488,14 @@ public class BoSEquipmentManager extends ZLibComponent implements Listener
 
             case LEATHER_LEGGINGS:
             case CHAINMAIL_LEGGINGS:
-            case GOLD_LEGGINGS:
+            case GOLDEN_LEGGINGS:
             case DIAMOND_LEGGINGS:
                 unlockArmor(player, ToolsType.ARMOR_LEGGINGS, craftedMaterial, anyUnlock);
                 break;
 
             case LEATHER_BOOTS:
             case CHAINMAIL_BOOTS:
-            case GOLD_BOOTS:
+            case GOLDEN_BOOTS:
             case IRON_BOOTS:
             case DIAMOND_BOOTS:
                 unlockArmor(player, ToolsType.ARMOR_BOOTS, craftedMaterial, anyUnlock);

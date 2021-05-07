@@ -24,9 +24,10 @@ import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.timers.Timer;
 import eu.carrade.amaury.BallsOfSteel.timers.TimerEndsEvent;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.runners.RunTask;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.runners.RunTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -39,13 +40,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class BoSGameManager extends ZLibComponent implements Listener
+public class BoSGameManager extends QuartzComponent implements Listener
 {
     private BallsOfSteel p = null;
 
@@ -76,8 +78,18 @@ public class BoSGameManager extends ZLibComponent implements Listener
         {
             timer.setDuration(3600); // One hour by default.
         }
+    }
 
-        setGameWorld(MapConfig.WORLD.get());
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent ev)
+    {
+        // Already registered
+        if (gameWorld != null && gameWorld.getName().equals(MapConfig.WORLD.get()))
+            return;
+
+        // World set if unset or corresponding to the world in config (in case of post-generation).
+        if (ev.getWorld().getName().equals(MapConfig.WORLD.get()) || gameWorld == null)
+            setGameWorld(ev.getWorld());
     }
 
 
@@ -170,6 +182,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
 
                     player.setBedSpawnLocation(team.getSpawnPoint(), true);
 
+                    BallsOfSteel.get().getScoreboardManager().setScoreboardForPlayer(player);
                     BallsOfSteel.get().getEquipmentManager().equipPlayer(player);
                 }
             }
@@ -191,6 +204,9 @@ public class BoSGameManager extends ZLibComponent implements Listener
         gameWorld.setWeatherDuration(timer.getDuration() * 2 * 20);
 
         gameWorld.setPVP(true);
+
+        // Chests (just to be sure)
+        updateTrackedChests();
 
         // Timer
         timer.start();
@@ -323,7 +339,7 @@ public class BoSGameManager extends ZLibComponent implements Listener
     public void setGameWorld(World world)
     {
         gameWorld = world;
-        BallsOfSteel.get().getLogger().info("Game world set: " + gameWorld.getName() + ".");
+        PluginLogger.info("Game world set: {0}.", gameWorld.getName());
     }
 
     /**

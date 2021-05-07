@@ -20,14 +20,16 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
+import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.utils.BoSUtils;
 import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
 import eu.carrade.amaury.BallsOfSteel.utils.StringToChatColor;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.components.i18n.I;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,7 +88,10 @@ public class BoSTeam
         {
             this.displayName = name;
         }
+    }
 
+    void register()
+    {
         final Scoreboard sb = BallsOfSteel.get().getScoreboardManager().getScoreboard();
         final Team t = sb.registerNewTeam(this.internalName);
 
@@ -128,7 +133,6 @@ public class BoSTeam
      */
     public void setChest(Location chestLocation)
     {
-
         if (chestLocation == null)
         {
             chest = null;
@@ -175,11 +179,12 @@ public class BoSTeam
                 chestLocation2 = null;
             }
 
-            BallsOfSteel.get().getGameManager().updateTrackedChests();
+            if (BallsOfSteel.get().getGameManager() != null)
+                BallsOfSteel.get().getGameManager().updateTrackedChests();
         }
         else
         {
-            throw new IllegalArgumentException("The block at " + chestLocation + "is not a chest.");
+            throw new IllegalArgumentException("The block at " + chestLocation + " is not a chest.");
         }
     }
 
@@ -335,7 +340,7 @@ public class BoSTeam
     /**
      * Unregisters a player from the scoreboard and uncolorizes the pseudo.
      *
-     * Internal use, avoids a ConcurrentModificationException in this.deleteTeam()
+     * Internal use, avoids a ConcurrentModificationException in this.unregister()
      * (this.players is listed and emptied simultaneously, else).
      */
     private void unregisterPlayer(OfflinePlayer player)
@@ -349,7 +354,7 @@ public class BoSTeam
      *
      * The players inside the team are left without any team.
      */
-    public void deleteTeam()
+    void unregister()
     {
         // We removes the players from the team (scoreboard team too)
         for (UUID id : players)
@@ -364,7 +369,6 @@ public class BoSTeam
 
         // Then the scoreboard team is deleted.
         BallsOfSteel.get().getScoreboardManager().getScoreboard().getTeam(this.internalName).unregister();
-
     }
 
     /**
@@ -441,7 +445,8 @@ public class BoSTeam
     @ConfigurationValueHandler
     public static BoSTeam handleTeam(Map map) throws ConfigurationParseException
     {
-        final World world = BallsOfSteel.get().getGameManager().getGameWorld();
+        World world = Bukkit.getWorld(MapConfig.WORLD.get());
+        world = world != null ? world : Bukkit.getWorlds().size() > 0 ? Bukkit.getWorlds().get(0) : null;
 
 
         if (!map.containsKey("name"))
@@ -459,15 +464,20 @@ public class BoSTeam
 
         final BoSTeam team = new BoSTeam(map.get("name").toString(), ConfigurationValueHandlers.handleValue(map.get("color").toString(), ChatColor.class));
 
-        team.setSpawnPoint(ConfigurationValueHandlers.handleValue(map.get("spawn"), PitchedVector.class).toLocation(world));
 
-        try
+        // This will only be null while checking for validity, because startup load.
+        if (world != null)
         {
-            team.setChest(ConfigurationValueHandlers.handleValue(map.get("chest"), Vector.class).toLocation(world));
-        }
-        catch (IllegalArgumentException e)
-        {
-            throw new ConfigurationParseException("Invalid chest for the team " + team.getName() + ": " + e.getMessage(), map.get("chest").toString());
+            team.setSpawnPoint(ConfigurationValueHandlers.handleValue(map.get("spawn"), PitchedVector.class).toLocation(world));
+
+            try
+            {
+                team.setChest(ConfigurationValueHandlers.handleValue(map.get("chest"), Vector.class).toLocation(world));
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new ConfigurationParseException("Invalid chest for the team " + team.getName() + ": " + e.getMessage(), map.get("chest").toString());
+            }
         }
 
 

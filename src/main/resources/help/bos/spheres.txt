@@ -1,0 +1,4 @@
+This command lists the available spheres and can
+show details about them, by clicking the list or
+appending the sphere name to the command (without
+spaces).
