@@ -32,23 +32,23 @@
 package eu.carrade.amaury.BallsOfSteel.commands;
 
 import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
-import fr.zcraft.zlib.components.commands.Command;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.commands.Command;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.List;
 
 
-@CommandInfo (name = "currentStructure", usageParameters = "[select|forget]")
+@CommandInfo (name = "current-structure", usageParameters = "[select|forget]")
 public class CurrentStructureCommand extends Command
 {
     @Override
@@ -78,7 +78,7 @@ public class CurrentStructureCommand extends Command
 
     private void current() throws CommandException
     {
-        final Structure currentStructure = GenerationMetadata.getStructureAt(playerSender().getLocation());
+        final Structure currentStructure = GenerationData.getStructureAt(playerSender().getLocation());
 
         if (currentStructure == null)
         {
@@ -96,7 +96,7 @@ public class CurrentStructureCommand extends Command
 
     private void forget() throws CommandException
     {
-        if (GenerationMetadata.forgetStructureAt(playerSender().getLocation()))
+        if (GenerationData.forgetStructureAt(playerSender().getLocation()))
         {
             success(I.t("The structure located where you are was removed from this world's metadata."));
         }
@@ -114,7 +114,7 @@ public class CurrentStructureCommand extends Command
             return;
         }
 
-        final Region region = GenerationMetadata.getRegionForStructureAt(playerSender().getLocation());
+        final Region region = GenerationData.getRegionForStructureAt(playerSender().getLocation());
 
         if (region == null)
         {
@@ -123,7 +123,7 @@ public class CurrentStructureCommand extends Command
         else
         {
             final LocalSession session = BallsOfSteel.get().getWorldEditDependency().getWE().getSession(playerSender());
-            final RegionSelector regionSelector = session.getRegionSelector((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(playerSender().getWorld()));
+            final RegionSelector regionSelector = session.getRegionSelector(BukkitAdapter.adapt(playerSender().getWorld()));
 
             regionSelector.selectPrimary(region.getMinimumPoint(), PermissiveSelectorLimits.getInstance());
             regionSelector.selectSecondary(region.getMaximumPoint(), PermissiveSelectorLimits.getInstance());

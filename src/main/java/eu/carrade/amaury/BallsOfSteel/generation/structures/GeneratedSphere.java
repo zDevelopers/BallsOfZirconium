@@ -37,7 +37,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
 import com.sk89q.worldedit.world.World;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
@@ -148,7 +148,7 @@ public class GeneratedSphere extends Structure
             }
         }
 
-        GenerationMetadata.saveStructure(this, location.getWorld(), globallyAffectedRegion);
+        GenerationData.saveStructure(this, location.getWorld(), globallyAffectedRegion);
 
         return globallyAffectedRegion;
     }

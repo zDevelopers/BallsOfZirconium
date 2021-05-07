@@ -1,6 +1,6 @@
 package eu.carrade.amaury.BallsOfSteel.game;
 
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
 import fr.zcraft.quartzlib.components.rawtext.RawText;
 import fr.zcraft.quartzlib.core.QuartzComponent;
@@ -18,7 +18,7 @@ public class MetadataActionBarManager extends QuartzComponent
 	protected void onEnable()
 	{
 		locationUpdateTask = RunTask.timer(() -> Bukkit.getOnlinePlayers().forEach(p -> {
-			final Structure structure = GenerationMetadata.getStructureAt(p.getLocation());
+			final Structure structure = GenerationData.getStructureAt(p.getLocation());
 			if (structure != null) {
 				MessageSender.sendActionBarMessage(
 						p,

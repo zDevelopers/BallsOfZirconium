@@ -53,10 +53,8 @@ import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
 import java.io.BufferedReader;
@@ -425,14 +423,6 @@ public class GenerationManager extends QuartzComponent implements Listener
     public WorldLoader createWorldAndGetLoader()
     {
         return createWorldAndGetLoader(MapConfig.WORLD.get(), null);
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void onWorldInit(final WorldInitEvent ev)
-    {
-        if (!currentlyLoadingWorldsNames.contains(ev.getWorld().getName())) return;
-
-        GenerationMetadata.unsafeCreateEmptyGenerationMetadata(ev.getWorld());
     }
 
 

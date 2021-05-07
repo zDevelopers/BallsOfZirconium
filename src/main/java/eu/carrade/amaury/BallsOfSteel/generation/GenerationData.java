@@ -62,6 +62,8 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -71,7 +73,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @WorkerAttributes (name = "bos-generation-metadata-io")
-public class GenerationMetadata extends Worker implements Listener
+public class GenerationData extends Worker implements Listener
 {
     private static final String TYPE_BUILDING = "building";
     private static final String TYPE_SPHERE = "sphere";
@@ -185,9 +187,6 @@ public class GenerationMetadata extends Worker implements Listener
             {
                 if (worldData != null) worldMetadata.put(world, worldData);
                 if (callback != null) callback.call(null);
-
-                PluginLogger.info("Loaded metadata {0}", worldData);
-                PluginLogger.info("{0}", worldMetadata);
             }
 
             @Override
@@ -248,8 +247,6 @@ public class GenerationMetadata extends Worker implements Listener
                 dump.add("structures", jsonStructures);
 
                 FileUtils.writeFile(metadataFile, GSON.toJson(dump));
-                PluginLogger.info(GSON.toJson(dump));
-
                 return null;
             }
         }, new WorkerCallback<Void>() {
@@ -296,11 +293,6 @@ public class GenerationMetadata extends Worker implements Listener
         final Structure structure = getStructureAt(location);
         if (structure == null) return false;
 
-        Callback<Void> removeFunction = nothing -> {
-            worldMetadata.get(location.getWorld()).remove(structure);
-            saveGenerationMetadata(location.getWorld(), null);
-        };
-
         loadGenerationMetadata(location.getWorld(), nothing -> {
             worldMetadata.get(location.getWorld()).remove(structure);
             saveGenerationMetadata(location.getWorld(), null);
@@ -321,6 +313,31 @@ public class GenerationMetadata extends Worker implements Listener
         return worldMetadata.containsKey(world);
     }
 
+
+    /**
+     * Returns the structure and its region for a given location, according to the
+     * loaded world metadata.
+     *
+     * @param location The location to look for structures at.
+     * @return An Entry with the structure and its region, or null if nothing found.
+     */
+    @Nullable
+    private static Map.Entry<Structure, Region> getStructureEntryFor(final Location location)
+    {
+        final Map<Structure, Region> regions = worldMetadata.get(location.getWorld());
+        if (regions == null) return null;
+
+        for (final Map.Entry<Structure, Region> structure : regions.entrySet())
+        {
+            if (structure.getValue().contains(BukkitAdapter.asBlockVector(location)))
+            {
+                return structure;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Returns the structure located at the given location, according to the
      * loaded world metadata.
@@ -330,20 +347,11 @@ public class GenerationMetadata extends Worker implements Listener
      * @return The {@link Structure}, or {@code null} if no structure was found
      * at this place.
      */
+    @Nullable
     public static Structure getStructureAt(final Location location)
     {
-        final Map<Structure, Region> regions = worldMetadata.get(location.getWorld());
-        if (regions == null) return null;
-
-        for (final Map.Entry<Structure, Region> structure : regions.entrySet())
-        {
-            if (structure.getValue().contains(BukkitAdapter.asBlockVector(location)))
-            {
-                return structure.getKey();
-            }
-        }
-
-        return null;
+        final Map.Entry<Structure, Region> entry = getStructureEntryFor(location);
+        return entry != null ? entry.getKey() : null;
     }
 
     /**
@@ -359,6 +367,7 @@ public class GenerationMetadata extends Worker implements Listener
      * @return A map associating the previous string identifiers to the
      * buildings at the given locations, or to {@code null} without structure.
      */
+    @NotNull
     public static Map<String, Structure> getStructuresAt(final Map<String, Location> locations)
     {
         // We first need to separate the locations in buckets, one bucket per world.
@@ -395,6 +404,21 @@ public class GenerationMetadata extends Worker implements Listener
         return structures;
     }
 
+    /**
+     * Returns the region for the structure located at the given location, according
+     * to the loaded world metadata.
+     *
+     * @param location The location to check.
+     *
+     * @return The {@link Region}, or {@code null} if no structure was found
+     * at this place.
+     */
+    @Nullable
+    public static Region getRegionForStructureAt(final Location location)
+    {
+        final Map.Entry<Structure, Region> entry = getStructureEntryFor(location);
+        return entry != null ? entry.getValue() : null;
+    }
 
 
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)

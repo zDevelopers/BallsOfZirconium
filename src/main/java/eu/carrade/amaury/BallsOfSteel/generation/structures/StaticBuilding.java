@@ -41,7 +41,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
@@ -132,7 +132,7 @@ public class StaticBuilding extends Structure
                 }
             }
 
-            GenerationMetadata.saveStructure(this, world, region);
+            GenerationData.saveStructure(this, world, region);
 
             return true;
         }

@@ -24,6 +24,7 @@ import eu.carrade.amaury.BallsOfSteel.commands.ChatTeamCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.ChatToggleCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.CheckGenerationSettings;
 import eu.carrade.amaury.BallsOfSteel.commands.ClearItemsCommand;
+import eu.carrade.amaury.BallsOfSteel.commands.CurrentStructureCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.GenerateCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.GenerateSphereCommand;
 import eu.carrade.amaury.BallsOfSteel.commands.RestartCommand;
@@ -37,16 +38,16 @@ import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
 import eu.carrade.amaury.BallsOfSteel.game.MetadataActionBarManager;
+import eu.carrade.amaury.BallsOfSteel.generation.GenerationData;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
-import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamChatManager;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeamsManager;
 import eu.carrade.amaury.BallsOfSteel.timers.Timers;
-import fr.zcraft.quartzlib.core.QuartzPlugin;
 import fr.zcraft.quartzlib.components.commands.Commands;
 import fr.zcraft.quartzlib.components.i18n.I18n;
 import fr.zcraft.quartzlib.core.QuartzLib;
+import fr.zcraft.quartzlib.core.QuartzPlugin;
 import org.bukkit.generator.ChunkGenerator;
 
 
@@ -98,7 +99,7 @@ public final class BallsOfSteel extends QuartzPlugin
 
         if (generationManager.isEnabled())
         {
-            loadComponents(GenerationMetadata.class, MetadataActionBarManager.class);
+            loadComponents(GenerationData.class, MetadataActionBarManager.class);
         }
 
         Commands.register("bos",
@@ -106,7 +107,7 @@ public final class BallsOfSteel extends QuartzPlugin
                 ChatTeamCommand.class, ChatGlobalCommand.class, ChatToggleCommand.class,
                 StartCommand.class, RestartCommand.class, TeamsCommand.class,
                 SpheresCommand.class, GenerateSphereCommand.class, GenerateCommand.class,
-                CheckGenerationSettings.class
+                CheckGenerationSettings.class, CurrentStructureCommand.class
         );
 
         Commands.registerShortcut("bos", ChatTeamCommand.class, "t");
