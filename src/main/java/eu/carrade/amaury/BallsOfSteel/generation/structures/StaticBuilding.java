@@ -88,8 +88,8 @@ public class StaticBuilding extends Structure
      */
     public StaticBuilding(final String name, final BlockVector3 pasteLocation, final boolean nothingUnder, final boolean nothingAbove, final File schematicFile) throws IOException
     {
-        setName(name);
-        setEnabled(true);
+        this.name = name;
+        this.enabled = true;
 
         this.pasteLocation = pasteLocation;
 

@@ -46,18 +46,20 @@ import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
 import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
 import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.quartzlib.tools.FileUtils;
 import fr.zcraft.quartzlib.components.worker.Worker;
 import fr.zcraft.quartzlib.components.worker.WorkerAttributes;
 import fr.zcraft.quartzlib.components.worker.WorkerCallback;
 import fr.zcraft.quartzlib.components.worker.WorkerRunnable;
 import fr.zcraft.quartzlib.tools.Callback;
+import fr.zcraft.quartzlib.tools.FileUtils;
 import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.util.Vector;
 
@@ -69,7 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @WorkerAttributes (name = "bos-generation-metadata-io")
-public class GenerationMetadata extends Worker
+public class GenerationMetadata extends Worker implements Listener
 {
     private static final String TYPE_BUILDING = "building";
     private static final String TYPE_SPHERE = "sphere";
@@ -77,13 +79,6 @@ public class GenerationMetadata extends Worker
 
     private static final Gson GSON = new Gson();
     private static final Map<World, Map<Structure, Region>> worldMetadata = new ConcurrentHashMap<>();
-
-
-    @Override
-    public void onEnable()
-    {
-        super.onEnable();
-    }
 
     /**
      * Returns the file the metadata are stored into.
@@ -190,6 +185,9 @@ public class GenerationMetadata extends Worker
             {
                 if (worldData != null) worldMetadata.put(world, worldData);
                 if (callback != null) callback.call(null);
+
+                PluginLogger.info("Loaded metadata {0}", worldData);
+                PluginLogger.info("{0}", worldMetadata);
             }
 
             @Override
@@ -221,15 +219,13 @@ public class GenerationMetadata extends Worker
             return;
         }
 
-        submitQuery(new WorkerRunnable<Boolean>()
+        submitQuery(new WorkerRunnable<Void>()
         {
             @Override
-            public Boolean run() throws Throwable
+            public Void run() throws Throwable
             {
                 final File metadataFile = getGenerationMetadataFile(world);
                 metadataFile.getParentFile().mkdirs();
-
-                if (!metadataFile.canWrite()) return false;
 
                 final JsonArray jsonStructures = new JsonArray();
 
@@ -241,7 +237,7 @@ public class GenerationMetadata extends Worker
                     final BlockVector3 high = structure.getValue().getMinimumPoint();
 
                     jsonStructure.addProperty("name", structure.getKey().getName());
-                    jsonStructure.addProperty("type", structure instanceof StaticBuilding ? TYPE_BUILDING : (structure instanceof GeneratedSphere ? TYPE_SPHERE : TYPE_UNKNOWN));
+                    jsonStructure.addProperty("type", structure.getKey() instanceof StaticBuilding ? TYPE_BUILDING : (structure.getKey() instanceof GeneratedSphere ? TYPE_SPHERE : TYPE_UNKNOWN));
                     jsonStructure.addProperty("lowestCorner", low.getBlockX() + "," + low.getBlockY() + "," + low.getBlockZ());
                     jsonStructure.addProperty("highestCorner", high.getBlockX() + "," + high.getBlockY() + "," + high.getBlockZ());
 
@@ -252,20 +248,21 @@ public class GenerationMetadata extends Worker
                 dump.add("structures", jsonStructures);
 
                 FileUtils.writeFile(metadataFile, GSON.toJson(dump));
+                PluginLogger.info(GSON.toJson(dump));
 
-                return true;
+                return null;
             }
-        }, new WorkerCallback<Boolean>() {
+        }, new WorkerCallback<Void>() {
             @Override
-            public void finished(Boolean success)
+            public void finished(Void unused)
             {
-                if (callback != null) callback.call(success);
+                if (callback != null) callback.call(true);
             }
 
             @Override
             public void errored(Throwable e)
             {
-                PluginLogger.info("Unable to save world metadata for {0}", e, world.getName());
+                PluginLogger.info("Unable to save structures metadata for world {0}", e, world.getName());
                 if (callback != null) callback.call(false);
             }
         });
@@ -281,7 +278,7 @@ public class GenerationMetadata extends Worker
     public static void saveStructure(final Structure structure, final World world, final Region region)
     {
         loadGenerationMetadata(world, nothing -> {
-            worldMetadata.get(world).put(structure, region);
+            worldMetadata.computeIfAbsent(world, k -> new HashMap<>()).put(structure, region);
             saveGenerationMetadata(world, null);
         });
     }
@@ -335,7 +332,10 @@ public class GenerationMetadata extends Worker
      */
     public static Structure getStructureAt(final Location location)
     {
-        for (final Map.Entry<Structure, Region> structure : worldMetadata.get(location.getWorld()).entrySet())
+        final Map<Structure, Region> regions = worldMetadata.get(location.getWorld());
+        if (regions == null) return null;
+
+        for (final Map.Entry<Structure, Region> structure : regions.entrySet())
         {
             if (structure.getValue().contains(BukkitAdapter.asBlockVector(location)))
             {
@@ -405,6 +405,12 @@ public class GenerationMetadata extends Worker
 
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent ev)
+    {
+        loadGenerationMetadata(ev.getPlayer().getWorld(), null);
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent ev)
     {
         loadGenerationMetadata(ev.getPlayer().getWorld(), null);
     }

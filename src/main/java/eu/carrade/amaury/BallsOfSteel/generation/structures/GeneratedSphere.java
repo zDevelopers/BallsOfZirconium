@@ -71,8 +71,8 @@ public class GeneratedSphere extends Structure
 
     public GeneratedSphere(final String name, final boolean enabled)
     {
-        setName(name);
-        setEnabled(enabled);
+        this.name = name;
+        this.enabled = enabled;
     }
 
     public void addGenerator(final Generator generator)
@@ -158,9 +158,11 @@ public class GeneratedSphere extends Structure
     public static GeneratedSphere handleGeneratedSphere(final Map<?, ?> map) throws ConfigurationParseException
     {
         final String name = getValue(map, "name", String.class, "Unnamed sphere");
+        final String display = getValue(map, "display", String.class, null);
         final boolean enabled = getValue(map, "enabled", boolean.class, true);
 
         final GeneratedSphere sphere = new GeneratedSphere(name, enabled);
+        sphere.display = display;
 
         if (map.containsKey("rules"))
         {

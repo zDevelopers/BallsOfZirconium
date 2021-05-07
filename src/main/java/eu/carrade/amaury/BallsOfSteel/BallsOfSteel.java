@@ -36,6 +36,7 @@ import eu.carrade.amaury.BallsOfSteel.game.BoSChestsListener;
 import eu.carrade.amaury.BallsOfSteel.game.BoSEquipmentManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSGameManager;
 import eu.carrade.amaury.BallsOfSteel.game.BoSScoreboardManager;
+import eu.carrade.amaury.BallsOfSteel.game.MetadataActionBarManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationManager;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generation.BallsOfSteelGenerator;
@@ -96,7 +97,9 @@ public final class BallsOfSteel extends QuartzPlugin
         generationManager = loadComponent(GenerationManager.class);
 
         if (generationManager.isEnabled())
-            loadComponents(GenerationMetadata.class);
+        {
+            loadComponents(GenerationMetadata.class, MetadataActionBarManager.class);
+        }
 
         Commands.register("bos",
                 AboutCommand.class, ClearItemsCommand.class,
