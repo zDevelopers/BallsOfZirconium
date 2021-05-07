@@ -31,9 +31,9 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ReplacePostProcessor extends PostProcessor
     protected final String fromMask;
     protected final String toPattern;
 
-    public ReplacePostProcessor(Map parameters)
+    public ReplacePostProcessor(final Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -54,14 +54,14 @@ public class ReplacePostProcessor extends PostProcessor
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
         if (fromMask == null || toPattern == null) return;
 
         session.replaceBlocks(
                 region,
                 WorldEditUtils.parseMask(session.getWorld(), fromMask, session),
-                WorldEditUtils.parsePatternLegacy(session.getWorld(), toPattern)
+                WorldEditUtils.parsePattern(session.getWorld(), toPattern)
         );
     }
 

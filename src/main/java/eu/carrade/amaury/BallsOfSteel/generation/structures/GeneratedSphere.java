@@ -32,16 +32,18 @@
 package eu.carrade.amaury.BallsOfSteel.generation.structures;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionIntersection;
+import com.sk89q.worldedit.world.World;
 import eu.carrade.amaury.BallsOfSteel.generation.GenerationMetadata;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -49,6 +51,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -68,8 +71,8 @@ public class GeneratedSphere extends Structure
 
     public GeneratedSphere(final String name, final boolean enabled)
     {
-        setName(name);
-        setEnabled(enabled);
+        this.name = name;
+        this.enabled = enabled;
     }
 
     public void addGenerator(final Generator generator)
@@ -102,7 +105,6 @@ public class GeneratedSphere extends Structure
         return Collections.unmodifiableList(postProcessors);
     }
 
-
     /**
      * Applies this generation process to the given location.
      *
@@ -113,52 +115,37 @@ public class GeneratedSphere extends Structure
      */
     public Region applyAt(final Location location, final Random random)
     {
-        return applyAt(location, random, WorldEditUtils.newEditSession(location.getWorld()));
-    }
-
-    /**
-     * Applies this generation process to the given location.
-     *
-     * @param location The base location for generation.
-     * @param random   A source of randomness.
-     * @param session  An edit session to use.
-     *
-     * @return A region containing the modified blocks.
-     */
-    public Region applyAt(final Location location, final Random random, final EditSession session)
-    {
         final List<Region> affectedRegions = new ArrayList<>();
+        final World world = BukkitAdapter.adapt(Objects.requireNonNull(location.getWorld()));
 
-        for (final Generator generator : generators)
+        try (EditSession session = WorldEdit.getInstance().newEditSession(world))
         {
-            try
+            for (final Generator generator : generators)
             {
-                final Region affected = generator.generate(session, location.clone(), random);
-                if (affected != null) affectedRegions.add(affected);
-            }
-            catch (final Exception e)
-            {
-                PluginLogger.error("Exception occurred while executing generator {0}", e, generator.getClass().getName());
+                try
+                {
+                    final Region affected = generator.generate(session, location.clone(), random);
+                    if (affected != null) affectedRegions.add(affected);
+                }
+                catch (final Throwable e)
+                {
+                    PluginLogger.error("Exception occurred while executing generator {0}", e, generator.getClass().getName());
+                }
             }
         }
-
-        // Ensures all is wrote before the post-processors are run
-        session.flushQueue();
 
         final Region globallyAffectedRegion = new RegionIntersection(affectedRegions);
 
         for (final PostProcessor processor : postProcessors)
         {
-            try
+            try (EditSession session = WorldEdit.getInstance().newEditSession(world))
             {
                 processor.process(session, globallyAffectedRegion, random);
             }
-            catch (final Exception e)
+            catch (final Throwable e)
             {
                 PluginLogger.error("Exception occurred while executing post-processor {0} on generation process {1}", e, processor.getClass().getName(), name);
             }
-
-            session.flushQueue();
         }
 
         GenerationMetadata.saveStructure(this, location.getWorld(), globallyAffectedRegion);
@@ -168,12 +155,14 @@ public class GeneratedSphere extends Structure
 
 
     @ConfigurationValueHandler
-    public static GeneratedSphere handleGeneratedSphere(final Map map) throws ConfigurationParseException
+    public static GeneratedSphere handleGeneratedSphere(final Map<?, ?> map) throws ConfigurationParseException
     {
         final String name = getValue(map, "name", String.class, "Unnamed sphere");
+        final String display = getValue(map, "display", String.class, null);
         final boolean enabled = getValue(map, "enabled", boolean.class, true);
 
         final GeneratedSphere sphere = new GeneratedSphere(name, enabled);
+        sphere.display = display;
 
         if (map.containsKey("rules"))
         {

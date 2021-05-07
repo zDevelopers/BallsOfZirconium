@@ -32,42 +32,44 @@
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.StructureSubProcessor;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import com.sk89q.worldedit.world.World;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 
 /**
  * A generator, used to generate a shape, paste a schematic...
  */
-public abstract class Generator extends StructureSubProcessor
+public abstract class Generator extends AbstractGenerationTool
 {
     protected final boolean enabled;
     protected final float probability;
-    protected final Vector offset;
+    protected final BlockVector3 offset;
 
     protected EditSession session = null;
     protected Location baseLocation = null;
+    protected World world = null;
     protected Random random = null;
 
 
-    public Generator(final Map parameters)
+    public Generator(final Map<?, ?> parameters)
     {
         enabled     = getValue(parameters, "enabled", boolean.class, true);
         probability = getValue(parameters, "probability", float.class, 1f);
-        offset      = getValue(parameters, "offset", Vector.class, Vector.ZERO);
+        offset      = getValue(parameters, "offset", BlockVector3.class, BlockVector3.ZERO);
     }
 
 
@@ -85,7 +87,7 @@ public abstract class Generator extends StructureSubProcessor
      * post-processing. {@code null} if nothing was generated (disabled,
      * probability failed, max blocks changed exception...).
      */
-    public Region generate(final EditSession session, final Location base, final Random random)
+    public Region generate(@NotNull final EditSession session, @NotNull final Location base, @NotNull final Random random)
     {
         if (!enabled || random.nextFloat() >= probability) return null;
 
@@ -93,39 +95,29 @@ public abstract class Generator extends StructureSubProcessor
         {
             this.session = session;
             this.baseLocation = base.add(offset.getX(), offset.getY(), offset.getZ());
+            this.world = BukkitAdapter.adapt(Objects.requireNonNull(base.getWorld()));
             this.random = random;
 
             return doGenerate();
         }
-        catch (MaxChangedBlocksException e)
+        catch (WorldEditException e)
         {
-            PluginLogger.error("Cannot generate ''{0}'': too many blocks changed.", e, getClass().getSimpleName());
+            PluginLogger.error("Cannot generate ''{0}''.", e, getClass().getSimpleName());
             return null;
         }
     }
 
     /**
-     * A name for the generator.
-     *
-     * @return The name.
+     * A description of the generator, with parameters values if relevant.
+     * @return the description.
      */
-    public String getName()
+    public String getDescription()
     {
-        return doName().trim();
+        return (doDescription()
+                + (!offset.equals(BlockVector3.ZERO) ? " " + I.t("{gray}(offset: {0})", offset) : "")
+                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
     }
 
-    /**
-     * @return A list describing each setting of the generator.
-     */
-    public List<String> getSettingsDescription()
-    {
-        final List<String> settingsDescription = new ArrayList<>(doSettingsDescription());
-
-        if (!offset.equals(Vector.ZERO)) settingsDescription.add(I.t("Offset: {0}", offset));
-        if (probability < 1) settingsDescription.add(I.t("Probability: {0}", probability));
-
-        return settingsDescription;
-    }
 
 
     /**
@@ -134,26 +126,23 @@ public abstract class Generator extends StructureSubProcessor
      * @return A {@link Region} containing all the changes, used after for
      * post-processing.
      */
-    protected abstract Region doGenerate() throws MaxChangedBlocksException;
+    protected abstract Region doGenerate() throws WorldEditException;
+
 
     /**
-     * A name for the generator.
-     * @return The name.
+     * A description of the generator, with parameters values if relevant.
+     * @return the description.
      */
-    public abstract String doName();
+    public abstract String doDescription();
 
-    /**
-     * @return A list describing each setting of the generator.
-     */
-    public abstract List<String> doSettingsDescription();
 
 
     /**
      * @return The base location as a WorldEdit vector.
      */
-    protected Vector baseVector()
+    protected BlockVector3 baseVector()
     {
-        return BukkitUtil.toVector(baseLocation);
+        return BukkitAdapter.asBlockVector(baseLocation);
     }
 
     /**
@@ -165,8 +154,9 @@ public abstract class Generator extends StructureSubProcessor
     }
 
 
+
     @ConfigurationValueHandler
-    public static Generator handleGenerator(Map map) throws ConfigurationParseException
+    public static Generator handleGenerator(Map<?, ?> map) throws ConfigurationParseException
     {
         return handleGenerationTool(map, Generator.class);
     }

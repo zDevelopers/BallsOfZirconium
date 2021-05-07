@@ -31,7 +31,7 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generation;
 
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,7 +58,7 @@ public class BallsOfSteelGenerator extends ChunkGenerator
     @Override
     public Location getFixedSpawnLocation(World world, Random random)
     {
-        return BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.SPAWN.get()).add(0.5, 0.5, 0.5);
+        return BukkitAdapter.adapt(world, MapConfig.GENERATION.MAP.SPAWN.get()).add(0.5, 0.5, 0.5);
     }
 
     @Override

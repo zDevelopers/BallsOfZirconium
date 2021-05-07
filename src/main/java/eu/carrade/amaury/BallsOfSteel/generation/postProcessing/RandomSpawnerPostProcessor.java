@@ -34,19 +34,16 @@ package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 import com.sk89q.jnbt.CompoundTag;
 import com.sk89q.jnbt.CompoundTagBuilder;
 import com.sk89q.jnbt.ListTag;
-import com.sk89q.jnbt.Tag;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.function.RegionFunction;
 import com.sk89q.worldedit.function.RegionMaskingFilter;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.visitor.RegionVisitor;
+import com.sk89q.worldedit.world.block.BaseBlock;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 
@@ -69,7 +66,7 @@ public class RandomSpawnerPostProcessor extends PostProcessor
     private final Short requiredPlayerRange;
 
 
-    public RandomSpawnerPostProcessor(Map parameters)
+    public RandomSpawnerPostProcessor(Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -102,39 +99,37 @@ public class RandomSpawnerPostProcessor extends PostProcessor
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
-        final RegionFunction randomizeSpawners = new RegionFunction()
-        {
-            @Override
-            public boolean apply(Vector position) throws WorldEditException
-            {
-                final EntityType spawnerEntityType = spawnerEntityTypes.get(random.nextInt(spawnerEntityTypes.size()));
+        final RegionFunction randomizeSpawners = position -> {
+            final EntityType spawnerEntityType = spawnerEntityTypes.get(random.nextInt(spawnerEntityTypes.size()));
 
-                final BaseBlock block = session.getBlock(position);
-                final CompoundTagBuilder nbt = (block.hasNbtData() ? block.getNbtData() : new CompoundTag(new HashMap<String, Tag>())).createBuilder();
+            final BaseBlock block = session.getFullBlock(position);
+            final CompoundTagBuilder nbt = (block.hasNbtData() ? block.getNbtData() : new CompoundTag(new HashMap<>())).createBuilder();
 
-                nbt.put("SpawnData", new CompoundTag(new HashMap<String, Tag>()).createBuilder()
-                                .putString("id", spawnerEntityType.getName())
-                                .build()
-                );
+            nbt.put("SpawnData", new CompoundTag(new HashMap<>()).createBuilder()
+                            .putString("id", spawnerEntityType.getKey().toString())
+                            .build()
+            );
 
-                if (spawnCount != null) nbt.putShort("SpawnCount", spawnCount);
-                if (spawnRange != null) nbt.putShort("SpawnRange", spawnRange);
-                if (minSpawnDelay != null) nbt.putShort("MinSpawnDelay", (short) (minSpawnDelay * 20));
-                if (maxSpawnDelay != null) nbt.putShort("MaxSpawnDelay", (short) (maxSpawnDelay * 20));
-                if (maxNearbyEntities != null) nbt.putShort("MaxNearbyEntities", maxNearbyEntities);
-                if (requiredPlayerRange != null) nbt.putShort("RequiredPlayerRange", requiredPlayerRange);
+            if (spawnCount != null) nbt.putShort("SpawnCount", spawnCount);
+            if (spawnRange != null) nbt.putShort("SpawnRange", spawnRange);
+            if (minSpawnDelay != null) nbt.putShort("MinSpawnDelay", (short) (minSpawnDelay * 20));
+            if (maxSpawnDelay != null) nbt.putShort("MaxSpawnDelay", (short) (maxSpawnDelay * 20));
+            if (maxNearbyEntities != null) nbt.putShort("MaxNearbyEntities", maxNearbyEntities);
+            if (requiredPlayerRange != null) nbt.putShort("RequiredPlayerRange", requiredPlayerRange);
 
-                // Erases the SpawnPotentials key if present from a schematic or something,
-                // as it will modifies the spawned entity.
-                nbt.put("SpawnPotentials", new ListTag(CompoundTag.class, Collections.<Tag>emptyList()));
+            // Ensure the spawner is properly randomized
+            nbt.putShort("Delay", (short) -1);
 
-                block.setNbtData(nbt.build());
-                session.setBlock(position, block);
+            // Erases the SpawnPotentials key if present from a schematic or something,
+            // as it will modifies the spawned entity.
+            nbt.put("SpawnPotentials", new ListTag(CompoundTag.class, Collections.emptyList()));
 
-                return true;
-            }
+            block.setNbtData(nbt.build());
+            session.setBlock(position, block);
+
+            return true;
         };
 
         final Mask blocksMask = WorldEditUtils.parseMask(session.getWorld(), "mob_spawner", session);

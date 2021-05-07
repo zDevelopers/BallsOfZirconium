@@ -32,15 +32,9 @@
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
 import com.sk89q.jnbt.CompoundTag;
-import com.sk89q.jnbt.Tag;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.entity.BaseEntity;
-import com.sk89q.worldedit.entity.Entity;
 import com.sk89q.worldedit.function.EntityFunction;
 import com.sk89q.worldedit.function.RegionFunction;
 import com.sk89q.worldedit.function.RegionMaskingFilter;
@@ -50,11 +44,12 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.function.visitor.EntityVisitor;
 import com.sk89q.worldedit.function.visitor.RegionVisitor;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.block.BaseBlock;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.util.FileUtil;
 
@@ -84,7 +79,7 @@ public class PopulateChestsPostProcessor extends PostProcessor
     private final String lootTableFilename;
     private final File lootTablePath;
 
-    public PopulateChestsPostProcessor(Map parameters)
+    public PopulateChestsPostProcessor(Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -121,17 +116,18 @@ public class PopulateChestsPostProcessor extends PostProcessor
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
         // If the loot table was invalid, we skip.
         if (lootTable == null) return;
 
 
         // First, we copy the loot table file in the world folder if needed.
+        // TODO Use data pack
         if (lootTablePath != null)
         {
             File lootTableWorldPath = new File(
-                    BukkitUtil.toWorld((BukkitWorld) session.getWorld()).getWorldFolder(),
+                    BukkitAdapter.adapt(session.getWorld()).getWorldFolder(),
                     "data/loot_tables/" + LOOT_TABLES_NAMESPACE + "/" + lootTableFilename
             );
 
@@ -142,65 +138,46 @@ public class PopulateChestsPostProcessor extends PostProcessor
 
         // The functions applying the NBT changes
 
-        final RegionFunction updateLootNBTForBlocks = new RegionFunction()
-        {
-            @Override
-            public boolean apply(Vector position) throws WorldEditException
-            {
-                final BaseBlock block = session.getBlock(position);
-                final CompoundTag nbt = block.hasNbtData() ? block.getNbtData() : new CompoundTag(new HashMap<String, Tag>());
-                block.setNbtData(nbt.createBuilder().putString("LootTable", lootTable).build());
+        final RegionFunction updateLootNBTForBlocks = position -> {
+            final BaseBlock block = session.getFullBlock(position);
+            final CompoundTag nbt = block.hasNbtData() ? block.getNbtData() : new CompoundTag(new HashMap<>());
+            block.setNbtData(nbt.createBuilder().putString("LootTable", lootTable).build());
 
-                session.setBlock(position, block);
-                return true;
-            }
+            session.setBlock(position, block);
+            return true;
         };
 
-        final EntityFunction updateLootNBTForEntities = new EntityFunction()
-        {
-            @Override
-            public boolean apply(Entity entity) throws WorldEditException
+        final EntityFunction updateLootNBTForEntities = entity -> {
+            if (entity == null) return false;
+
+            BaseEntity state = entity.getState();
+            Location location = entity.getLocation();
+
+            if (state == null) return false;
+
+            // No filter for entities in WorldEdit so we have to check that here
+            switch (state.getType().getId())
             {
-                if (entity == null) return false;
+                case "minecraft:chest_minecart":
+                    if (!storageMinecarts) return false;
+                    break;
 
-                BaseEntity state = entity.getState();
-                Location location = entity.getLocation();
+                case "minecraft:hopper_minecart":
+                    if (!hopperMinecarts) return false;
+                    break;
 
-                if (state == null) return false;
-
-                // No filter for entities in WorldEdit so we have to check that here
-                switch (state.getTypeId())
-                {
-                    case "MinecartChest":
-                    case "chest_minecart":
-                        if (!storageMinecarts) return false;
-                        break;
-
-                    case "MinecartHopper":
-                    case "hopper_minecart":
-                        if (!hopperMinecarts) return false;
-                        break;
-
-                    default:
-                        return false;
-                }
-
-                // The received type ID may be invalid, and Minecraft will not understand it when re-created.
-                Map<String, String> rightTypes = new HashMap<>();
-                rightTypes.put("MinecartChest", "chest_minecart");
-                rightTypes.put("chest_minecart", "chest_minecart");
-                rightTypes.put("MinecartHopper", "hopper_minecart");
-                rightTypes.put("hopper_minecart", "hopper_minecart");
-
-                final CompoundTag nbt = state.hasNbtData() ? state.getNbtData() : new CompoundTag(new HashMap<String, Tag>());
-                state = new BaseEntity(rightTypes.get(state.getTypeId()), nbt.createBuilder().putString("LootTable", lootTable).build());
-
-                entity.remove();
-                if (session.createEntity(location, state) == null)
-                    PluginLogger.error("Unable to re-create minecart entity while populating chests at {0}", location.toVector());
-
-                return true;
+                default:
+                    return false;
             }
+
+            final CompoundTag nbt = state.hasNbtData() ? state.getNbtData() : new CompoundTag(new HashMap<>());
+            state = new BaseEntity(state.getType(), nbt.createBuilder().putString("LootTable", lootTable).build());
+
+            entity.remove();
+            if (session.createEntity(location, state) == null)
+                PluginLogger.error("Unable to re-create minecart entity while populating chests at {0}", location.toVector());
+
+            return true;
         };
 
 
@@ -225,12 +202,10 @@ public class PopulateChestsPostProcessor extends PostProcessor
         {
             Operations.complete(new OperationQueue(blocksVisitor, entitiesVisitor));
         }
-        catch (WorldEditException e)
+        catch (final WorldEditException e)
         {
             PluginLogger.info("Unable to populate chests", e);
         }
-
-        session.flushQueue();
     }
 
     @Override

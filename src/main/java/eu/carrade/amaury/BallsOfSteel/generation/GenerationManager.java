@@ -31,8 +31,8 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation;
 
-import com.sk89q.worldedit.Vector2D;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.MapConfig;
@@ -41,10 +41,10 @@ import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.Structure;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldLoader;
-import fr.zcraft.zlib.core.ZLibComponent;
-import fr.zcraft.zlib.tools.PluginLogger;
-import fr.zcraft.zlib.tools.reflection.Reflection;
-import fr.zcraft.zlib.tools.runners.RunAsyncTask;
+import fr.zcraft.quartzlib.core.QuartzComponent;
+import fr.zcraft.quartzlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.tools.reflection.Reflection;
+import fr.zcraft.quartzlib.tools.runners.RunAsyncTask;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -79,7 +79,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class GenerationManager extends ZLibComponent implements Listener
+public class GenerationManager extends QuartzComponent implements Listener
 {
     private final static String MANAGED_WORLDS_FILENAME = "managed_worlds.dat";
 
@@ -91,8 +91,8 @@ public class GenerationManager extends ZLibComponent implements Listener
 
     private boolean logs;
 
-    private Location lowestCorner;
-    private Location highestCorner;
+    private BlockVector3 lowestCorner;
+    private BlockVector3 highestCorner;
 
     private File managedWorldsListFile = null;
     private final Set<World> managedWorlds = new HashSet<>();
@@ -136,24 +136,11 @@ public class GenerationManager extends ZLibComponent implements Listener
 
 
         // Loading map boundaries
-        final World world = BallsOfSteel.get().getGameManager().getGameWorld();
+        final BlockVector3 corner1 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_1.get();
+        final BlockVector3 corner2 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get();
 
-        final Location corner1 = BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_1.get());
-        final Location corner2 = BukkitUtil.toLocation(world, MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get());
-
-        lowestCorner = new Location(
-                corner1.getWorld(),
-                Math.min(corner1.getX(), corner2.getX()),
-                Math.min(corner1.getY(), corner2.getY()),
-                Math.min(corner1.getZ(), corner2.getZ())
-        );
-
-        highestCorner = new Location(
-                corner1.getWorld(),
-                Math.max(corner1.getX(), corner2.getX()),
-                Math.max(corner1.getY(), corner2.getY()),
-                Math.max(corner1.getZ(), corner2.getZ())
-        );
+        lowestCorner = corner1.getMinimum(corner2);
+        highestCorner = corner1.getMaximum(corner2);
 
 
         // Loading managed worlds
@@ -278,7 +265,7 @@ public class GenerationManager extends ZLibComponent implements Listener
     /**
      * @return The corner of the world with the lowest coordinates
      */
-    public Location getLowestCorner()
+    public BlockVector3 getLowestCorner()
     {
         return lowestCorner;
     }
@@ -286,7 +273,7 @@ public class GenerationManager extends ZLibComponent implements Listener
     /**
      * @return The corner of the world with the highest coordinates
      */
-    public Location getHighestCorner()
+    public BlockVector3 getHighestCorner()
     {
         return highestCorner;
     }
@@ -392,16 +379,16 @@ public class GenerationManager extends ZLibComponent implements Listener
      */
     public WorldLoader createWorldAndGetLoader(final String name, final CommandSender logsReceiver)
     {
-        final Vector2D corner1 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_1.get().toVector2D();
-        final Vector2D corner2 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get().toVector2D();
+        final BlockVector2 corner1 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_1.get().toBlockVector2();
+        final BlockVector2 corner2 = MapConfig.GENERATION.MAP.BOUNDARIES.CORNER_2.get().toBlockVector2();
 
         // We also load the chunks near the border to avoid load when players are close to it.
         // If the player logged out we switch to the console to display the logs.
         return new WorldLoader(
                 createWorld(name),
                 logsReceiver instanceof Player && !((Player) logsReceiver).isOnline() ? Bukkit.getConsoleSender() : logsReceiver,
-                Vector2D.getMinimum(corner1, corner2).subtract(32, 32),
-                Vector2D.getMaximum(corner1, corner2).add(32, 32)
+                corner1.getMinimum(corner2).subtract(32, 32),
+                corner1.getMaximum(corner2).add(32, 32)
         );
     }
 

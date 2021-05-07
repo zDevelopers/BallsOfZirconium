@@ -31,11 +31,11 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class RotatePostProcessor extends PostProcessor
     private final Integer angleY;
     private final Integer angleZ;
 
-    public RotatePostProcessor(Map parameters)
+    public RotatePostProcessor(final Map<?, ?> parameters)
     {
         super(parameters);
 
@@ -65,7 +65,7 @@ public class RotatePostProcessor extends PostProcessor
      *
      * @return The angle value.
      */
-    private Integer getAngle(Map parameters, String key)
+    private Integer getAngle(final Map<?, ?> parameters, final String key)
     {
         final String rawAngle = getValue(parameters, key, String.class, "0").trim();
 
@@ -96,7 +96,7 @@ public class RotatePostProcessor extends PostProcessor
     }
 
     @Override
-    protected void doProcess() throws MaxChangedBlocksException
+    protected void doProcess() throws WorldEditException
     {
         final int realAngle = getRealAngle(angleY);
         final AffineTransform transform = new AffineTransform()

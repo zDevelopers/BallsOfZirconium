@@ -20,8 +20,8 @@ package eu.carrade.amaury.BallsOfSteel.teams;
 
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.GameConfig;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.core.ZLibComponent;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.core.QuartzComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class BoSTeamChatManager extends ZLibComponent implements Listener
+public class BoSTeamChatManager extends QuartzComponent implements Listener
 {
     private List<UUID> teamChatLocked = new ArrayList<>();
     private Map<UUID, BoSTeam> otherTeamChatLocked = new HashMap<>();

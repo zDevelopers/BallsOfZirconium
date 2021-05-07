@@ -33,17 +33,16 @@ package eu.carrade.amaury.BallsOfSteel.generation.postProcessing;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.StructureSubProcessor;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
+import eu.carrade.amaury.BallsOfSteel.generation.utils.AbstractGenerationTool;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.i18n.I;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -51,13 +50,13 @@ import java.util.Random;
 /**
  * A post-processor. This will work on a previously-generated region and apply some filters, replacements, things on it.
  */
-public abstract class PostProcessor extends StructureSubProcessor
+public abstract class PostProcessor extends AbstractGenerationTool
 {
     private final boolean enabled;
     private final float probability;
 
-    private final Vector subRegionPos1;
-    private final Vector subRegionPos2;
+    private final BlockVector3 subRegionPos1;
+    private final BlockVector3 subRegionPos2;
 
     /**
      * If WorldEdit is used, changes must be made in this edit session.
@@ -76,16 +75,16 @@ public abstract class PostProcessor extends StructureSubProcessor
     protected Random random = null;
 
 
-    public PostProcessor(final Map parameters)
+    public PostProcessor(final Map<?, ?> parameters)
     {
         enabled     = getValue(parameters, "enabled", boolean.class, true);
         probability = getValue(parameters, "probability", float.class, 1f);
 
-        final Map regionParameters = getValue(parameters, "region", Map.class, null);
+        final Map<?, ?> regionParameters = getValue(parameters, "region", Map.class, null);
         if (regionParameters != null)
         {
-            subRegionPos1 = getValue(regionParameters, "sub_pos_1", Vector.class, Vector.ZERO);
-            subRegionPos2 = getValue(regionParameters, "sub_pos_2", Vector.class, Vector.ZERO);
+            subRegionPos1 = getValue(regionParameters, "sub_pos_1", BlockVector3.class, BlockVector3.ZERO);
+            subRegionPos2 = getValue(regionParameters, "sub_pos_2", BlockVector3.class, BlockVector3.ZERO);
         }
         else subRegionPos1 = subRegionPos2 = null;
     }
@@ -113,13 +112,13 @@ public abstract class PostProcessor extends StructureSubProcessor
             // If this processing is only applied to a sub region...
             if (subRegionPos1 != null || subRegionPos2 != null)
             {
-                final Vector subRealPos1 = region.getMinimumPoint().add(subRegionPos1 != null ? subRegionPos1 : Vector.ZERO);
-                final Vector subRealPos2 = region.getMinimumPoint().add(subRegionPos2 != null ? subRegionPos2 : Vector.ZERO);
+                final BlockVector3 subRealPos1 = region.getMinimumPoint().add(subRegionPos1 != null ? subRegionPos1 : BlockVector3.ZERO);
+                final BlockVector3 subRealPos2 = region.getMinimumPoint().add(subRegionPos2 != null ? subRegionPos2 : BlockVector3.ZERO);
 
                 this.region = new CuboidRegion(
                         region.getWorld(),
-                        Vector.getMaximum(region.getMinimumPoint(), Vector.getMinimum(subRealPos1, subRealPos2)),
-                        Vector.getMinimum(region.getMinimumPoint(), Vector.getMaximum(subRealPos1, subRealPos2))
+                        region.getMinimumPoint().getMaximum(subRealPos1.getMinimum(subRealPos2)),
+                        region.getMinimumPoint().getMinimum(subRealPos1.getMaximum(subRealPos2))
                 );
             }
             else
@@ -133,51 +132,38 @@ public abstract class PostProcessor extends StructureSubProcessor
         {
             PluginLogger.error("Cannot apply the {0} post-processor: too many blocks changed.", e, getClass().getSimpleName());
         }
+        catch (WorldEditException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * A name for the post-processor.
-     *
-     * @return The name.
+     * A description of the post-processor, with parameters values if relevant.
+     * @return the description.
      */
-    public String getName()
+    public String getDescription()
     {
-        return doName().trim();
+        return (doDescription()
+                + (subRegionPos1 != null || subRegionPos2 != null ? " " + I.t("{gray}(restricted to {0}, {1})", subRegionPos1 != null ? subRegionPos1 : BlockVector3.ZERO, subRegionPos2 != null ? subRegionPos2 : BlockVector3.ZERO) : "")
+                + (probability < 1 ? " " + I.t("{gray}(probability: {0})", probability) : "")).trim();
     }
-
-    /**
-     * @return A list describing each setting of the post-processor.
-     */
-    public List<String> getSettingsDescription()
-    {
-        final List<String> settingsDescription = new ArrayList<>(doSettingsDescription());
-
-        if (subRegionPos1 != null || subRegionPos2 != null) settingsDescription.add(I.t("Restricted to {0}, {1}", subRegionPos1 != null ? subRegionPos1 : Vector.ZERO, subRegionPos2 != null ? subRegionPos2 : Vector.ZERO));
-        if (probability < 1) settingsDescription.add(I.t("Probability: {0}", probability));
-
-        return settingsDescription;
-    }
-
 
     /**
      * Applies a post-processing to a region.
      */
-    protected abstract void doProcess() throws MaxChangedBlocksException;
+    protected abstract void doProcess() throws WorldEditException;
 
     /**
-     * A name for the post-processor.
-     * @return The name.
+     * A description of the post-processor, with parameters values if relevant.
+     * @return the description.
      */
-    public abstract String doName();
+    public abstract String doDescription();
 
-    /**
-     * @return A list describing each setting of the structure.
-     */
-    public abstract List<String> doSettingsDescription();
 
 
     @ConfigurationValueHandler
-    public static PostProcessor handlePostProcessor(Map map) throws ConfigurationParseException
+    public static PostProcessor handlePostProcessor(Map<?, ?> map) throws ConfigurationParseException
     {
         return handleGenerationTool(map, PostProcessor.class);
     }

@@ -31,14 +31,14 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.Vector2D;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector2;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionOperationException;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,23 +47,23 @@ import java.util.Map;
 
 public class HcylinderGenerator extends WithRadiusGenerator
 {
-    public HcylinderGenerator(Map parameters)
+    public HcylinderGenerator(Map<?, ?> parameters)
     {
         super(parameters);
     }
 
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected Region doGenerate() throws WorldEditException
     {
-        session.makeCylinder(baseVector(), oldPattern(baseLocation.getWorld()), radius.getX(), radius.getZ(), radius.getBlockY() * 2, false);
+        session.makeCylinder(baseVector(), pattern(baseLocation.getWorld()), radius.getX(), radius.getZ(), radius.getBlockY() * 2, false);
 
         final CylinderRegion region = new CylinderRegion(
-                baseVector(), new Vector2D(radius.getX() + 1, radius.getZ() + 1),
+                baseVector(), Vector2.at(radius.getX() + 1, radius.getZ() + 1),
                 baseVector().getBlockY() - radius.getBlockY() - 4,
                 baseVector().getBlockY() + radius.getBlockY() + 4
         );
 
-        try { region.shift(new Vector(0, 2, 0)); }
+        try { region.shift(BlockVector3.at(0, 2, 0)); }
         catch (RegionOperationException ignored) {}
 
         return region;

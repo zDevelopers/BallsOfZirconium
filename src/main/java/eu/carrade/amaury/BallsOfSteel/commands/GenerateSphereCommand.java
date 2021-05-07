@@ -32,32 +32,27 @@
 package eu.carrade.amaury.BallsOfSteel.commands;
 
 import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.RegionSelector;
 import com.sk89q.worldedit.regions.selector.limit.PermissiveSelectorLimits;
 import eu.carrade.amaury.BallsOfSteel.BallsOfSteel;
 import eu.carrade.amaury.BallsOfSteel.commands.helpers.SpheresRelatedCommand;
 import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
-import eu.carrade.amaury.BallsOfSteel.generation.utils.WorldEditUtils;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.commands.WithFlags;
-import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.PluginLogger;
-import fr.zcraft.zlib.tools.runners.RunTask;
-import org.apache.commons.lang.StringUtils;
+import fr.zcraft.quartzlib.components.commands.CommandException;
+import fr.zcraft.quartzlib.components.commands.CommandInfo;
+import fr.zcraft.quartzlib.components.i18n.I;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 
-@CommandInfo (name = "generatesphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-su]")
-@WithFlags ({"s", "u"})
+@CommandInfo (name = "generate-sphere", usageParameters = "<nameWithoutSpaces> [posX, posY, posZ [, world]] [-s]", aliases = { "generatesphere" })
 public class GenerateSphereCommand extends SpheresRelatedCommand
 {
     @Override
@@ -66,9 +61,12 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         if (!BallsOfSteel.get().getGenerationManager().isEnabled())
             error(I.t("Cannot use generation-related tools: generation disabled (either it's disabled in map.yml or WorldEdit is missing)."));
 
-        PluginLogger.info("Flags: {0}", StringUtils.join(flags, ", "));
-        final boolean selectAfter = hasFlag("s");
-        final boolean unstuckAfter = hasFlag("u");
+        boolean selectAfter = false;
+        if (args.length > 0 && args[args.length - 1].equalsIgnoreCase("-s"))
+        {
+            selectAfter = true;
+            args = Arrays.copyOf(args, args.length - 1, String[].class);
+        }
 
         if (args.length < 1)
             throwInvalidArgument(I.t("Sphere name required."));
@@ -112,40 +110,23 @@ public class GenerateSphereCommand extends SpheresRelatedCommand
         }
 
         final long time = System.currentTimeMillis();
-        final Region region = generator.applyAt(baseLocation, new Random(), WorldEditUtils.newEditSession(baseLocation.getWorld(), /*sender instanceof Player ? (Player) sender :*/ null));
+        final Region region = generator.applyAt(baseLocation, new Random());
 
         info(I.t("{gray}{0} generated in {1} ms. {2}", generator.getName(), System.currentTimeMillis() - time, selectAfter ? I.t("WorldEdit selection updated.") : ""));
 
-        if (sender instanceof Player)
+        if (selectAfter && sender instanceof Player)
         {
-            if (unstuckAfter)
-            {
-                final Player player = playerSender();
+            final LocalSession session = BallsOfSteel.get().getWorldEditDependency().getWE().getSession(playerSender());
+            final RegionSelector regionSelector = session.getRegionSelector(BukkitAdapter.adapt(baseLocation.getWorld()));
 
-                RunTask.nextTick(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        BallsOfSteel.get().getWorldEditDependency().getWE().wrapPlayer(player).findFreePosition();
-                    }
-                });
-            }
+            regionSelector.selectPrimary(region.getMinimumPoint(), PermissiveSelectorLimits.getInstance());
+            regionSelector.selectSecondary(region.getMaximumPoint(), PermissiveSelectorLimits.getInstance());
 
-            if (selectAfter)
-            {
-                final LocalSession session = BallsOfSteel.get().getWorldEditDependency().getWE().getSession(playerSender());
-                final RegionSelector regionSelector = session.getRegionSelector((com.sk89q.worldedit.world.World) BukkitUtil.getLocalWorld(baseLocation.getWorld()));
+            session.dispatchCUISelection(BallsOfSteel.get().getWorldEditDependency().getWE().wrapPlayer(playerSender()));
 
-                regionSelector.selectPrimary(region.getMinimumPoint(), PermissiveSelectorLimits.getInstance());
-                regionSelector.selectSecondary(region.getMaximumPoint(), PermissiveSelectorLimits.getInstance());
-
-                session.dispatchCUISelection(BallsOfSteel.get().getWorldEditDependency().getWE().wrapPlayer(playerSender()));
-
-                // Required to update the selection display if the player is using WE:CUI.
-                // If it's not, the command is harmless and without output anyway.
-                playerSender().performCommand("we cui");
-            }
+            // Required to update the selection display if the player is using WE:CUI.
+            // If it's not, the command is harmless and without output anyway.
+            playerSender().performCommand("we cui");
         }
     }
 

@@ -43,20 +43,15 @@ public abstract class WithPatternGenerator extends Generator
 {
     protected final String patternString;
 
-    public WithPatternGenerator(Map parameters)
+    public WithPatternGenerator(final Map<?, ?> parameters)
     {
         super(parameters);
 
         patternString = getValue(parameters, "pattern", String.class, "stone");
     }
 
-    protected Pattern pattern(World world)
+    protected Pattern pattern(final World world)
     {
         return WorldEditUtils.parsePattern(world, patternString);
-    }
-
-    protected com.sk89q.worldedit.patterns.Pattern oldPattern(World world)
-    {
-        return WorldEditUtils.parsePatternLegacy(world, patternString);
     }
 }

@@ -32,7 +32,7 @@
 package eu.carrade.amaury.BallsOfSteel.dependencies;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import fr.zcraft.zlib.external.ExternalPluginComponent;
+import fr.zcraft.quartzlib.external.ExternalPluginComponent;
 
 
 public class WorldEditDependency extends ExternalPluginComponent<WorldEditPlugin>

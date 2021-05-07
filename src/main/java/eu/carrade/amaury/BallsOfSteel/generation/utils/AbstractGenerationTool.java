@@ -31,9 +31,9 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.utils;
 
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.tools.PluginLogger;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -60,7 +60,7 @@ public abstract class AbstractGenerationTool
      *
      * @return The value, of the default value if invalid.
      */
-    protected static <T> T getValue(final Map params, final String key, final Class<T> parameterType, final T defaultValue)
+    protected static <T> T getValue(final Map<?, ?> params, final String key, final Class<T> parameterType, final T defaultValue)
     {
         try
         {
@@ -100,16 +100,16 @@ public abstract class AbstractGenerationTool
         {
             try
             {
-                final Class clazz = Class.forName(clazzName);
+                final Class<?> clazz = Class.forName(clazzName);
                 if (superClass.isAssignableFrom(clazz)) return (Class<? extends T>) clazz;
             }
-            catch (ClassNotFoundException e) { /* The search continues... */ }
+            catch (final ClassNotFoundException ignored) { /* The search continues... */ }
         }
 
         return null;
     }
 
-    protected static <T> T handleGenerationTool(Map parameters, Class<? extends T> superClass) throws ConfigurationParseException
+    protected static <T> T handleGenerationTool(final Map<?, ?> parameters, Class<? extends T> superClass) throws ConfigurationParseException
     {
         final String type = getValue(parameters, "type", String.class, null);
         final Class<? extends T> clazz = getClassFromName(type, superClass.getPackage().getName(), superClass.getSimpleName(), superClass);
@@ -122,7 +122,7 @@ public abstract class AbstractGenerationTool
         }
         catch (NoSuchMethodException | InstantiationException | IllegalAccessException e)
         {
-            throw new ConfigurationParseException("Unable to load the " + type + " generator: invalid constructor in class (accessible and with a single Map argument required)", parameters);
+            throw new ConfigurationParseException("Unable to load the " + type + " generator: invalid constructor in class (accessible and with a single Map<?, ?> argument required)", parameters);
         }
         catch (InvocationTargetException e)
         {

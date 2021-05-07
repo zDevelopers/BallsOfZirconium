@@ -31,7 +31,8 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.utils;
 
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.EllipsoidRegion;
 
@@ -53,9 +54,9 @@ public final class GeometryUtils
     {
         float distanceMin = 0;
 
-        Vector sphereCenter = ellipsoid.getCenter();
-        Vector cuboidMin = cuboid.getMinimumPoint();
-        Vector cuboidMax = cuboid.getMaximumPoint();
+        final Vector3 sphereCenter = ellipsoid.getCenter();
+        final BlockVector3 cuboidMin = cuboid.getMinimumPoint();
+        final BlockVector3 cuboidMax = cuboid.getMaximumPoint();
 
         if (sphereCenter.getX() < cuboidMin.getX())
             distanceMin += Math.pow(sphereCenter.getX() - cuboidMin.getX(), 2);

@@ -31,11 +31,11 @@
  */
 package eu.carrade.amaury.BallsOfSteel.generation.generators;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.helpers.WithRadiusGenerator;
-import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.quartzlib.components.i18n.I;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,20 +44,20 @@ import java.util.Map;
 
 public class WallsGenerator extends WithRadiusGenerator
 {
-    public WallsGenerator(Map parameters)
+    public WallsGenerator(Map<?, ?> parameters)
     {
         super(parameters);
     }
 
     @Override
-    protected Region doGenerate() throws MaxChangedBlocksException
+    protected Region doGenerate() throws WorldEditException
     {
         Region region = new CuboidRegion(
                 baseVector().subtract(radius.getX() / 2, radius.getY() / 2, radius.getZ() / 2),
                 baseVector().add(radius.getX() / 2, radius.getY() / 2, radius.getZ() / 2)
         );
 
-        session.makeWalls(region, oldPattern(baseLocation.getWorld()));
+        session.makeWalls(region, pattern(baseLocation.getWorld()));
         return region;
     }
 

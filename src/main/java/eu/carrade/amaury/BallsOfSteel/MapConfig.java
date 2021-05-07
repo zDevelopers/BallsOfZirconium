@@ -31,26 +31,28 @@
  */
 package eu.carrade.amaury.BallsOfSteel;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
-import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
+import com.sk89q.worldedit.math.BlockVector3;
 import eu.carrade.amaury.BallsOfSteel.generation.generators.Generator;
 import eu.carrade.amaury.BallsOfSteel.generation.postProcessing.PostProcessor;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.GeneratedSphere;
+import eu.carrade.amaury.BallsOfSteel.generation.structures.StaticBuilding;
 import eu.carrade.amaury.BallsOfSteel.teams.BoSTeam;
 import eu.carrade.amaury.BallsOfSteel.utils.PitchedVector;
-import fr.zcraft.zlib.components.configuration.ConfigurationInstance;
-import fr.zcraft.zlib.components.configuration.ConfigurationItem;
-import fr.zcraft.zlib.components.configuration.ConfigurationList;
-import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
-import fr.zcraft.zlib.components.configuration.ConfigurationSection;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
-import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationInstance;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationItem;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationList;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationSection;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.quartzlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.*;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.item;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.list;
+import static fr.zcraft.quartzlib.components.configuration.ConfigurationItem.section;
 
 
 public class MapConfig extends ConfigurationInstance
@@ -99,11 +101,11 @@ public class MapConfig extends ConfigurationInstance
             public final BoundariesSection BOUNDARIES = section("boundaries", BoundariesSection.class);
             public final static class BoundariesSection extends ConfigurationSection
             {
-                public final ConfigurationItem<Vector> CORNER_1 = item("corner1", Vector.ZERO);
-                public final ConfigurationItem<Vector> CORNER_2 = item("corner2", Vector.ZERO);
+                public final ConfigurationItem<BlockVector3> CORNER_1 = item("corner1", BlockVector3.ZERO);
+                public final ConfigurationItem<BlockVector3> CORNER_2 = item("corner2", BlockVector3.ZERO);
             }
 
-            public final ConfigurationItem<Vector> SPAWN = item("spawn", Vector.ZERO);
+            public final ConfigurationItem<BlockVector3> SPAWN = item("spawn", BlockVector3.ZERO);
             public final ConfigurationItem<World.Environment> ENVIRONMENT = item("environment", World.Environment.NORMAL);
 
             public final ConfigurationItem<Boolean> GENERATE_AT_STARTUP = item("generateAtStartup", true);
@@ -122,8 +124,9 @@ public class MapConfig extends ConfigurationInstance
 
 
     @ConfigurationValueHandler
-    public static Vector handleVector(Object obj) throws ConfigurationParseException
+    public static BlockVector3 handleVector(Object obj) throws ConfigurationParseException
     {
-        return BukkitUtil.toVector(ConfigurationValueHandlers.handleValue(obj, org.bukkit.util.Vector.class));
+        final Vector vector = ConfigurationValueHandlers.handleValue(obj, Vector.class);
+        return BlockVector3.at(vector.getX(), vector.getY(), vector.getZ());
     }
 }
