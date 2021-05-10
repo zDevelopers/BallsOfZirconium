@@ -16,7 +16,7 @@ lang: en_US
 
 
 # The game name displayed in the sidebar
-gameName: "Balls of Steel"
+gameName: "Balls of Zirconium"
 
 
 
@@ -31,7 +31,7 @@ bar:
     enabled: true
 
     # The bar title displayed (can include colors)
-    title: "Balls of Steel"
+    title: "Balls of Zirconium"
 
     # If true, the title is displayed alongside the timer during the game. Else, only before.
     displayTitleDuringGame: false
