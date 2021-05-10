@@ -1,6 +1,8 @@
-# Balls of Steel, a Bukkit plugin
+# Balls of Zirconium, a modernized Balls of Steel game
 
-This plugin manages a Balls of Steel game.
+This plugin manages a Balls of Zirconium game, a modernized Balls of Steel game with 1.16+ suppport and automatic randomized map generation from spheres descriptions or schematics.
+
+_The features below are incomplete; some new ones or planned ones are missing._
 
 Features:
  - team management (a similar team management than the UltraHardcore reloaded plugin one);
@@ -12,6 +14,4 @@ Features:
    - blocks (two stacks of dirt);
    - food (one stack of steaks).
 
-This plugin is published under the GNU GPL license (version 3+).
-
-Development builds are [available on my Jenkins server](http://jenkins.carrade.eu/job/BallsOfSteel/).
+This plugin is published under the CeCILL licence, version 2.1.
