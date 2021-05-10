@@ -1,6 +1,6 @@
-name: BallsOfSteel
-description: Balls of Steel plugin
-main: eu.carrade.amaury.BallsOfSteel.BallsOfSteel
+name: BallsOfZirconium
+description: Balls of Zirconium, a modernized Balls of Steel game with automated generation
+main: eu.carrade.amaury.ballsofzirconium.BallsOfZirconium
 version: 0.1 §cdev§r
 author: "Amaury Carrade"
 api-version: "1.15"
@@ -11,8 +11,8 @@ softdepend:
   - WorldEdit
 
 commands:
-   bos:
-      description: Balls of Steel base command
+   boz:
+      description: Balls of Zirconium base command
 
    t:
       description: Allows an user to send a message to his team.

@@ -2,15 +2,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>eu.carrade.amaury</groupId>
-	<artifactId>BallsOfSteel</artifactId>
+	<artifactId>BallsOfZirconium</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<name>BallsOfSteel</name>
-	<description>Balls of Steel plugin</description>
-	<url>https://github.com/AmauryCarrade/BallsOfSteel/</url>
+
+	<name>BallsOfZirconium</name>
+	<description>Balls of Zirconium, a modernized Balls of Steel game with automated generation</description>
+	<url>https://github.com/zDevelopers/BallsOfZirconium</url>
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/AmauryCarrade/BallsOfSteel/issues</url>
+		<url>https://github.com/zDevelopers/BallsOfZirconium/issues</url>
 	</issueManagement>
 
     <properties>
